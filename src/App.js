@@ -9,7 +9,7 @@ class App extends React.Component {
 
 constructor(props) {
     super(props)
-    this.state = {user: {userName:'',email:''}}
+    this.state = {user: {userName:'',email:'',userId:0,desc:'',isRoot:0}}
 }  
 
 passName = (passUser) => {
@@ -45,9 +45,9 @@ render() {
     <div className="App">
       <header className="App-header">
       <Title inUser={this.state.user} />
+      </header>
       <CreateUserForm inUser={this.state.user} nameHandler={this.passName}/>
       <UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/>
-      </header>
     </div>
   );
 }

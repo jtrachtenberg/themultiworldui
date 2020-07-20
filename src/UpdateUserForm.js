@@ -40,27 +40,37 @@ class UpdateUserForm extends React.Component {
     }
 
     render() {
-        return (
-            <form onSubmit={this.handleSubmit}>
-                <label>User Name:
-                    <input type="text" value={this.state.userName} onChange={this.handleChange} />
-                </label>
-                <label>email
-                    <input type="email" value={this.state.email} onChange={this.handleChange} />
-                </label>
-                <label>Description
-                    <textarea value={this.state.desc} onChange={this.handleChange} />
-                </label>              
-                <label>
-                Is going:
-                <input
-                    name="isRoot"
-                    type="checkbox"
-                    checked={this.state.isRoot}
-                    onChange={this.handleChange} />
-                </label>      
-                <input type="submit" value="Submit" />
+        let form;
+        if (this.user.userId > 0) {
+            form = (
+<form onSubmit={this.handleSubmit}>
+            <label>User Name:
+                <input type="text" value={this.state.userName} onChange={this.handleChange} />
+            </label>
+            <label>email
+                <input type="email" value={this.state.email} onChange={this.handleChange} />
+            </label>
+            <label>Description
+                <textarea value={this.state.desc} onChange={this.handleChange} />
+            </label>              
+            <label>
+            Is going:
+            <input
+                name="isRoot"
+                type="checkbox"
+                checked={this.state.isRoot}
+                onChange={this.handleChange} />
+            </label>      
+            <input type="submit" value="Submit" />
             </form>
+            )
+        } else {
+            form = <p>Waiting for user.</p>
+        }
+        return (
+            <div>
+                {form}
+            </div>
         )
     }
 }
