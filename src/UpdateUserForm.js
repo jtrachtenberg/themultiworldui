@@ -7,6 +7,22 @@ class UpdateUserForm extends React.Component {
         this.user = props.inUser
     }
 
+    componentDidUpdate() {
+        var inUser = this.user
+        console.log(inUser.email)
+        console.log(this.props.inUser.email)
+        console.log(this.state.email)
+        if (inUser.email !== this.state.email) {
+            this.setState(state => ({
+                desc: inUser.desc,
+                email: inUser.email,
+                userName: inUser.userName,
+                isRoot: inUser.isRoot,
+                userId: inUser.userId
+            }))
+        }
+    }
+
     handleChange = (e) => {
         console.log(e.target)
         var newValue = e.target.name === 'isRoot' ? e.target.checked : e.target.value
@@ -35,6 +51,8 @@ class UpdateUserForm extends React.Component {
         console.log('handleSubmit')
         this.user.userName = this.state.userName
         this.user.email = this.state.email
+        this.user.desc = this.state.desc
+        this.user.isRoot = this.state.isRoot
         this.props.nameHandler(this.user)
         e.preventDefault();
     }
@@ -54,7 +72,7 @@ class UpdateUserForm extends React.Component {
                 <textarea value={this.state.desc} onChange={this.handleChange} />
             </label>              
             <label>
-            Is going:
+            Is Root?:
             <input
                 name="isRoot"
                 type="checkbox"

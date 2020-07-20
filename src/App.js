@@ -17,11 +17,16 @@ passName = (passUser) => {
   console.log(passUser)
 // creates entity
 var formData = new FormData()
+let postUrl
+if (passUser.userId === 0)
+  postUrl = "http://localhost:7555/addUser"
+else
+  postUrl = "http://localhost:7555/updateUser"
 
 formData.append('userName', passUser.userName.toString())
 formData.append('email',passUser.email.toString())
 
-fetch("http://localhost:7555/addUser", {
+fetch(postUrl, {
   method: "POST",
   headers: {
     'Content-Type': 'application/json',
@@ -31,7 +36,8 @@ fetch("http://localhost:7555/addUser", {
 .then(response => response.json())
 .then(response => {
   console.log(response[0])
-  passUser.userId = response[0]
+  if (passUser.userId === 0)
+    passUser.userId = response[0]
   this.setState({user: passUser})
   console.log(passUser)
 })
@@ -44,10 +50,10 @@ render() {
   return (
     <div className="App">
       <header className="App-header">
-      <Title inUser={this.state.user} />
+        <Title inUser={this.state.user} />
+        <CreateUserForm inUser={this.state.user} nameHandler={this.passName}/>
+        <UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/>
       </header>
-      <CreateUserForm inUser={this.state.user} nameHandler={this.passName}/>
-      <UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/>
     </div>
   );
 }
