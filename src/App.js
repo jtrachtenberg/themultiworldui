@@ -4,6 +4,7 @@ import './App.css';
 import Title from './Title.js'
 import CreateUserForm from './CreateUserForm.js'
 import UpdateUserForm from './UpdateUserForm.js'
+import LoginUserForm from './LoginUserForm.js'
 
 class App extends React.Component {
 
@@ -18,7 +19,9 @@ passName = (passUser) => {
 // creates entity
 var formData = new FormData()
 let postUrl
-if (passUser.userId === 0)
+if (passUser.userId === -1)
+  postUrl = "http://localhost:7555/loginUser"
+else if (passUser.userId === 0)
   postUrl = "http://localhost:7555/addUser"
 else
   postUrl = "http://localhost:7555/updateUser"
@@ -36,7 +39,10 @@ fetch(postUrl, {
 .then(response => response.json())
 .then(response => {
   console.log(response[0])
-  if (passUser.userId === 0)
+  if (passUser.userId === -1) {
+    passUser = response[0]
+  }
+  else if (passUser.userId === 0)
     passUser.userId = response[0]
   this.setState({user: passUser})
   console.log(passUser)
@@ -52,6 +58,7 @@ render() {
       <header className="App-header">
         <Title inUser={this.state.user} />
         <CreateUserForm inUser={this.state.user} nameHandler={this.passName}/>
+        <LoginUserForm inUser={this.state.user} nameHandler={this.passName}/>
         <UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/>
       </header>
     </div>

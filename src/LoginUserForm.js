@@ -1,6 +1,6 @@
 import React from 'react';
 
-class UpdateUserForm extends React.Component {
+class LoginUserForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,desc: '',isRoot: 0}
@@ -12,19 +12,7 @@ class UpdateUserForm extends React.Component {
         console.log(inUser.email)
         console.log(this.props.inUser.email)
         console.log(this.state.email)
-        if (inUser.email === '' && this.props.inUser.email !== '') {
-            inUser = this.props.inUser
-            this.user = inUser
-            this.setState(state => ({
-                desc: inUser.desc,
-                email: inUser.email,
-                userName: inUser.userName,
-                isRoot: inUser.isRoot,
-                userId: inUser.userId
-            })) 
-        } else
         if (inUser.email !== this.state.email) {
-            //separate case between props an state, check inUser.email first, and set as needed
             this.setState(state => ({
                 desc: inUser.desc,
                 email: inUser.email,
@@ -36,8 +24,8 @@ class UpdateUserForm extends React.Component {
     }
 
     handleChange = (e) => {
-        console.log(e.target)
-        var newValue = e.target.name === 'isRoot' ? e.target.checked : e.target.value
+        var newValue = e.target.value
+
         if (e.target.type === 'text') {
             this.setState(state => ({
                 userName: newValue
@@ -45,14 +33,6 @@ class UpdateUserForm extends React.Component {
         } else if (e.target.type === 'email') {
             this.setState(state => ({
                 email: newValue
-            }))
-        } else if (e.target.name === 'isRoot') {
-            this.setState(state=> ({
-                isRoot: newValue
-            }))
-        } else {
-            this.setState(state => ({
-                desc: newValue
             }))
         }
 
@@ -63,39 +43,27 @@ class UpdateUserForm extends React.Component {
         console.log('handleSubmit')
         this.user.userName = this.state.userName
         this.user.email = this.state.email
-        this.user.desc = this.state.desc
-        this.user.isRoot = this.state.isRoot
+        this.user.userId = -1
         this.props.nameHandler(this.user)
         e.preventDefault();
     }
 
     render() {
         let form;
-        if (this.user.userId > 0) {
+        if (this.user.userId === 0) {
             form = (
-<form onSubmit={this.handleSubmit}>
-            <label>User Name:
+            <form onSubmit={this.handleSubmit}>
+            <label>User Name to load:
                 <input type="text" value={this.state.userName} onChange={this.handleChange} />
             </label>
-            <label>email
+            <label>email to load:
                 <input type="email" value={this.state.email} onChange={this.handleChange} />
             </label>
-            <label>Description
-                <textarea value={this.state.desc} onChange={this.handleChange} />
-            </label>              
-            <label>
-            Is Root?:
-            <input
-                name="isRoot"
-                type="checkbox"
-                checked={this.state.isRoot}
-                onChange={this.handleChange} />
-            </label>      
             <input type="submit" value="Submit" />
             </form>
             )
         } else {
-            form = <p>Waiting for user.</p>
+            form = <p>User Loaded.</p>
         }
         return (
             <div>
@@ -104,4 +72,4 @@ class UpdateUserForm extends React.Component {
         )
     }
 }
-export default UpdateUserForm
+export default LoginUserForm
