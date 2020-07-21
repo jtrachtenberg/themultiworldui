@@ -3,7 +3,7 @@ import React from 'react';
 class LoginUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,desc: '',isRoot: 0}
+        this.state = {userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: '',isRoot: 0}
         this.user = props.inUser
     }
 
@@ -12,9 +12,21 @@ class LoginUserForm extends React.Component {
         console.log(inUser.email)
         console.log(this.props.inUser.email)
         console.log(this.state.email)
-        if (inUser.email !== this.state.email) {
+        if (inUser.email === '' && this.props.inUser.email !== '') {
+            inUser = this.props.inUser
+            this.user = inUser
             this.setState(state => ({
-                desc: inUser.desc,
+                description: inUser.description,
+                email: inUser.email,
+                userName: inUser.userName,
+                isRoot: inUser.isRoot,
+                userId: inUser.userId
+            })) 
+        } else
+        if (inUser.email !== this.state.email) {
+            //separate case between props an state, check inUser.email first, and set as needed
+            this.setState(state => ({
+                description: inUser.description,
                 email: inUser.email,
                 userName: inUser.userName,
                 isRoot: inUser.isRoot,
@@ -48,6 +60,16 @@ class LoginUserForm extends React.Component {
         e.preventDefault();
     }
 
+    userLogout = (e) => {
+        e.preventDefault();
+        console.log('userLogout)')
+        this.user.userName = ''
+        this.user.userId = 0
+        this.user.email = ''
+        this.user.description = ''
+        this.user.isRoot = 0
+        this.props.nameHandler(this.user)
+    }
     render() {
         let form;
         if (this.user.userId === 0) {
@@ -63,7 +85,7 @@ class LoginUserForm extends React.Component {
             </form>
             )
         } else {
-            form = <p>User Loaded.</p>
+            form = <button onClick={this.userLogout}>Logout</button>
         }
         return (
             <div>

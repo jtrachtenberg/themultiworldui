@@ -3,7 +3,7 @@ import React from 'react';
 class UpdateUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,desc: '',isRoot: 0}
+        this.state = {userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: '',isRoot: 0}
         this.user = props.inUser
     }
 
@@ -16,7 +16,7 @@ class UpdateUserForm extends React.Component {
             inUser = this.props.inUser
             this.user = inUser
             this.setState(state => ({
-                desc: inUser.desc,
+                description: inUser.description,
                 email: inUser.email,
                 userName: inUser.userName,
                 isRoot: inUser.isRoot,
@@ -26,7 +26,7 @@ class UpdateUserForm extends React.Component {
         if (inUser.email !== this.state.email) {
             //separate case between props an state, check inUser.email first, and set as needed
             this.setState(state => ({
-                desc: inUser.desc,
+                description: inUser.description,
                 email: inUser.email,
                 userName: inUser.userName,
                 isRoot: inUser.isRoot,
@@ -52,7 +52,7 @@ class UpdateUserForm extends React.Component {
             }))
         } else {
             this.setState(state => ({
-                desc: newValue
+                description: newValue
             }))
         }
 
@@ -63,7 +63,7 @@ class UpdateUserForm extends React.Component {
         console.log('handleSubmit')
         this.user.userName = this.state.userName
         this.user.email = this.state.email
-        this.user.desc = this.state.desc
+        this.user.description = this.state.description
         this.user.isRoot = this.state.isRoot
         this.props.nameHandler(this.user)
         e.preventDefault();
@@ -80,8 +80,8 @@ class UpdateUserForm extends React.Component {
             <label>email
                 <input type="email" value={this.state.email} onChange={this.handleChange} />
             </label>
-            <label>Description
-                <textarea value={this.state.desc} onChange={this.handleChange} />
+            <label>descriptionription
+                <textarea value={this.state.description} onChange={this.handleChange} />
             </label>              
             <label>
             Is Root?:

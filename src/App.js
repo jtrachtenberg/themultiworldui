@@ -10,7 +10,7 @@ class App extends React.Component {
 
 constructor(props) {
     super(props)
-    this.state = {user: {userName:'',email:'',userId:0,desc:'',isRoot:0}}
+    this.state = {user: {userName:'',email:'',userId:0,description:'',isRoot:0}}
 }  
 
 passName = (passUser) => {
@@ -29,6 +29,12 @@ else
 formData.append('userName', passUser.userName.toString())
 formData.append('email',passUser.email.toString())
 
+if (passUser.userId === 0 && passUser.userName === '') {
+  //logout
+  this.setState({
+    user: passUser
+  })
+} else
 fetch(postUrl, {
   method: "POST",
   headers: {
@@ -44,6 +50,7 @@ fetch(postUrl, {
   }
   else if (passUser.userId === 0)
     passUser.userId = response[0]
+  if (passUser.description === null) passUser.description = ''
   this.setState({user: passUser})
   console.log(passUser)
 })
