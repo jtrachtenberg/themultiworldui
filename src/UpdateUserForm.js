@@ -3,40 +3,34 @@ import React from 'react';
 class UpdateUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: '',isRoot: 0}
-        this.user = props.inUser
+        this.state = {user: props.inUser,userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: '',isRoot: 0}
     }
 
     componentDidUpdate() {
-        var inUser = this.user
-        console.log(inUser.email)
-        console.log(this.props.inUser.email)
-        console.log(this.state.email)
-        if (inUser.email === '' && this.props.inUser.email !== '') {
-            inUser = this.props.inUser
-            this.user = inUser
-            this.setState(state => ({
-                description: inUser.description,
-                email: inUser.email,
-                userName: inUser.userName,
-                isRoot: inUser.isRoot,
-                userId: inUser.userId
-            })) 
-        } else
-        if (inUser.email !== this.state.email) {
-            //separate case between props an state, check inUser.email first, and set as needed
-            this.setState(state => ({
-                description: inUser.description,
-                email: inUser.email,
-                userName: inUser.userName,
-                isRoot: inUser.isRoot,
-                userId: inUser.userId
-            }))
-        }
+        console.log(this.props.inUser)
+        console.log(this.state.user)
+        //if ((inUser.userId < 1 && this.props.inUser.userId > 0) || (this.props.inUser.userId < 1 && inUser.userId > 0))
+        if (this.props.inUser.userId !== this.state.user.userId)
+            this.setState({
+                user: this.props.inUser,
+                userName: this.props.inUser.userName,
+                email: this.props.inUser.email,
+                description: this.props.inUser.description,
+                isRoot: this.props.inUser.isRoot,
+                userId: this.props.inUser.userId
+            })
+        else if (this.state.userName !== this.props.inUser.userName)
+            this.setState({
+                user: this.props.inUser,
+                userName: this.props.inUser.userName,
+                email: this.props.inUser.email,
+                description: this.props.inUser.description,
+                isRoot: this.props.inUser.isRoot,
+                userId: this.props.inUser.userId
+            })
     }
 
     handleChange = (e) => {
-        console.log(e.target)
         var newValue = e.target.name === 'isRoot' ? e.target.checked : e.target.value
         if (e.target.type === 'text') {
             this.setState(state => ({
@@ -59,19 +53,21 @@ class UpdateUserForm extends React.Component {
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('handleSubmit')
-        this.user.userName = this.state.userName
-        this.user.email = this.state.email
-        this.user.description = this.state.description
-        this.user.isRoot = this.state.isRoot
-        this.props.nameHandler(this.user)
+        var subUser = {
+            userName: this.state.userName,
+            email: this.state.email,
+            description: this.state.description,
+            isRoot: this.state.isRoot,
+            userId: this.state.userId
+        }
+
+        this.props.nameHandler(subUser)
         e.preventDefault();
     }
 
     render() {
         let form;
-        if (this.user.userId > 0) {
+        if (this.state.user.userId > 0) {
             form = (
 <form onSubmit={this.handleSubmit}>
             <label>User Name:
@@ -80,7 +76,7 @@ class UpdateUserForm extends React.Component {
             <label>email
                 <input type="email" value={this.state.email} onChange={this.handleChange} />
             </label>
-            <label>descriptionription
+            <label>Description:
                 <textarea value={this.state.description} onChange={this.handleChange} />
             </label>              
             <label>

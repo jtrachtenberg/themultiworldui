@@ -3,36 +3,19 @@ import React from 'react';
 class LoginUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: '',isRoot: 0}
+        this.state = {user: this.props.inUser, userName: props.inUser.userName,email: props.inUser.email,password: ''}
         this.user = props.inUser
     }
 
     componentDidUpdate() {
-        var inUser = this.user
-        console.log(inUser.email)
-        console.log(this.props.inUser.email)
-        console.log(this.state.email)
-        if (inUser.email === '' && this.props.inUser.email !== '') {
-            inUser = this.props.inUser
-            this.user = inUser
-            this.setState(state => ({
-                description: inUser.description,
-                email: inUser.email,
-                userName: inUser.userName,
-                isRoot: inUser.isRoot,
-                userId: inUser.userId
-            })) 
-        } else
-        if (inUser.email !== this.state.email) {
-            //separate case between props an state, check inUser.email first, and set as needed
-            this.setState(state => ({
-                description: inUser.description,
-                email: inUser.email,
-                userName: inUser.userName,
-                isRoot: inUser.isRoot,
-                userId: inUser.userId
-            }))
-        }
+        var inUser = this.state.user
+        if ((inUser.userId < 1 && this.props.inUser.userId > 0) || (this.props.inUser.userId < 1 && inUser.userId > 0))
+            this.setState({
+                user: this.props.inUser,
+                userName: this.props.inUser.userName,
+                email: this.props.inUser.email,
+                password: ''
+            })
     }
 
     handleChange = (e) => {
@@ -46,23 +29,26 @@ class LoginUserForm extends React.Component {
             this.setState(state => ({
                 email: newValue
             }))
+        } else if (e.target.type === 'password') {
+            this.setState(state => ({
+                password: newValue
+            }))
         }
 
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
-        console.log('handleSubmit')
         this.user.userName = this.state.userName
         this.user.email = this.state.email
         this.user.userId = -1
+        this.user.password = this.state.password
         this.props.nameHandler(this.user)
         e.preventDefault();
     }
 
     userLogout = (e) => {
         e.preventDefault();
-        console.log('userLogout)')
         this.user.userName = ''
         this.user.userId = 0
         this.user.email = ''
@@ -72,7 +58,7 @@ class LoginUserForm extends React.Component {
     }
     render() {
         let form;
-        if (this.user.userId === 0) {
+        if (this.state.user.userId < 1) {
             form = (
             <form onSubmit={this.handleSubmit}>
             <label>User Name to load:
@@ -80,6 +66,9 @@ class LoginUserForm extends React.Component {
             </label>
             <label>email to load:
                 <input type="email" value={this.state.email} onChange={this.handleChange} />
+            </label>
+            <label>password:
+                <input type="password" value={this.state.password} onChange={this.handleChange} />
             </label>
             <input type="submit" value="Submit" />
             </form>

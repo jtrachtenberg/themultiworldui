@@ -10,14 +10,13 @@ class App extends React.Component {
 
 constructor(props) {
     super(props)
-    this.state = {user: {userName:'',email:'',userId:0,description:'',isRoot:0}}
+    var user = JSON.parse(localStorage.getItem('user'))
+    if (user === null || typeof(user) == "undefined" ) user = {userName:'',email:'',userId:0,description:'',isRoot:0}
+    this.state = {user: user}
 }  
 
 passName = (passUser) => {
-  console.log('passName')
-  console.log(passUser)
 // creates entity
-var formData = new FormData()
 let postUrl
 if (passUser.userId === -1)
   postUrl = "http://localhost:7555/loginUser"
@@ -26,11 +25,9 @@ else if (passUser.userId === 0)
 else
   postUrl = "http://localhost:7555/updateUser"
 
-formData.append('userName', passUser.userName.toString())
-formData.append('email',passUser.email.toString())
-
 if (passUser.userId === 0 && passUser.userName === '') {
   //logout
+  localStorage.setItem('user', JSON.stringify(passUser));
   this.setState({
     user: passUser
   })
@@ -44,18 +41,26 @@ fetch(postUrl, {
 })
 .then(response => response.json())
 .then(response => {
+  console.log(response)
   console.log(response[0])
   if (passUser.userId === -1) {
-    passUser = response[0]
+    passUser = response
   }
   else if (passUser.userId === 0)
     passUser.userId = response[0]
   if (passUser.description === null) passUser.description = ''
-  this.setState({user: passUser})
-  console.log(passUser)
+  if (typeof(passUser.password) !== 'undefined') delete passUser.password 
+  localStorage.setItem('user', JSON.stringify(passUser));
+  this.setState({
+    user: passUser
+  })
 })
 .catch(err => {
   console.log(err);
+  passUser = {userName:'',email:'',userId:0,description:'',isRoot:0}
+  localStorage.setItem('user', JSON.stringify(passUser));
+  this.setState({user: passUser})
+  console.log(passUser)
 }); 
 }
 
