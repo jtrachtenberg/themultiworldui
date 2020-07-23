@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+.alert-shown {
+  opacity: 1;
+  transition: all 250ms linear;
+}
+
+.alert-hidden {
+  opacity: 0;
+  transition: all 250ms linear;
+}
+
+.alert {
+  overflow: hidden;
+  background-color: #333;
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+}

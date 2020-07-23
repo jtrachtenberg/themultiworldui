@@ -16,6 +16,12 @@ class LoginUserForm extends React.Component {
                 email: this.props.inUser.email,
                 password: ''
             })
+        else if (typeof(inUser.password) !== 'undefined' && inUser.password.length > 0) {
+            delete inUser.password
+            this.setState({
+                password: ''
+            }) 
+        }
     }
 
     handleChange = (e) => {

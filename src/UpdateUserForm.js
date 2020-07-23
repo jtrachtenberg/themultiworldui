@@ -3,13 +3,10 @@ import React from 'react';
 class UpdateUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {user: props.inUser,userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: '',isRoot: 0}
+        this.state = {user: props.inUser,userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: props.inUser.description,isRoot: 0}
     }
 
     componentDidUpdate() {
-        console.log(this.props.inUser)
-        console.log(this.state.user)
-        //if ((inUser.userId < 1 && this.props.inUser.userId > 0) || (this.props.inUser.userId < 1 && inUser.userId > 0))
         if (this.props.inUser.userId !== this.state.user.userId)
             this.setState({
                 user: this.props.inUser,
