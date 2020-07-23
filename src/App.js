@@ -28,8 +28,8 @@ else
 
 if (passUser.userId === 0 && passUser.userName === '') {
   //logout
+  if (typeof(passUser.password) !== 'undefined') delete passUser.password 
   localStorage.setItem('user', JSON.stringify(passUser));
-  console.log('logout')
   this.setState({
     user: passUser,
     alertMessage: "User Logged Out",
@@ -46,8 +46,6 @@ fetch(postUrl, {
 })
 .then(response => response.json())
 .then(response => {
-  console.log(response)
-  console.log(response[0])
   let message
   if (passUser.userId === -1) {
     passUser = response

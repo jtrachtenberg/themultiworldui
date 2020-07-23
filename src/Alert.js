@@ -13,9 +13,6 @@ class Alert extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log('alert did update')
-        console.log(this.state.message)
-        console.log(this.props.message)
         var message = this.state.message
         if (message !== this.props.message)
             this.setState({
