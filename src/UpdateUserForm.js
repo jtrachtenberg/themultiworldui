@@ -3,7 +3,7 @@ import React from 'react';
 class UpdateUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {user: props.inUser,userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: props.inUser.description,isRoot: 0}
+        this.state = {user: props.inUser,userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: props.inUser.description,isRoot: props.inUser.isRoot}
     }
 
     componentDidUpdate() {

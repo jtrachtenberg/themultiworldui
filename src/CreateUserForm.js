@@ -37,7 +37,6 @@ class CreateUserForm extends React.Component {
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
         this.user.userName = this.state.userName
         this.user.email = this.state.email
         this.user.password = this.state.password
