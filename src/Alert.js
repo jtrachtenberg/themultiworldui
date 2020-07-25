@@ -3,7 +3,7 @@ import React from 'react';
 class Alert extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {timerId: 0,message: props.message, isVis: props.isVis, success: props.success}
+        this.state = {timerId: 0,message: props.message, isVis: props.isVis, success: props.success, alertId: props.alertId}
     }
 
     formatName(inUser) {
@@ -13,16 +13,17 @@ class Alert extends React.Component {
     }
 
     componentDidUpdate() {
-        var message = this.state.message
-        if (message !== this.props.message)
+       if (this.state.alertId !== this.props.alertId)
             this.setState({
                 message: this.props.message,
                 isVis: this.props.isVis,
-                success: this.props.success
-            })
-        if (this.state.isVis)
-            this.timerID = setInterval(
-                () => this.tick(), 3000
+                success: this.props.success,
+                alertId: this.props.alertId
+
+            },() => {
+                this.timerID = setInterval(
+                    () => this.tick(), 3000
+                )}
             )
     }
 
@@ -32,16 +33,11 @@ class Alert extends React.Component {
         })
         clearTimeout(this.timerID)
     }
-    componentDidMount() {
-    }
-
-    componentWillUnmount() {
-    }
 
     render() {
         return (
-            <div className={`alert success-${this.state.success} ${this.state.isVis ? 'alert-shown' : 'alert-hidden'}`}>
-        <strong>{this.state.message}</strong>
+            <div className={`alert success-${this.props.success} ${this.state.isVis ? 'alert-shown' : 'alert-hidden'}`}>
+        <strong>{this.props.message}</strong>
             </div>
         )
     }

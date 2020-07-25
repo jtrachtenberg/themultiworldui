@@ -12,6 +12,11 @@ class Title extends React.Component {
         else return <h1>Create or load a User</h1>
     }
       
+    formatLogo(inUser) {
+        if (inUser.userId > 0)
+        return <img width="1280" alt="TheMultiWorld" src="./themultiworldanimfinal.gif" />
+        else return <img width="1280" alt="TheMultiWorld" src="./themultiworld2.png" />
+    }
     handleName = (inUser) => {
         this.setState({
             user: inUser
@@ -34,7 +39,10 @@ class Title extends React.Component {
 
     render() {
         return (
+            <div>
+            <div>{this.formatLogo(this.state.user)}</div>
             <div>{this.formatName(this.state.user)}</div>
+            </div>
         )
     }
 }

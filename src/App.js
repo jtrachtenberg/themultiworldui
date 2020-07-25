@@ -12,9 +12,10 @@ class App extends React.Component {
 
 constructor(props) {
     super(props)
+    this.cellSpacing = [5,8]
     var user = JSON.parse(localStorage.getItem('user'))
     if (user === null || typeof(user) == "undefined" ) user = {userName:'',email:'',userId:0,description:'',isRoot:0}
-    this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true}
+    this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1}
 }  
 
 passName = (passUser) => {
@@ -35,7 +36,8 @@ if (passUser.userId === 0 && passUser.userName === '') {
     user: passUser,
     alertMessage: "User Logged Out",
     alertVis: true,
-    alertSuccess: false
+    alertSuccess: false,
+    alertId: Math.random().toString()
   })
 } else
 fetch(postUrl, {
@@ -65,7 +67,8 @@ fetch(postUrl, {
     user: passUser,
     alertMessage: message,
     alertVis: true,
-    alertSuccess: false
+    alertSuccess: false,
+    alertId: Math.random().toString()
   })
 })
 .catch(err => {
@@ -76,7 +79,8 @@ fetch(postUrl, {
     user: passUser,
     alertMessage: "Login Failed",
     alertVis: true,
-    alertSuccess: false
+    alertSuccess: false,
+    alertId: Math.random().toString()
   })
   console.log(passUser)
 }); 
@@ -85,14 +89,14 @@ fetch(postUrl, {
 render() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} />
-        <Title inUser={this.state.user} />
-        <CreateUserForm inUser={this.state.user} nameHandler={this.passName}/>
-        <LoginUserForm inUser={this.state.user} nameHandler={this.passName}/>
-        <UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/>
-        <Spaces inUser={this.state.user} />
-      </header>
+        <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>
+      <div>
+      <Title inUser={this.state.user} />
+      <CreateUserForm inUser={this.state.user} nameHandler={this.passName}/>
+      <LoginUserForm inUser={this.state.user} nameHandler={this.passName}/>
+      <UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/>
+      <Spaces inUser={this.state.user} />
+      </div>
     </div>
   );
 }

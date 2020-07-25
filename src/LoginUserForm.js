@@ -25,22 +25,11 @@ class LoginUserForm extends React.Component {
     }
 
     handleChange = (e) => {
-        var newValue = e.target.value
-
-        if (e.target.type === 'text') {
-            this.setState(state => ({
-                userName: newValue
-            }))  
-        } else if (e.target.type === 'email') {
-            this.setState(state => ({
-                email: newValue
-            }))
-        } else if (e.target.type === 'password') {
-            this.setState(state => ({
-                password: newValue
-            }))
-        }
-
+        const {checked, name, value, type} = e.target
+        const valueToUpdate = type === 'checkbox' ? checked : value
+        this.setState({
+            [name]: valueToUpdate
+        })
     }
 
     handleSubmit = (e) => {
@@ -68,13 +57,13 @@ class LoginUserForm extends React.Component {
             form = (
             <form onSubmit={this.handleSubmit}>
             <label>User Name to load:
-                <input type="text" value={this.state.userName} onChange={this.handleChange} />
+                <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />
             </label>
             <label>email to load:
-                <input type="email" value={this.state.email} onChange={this.handleChange} />
+                <input name="email" type="email" value={this.state.email} onChange={this.handleChange} />
             </label>
             <label>password:
-                <input type="password" value={this.state.password} onChange={this.handleChange} />
+                <input name="password" type="password" value={this.state.password} onChange={this.handleChange} />
             </label>
             <input type="submit" value="Submit" />
             </form>

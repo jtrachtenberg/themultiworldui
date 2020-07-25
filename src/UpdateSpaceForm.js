@@ -19,20 +19,11 @@ class UpdateSpaceForm extends React.Component {
     }
 
     handleChange = (e) => {
-        var newValue = e.target.name === 'isRoot' ? e.target.checked : e.target.value
-        if (e.target.name === 'title') {
-            this.setState(state => ({
-                title: newValue
-            }))  
-        } else if (e.target.name === 'desc') {
-            this.setState(state => ({
-                description: newValue
-            }))
-        } else if (e.target.name === 'isRoot') {
-            this.setState(state=> ({
-                isRoot: newValue
-            }))
-        }
+        const {checked, name, value, type} = e.target
+        const valueToUpdate = type === 'checkbox' ? checked : value
+        this.setState({
+            [name]: valueToUpdate
+        })
     }
 
     handleSubmit = (e) => {
@@ -57,7 +48,7 @@ class UpdateSpaceForm extends React.Component {
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />
             </label>
             <label>Description:
-                <textarea name="desc" value={this.state.description} onChange={this.handleChange} />
+                <textarea name="description" value={this.state.description} onChange={this.handleChange} />
             </label>              
             <label>
             Is Root?:

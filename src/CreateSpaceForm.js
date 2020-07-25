@@ -21,21 +21,11 @@ class CreateSpaceForm extends React.Component {
     }
 
     handleChange = (e) => {
-        var newValue = e.target.name === 'isRoot' ? e.target.checked : e.target.value
-        if (e.target.name === 'title') {
-            this.setState(state => ({
-                title: newValue
-            }))  
-        } else if (e.target.name === 'description') {
-            this.setState(state => ({
-                description: newValue
-            }))
-        } else {
-            this.setState(state => ({
-                isRoot: newValue
-            }))
-        }
-
+        const {checked, name, value, type} = e.target
+        const valueToUpdate = type === 'checkbox' ? checked : value
+        this.setState({
+            [name]: valueToUpdate
+        })
     }
 
     handleSubmit = (e) => {
@@ -47,14 +37,14 @@ class CreateSpaceForm extends React.Component {
     }
 
     render() {
-        if (this.state.space.spaceId < 1)
+        if (this.state.space.spaceId < 1 && this.state.user.userId > 0)
         return (
             <form onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />
             </label>
             <label>Description:
-                <textarea name="desc" value={this.state.description} onChange={this.handleChange} />
+                <textarea name="description" value={this.state.description} onChange={this.handleChange} />
             </label>              
             <label>
             Is Root?:

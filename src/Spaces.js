@@ -19,13 +19,26 @@ class Spaces extends React.Component {
     }
 
     passSpace = (space) => {
-
+        console.log('passSpace')
+        let postUrl
+  
+        postUrl = "http://localhost:7555/addSpace"
+        fetch(postUrl, {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(space)
+          })
+          .then(response => response.json())
+          .then(response => {
+          })
     }
-
+    
     render() {
         return (
             <div>
-                <CreateSpaceForm inUser={this.state.user} inSpace={this.state.space} />
+                <CreateSpaceForm inUser={this.state.user} inSpace={this.state.space} spaceHandler={this.passSpace}/>
             </div>
         )
     }

@@ -28,25 +28,11 @@ class UpdateUserForm extends React.Component {
     }
 
     handleChange = (e) => {
-        var newValue = e.target.name === 'isRoot' ? e.target.checked : e.target.value
-        if (e.target.type === 'text') {
-            this.setState(state => ({
-                userName: newValue
-            }))  
-        } else if (e.target.type === 'email') {
-            this.setState(state => ({
-                email: newValue
-            }))
-        } else if (e.target.name === 'isRoot') {
-            this.setState(state=> ({
-                isRoot: newValue
-            }))
-        } else {
-            this.setState(state => ({
-                description: newValue
-            }))
-        }
-
+        const {checked, name, value, type} = e.target
+        const valueToUpdate = type === 'checkbox' ? checked : value
+        this.setState({
+            [name]: valueToUpdate
+        })
     }
 
     handleSubmit = (e) => {
@@ -68,13 +54,13 @@ class UpdateUserForm extends React.Component {
             form = (
 <form onSubmit={this.handleSubmit}>
             <label>User Name:
-                <input type="text" value={this.state.userName} onChange={this.handleChange} />
+                <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />
             </label>
             <label>email
-                <input type="email" value={this.state.email} onChange={this.handleChange} />
+                <input name="email" type="email" value={this.state.email} onChange={this.handleChange} />
             </label>
             <label>Description:
-                <textarea value={this.state.description} onChange={this.handleChange} />
+                <textarea name="description" value={this.state.description} onChange={this.handleChange} />
             </label>              
             <label>
             Is Root?:
