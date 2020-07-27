@@ -52,9 +52,11 @@ class LoginUserForm extends React.Component {
         this.props.nameHandler(this.user)
     }
     render() {
+        const title = <div><h3>Login</h3></div>
         let form;
         if (this.state.user.userId < 1) {
-            form = (
+            form = (<div>
+            <div>{title}</div>
             <form onSubmit={this.handleSubmit}>
             <label>User Name to load:
                 <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />
@@ -67,6 +69,7 @@ class LoginUserForm extends React.Component {
             </label>
             <input type="submit" value="Submit" />
             </form>
+            </div>
             )
         } else {
             form = <button onClick={this.userLogout}>Logout</button>

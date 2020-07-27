@@ -18,27 +18,33 @@ class Spaces extends React.Component {
             })
     }
 
-    passSpace = (space) => {
-        console.log('passSpace')
-        let postUrl
-  
-        postUrl = "http://localhost:7555/addSpace"
-        fetch(postUrl, {
-            method: "POST",
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(space)
-          })
-          .then(response => response.json())
-          .then(response => {
-          })
-    }
-    
+
+spaceHandler = (space) => {
+  let postUrl
+  if (space.spaceId === 0)
+    postUrl = "http://localhost:7555/addSpace"
+  else
+    postUrl = "http://localhost:7555/updateSpace"
+console.log(postUrl)
+  fetch(postUrl, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(space)
+  })
+  .then(response => response.json())
+  .then(response => {
+    space = response
+    this.setState ({
+        space: space
+    })
+  })
+}   
     render() {
         return (
             <div>
-                <CreateSpaceForm inUser={this.state.user} inSpace={this.state.space} spaceHandler={this.passSpace}/>
+                <CreateSpaceForm inUser={this.state.user} inSpace={this.state.space} spaceHandler={this.spaceHandler}/>
             </div>
         )
     }

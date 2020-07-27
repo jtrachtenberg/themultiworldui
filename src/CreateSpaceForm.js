@@ -29,16 +29,22 @@ class CreateSpaceForm extends React.Component {
     }
 
     handleSubmit = (e) => {
-        this.space.title = this.state.title
-        this.space.description = this.state.description
-        this.space.isRoot = this.state.isRoot
-        this.props.spaceHandler(this.space)
+        console.log('handleSubmit')
+        const space = this.state.space
+        space.title = this.state.title
+        space.description = this.state.description
+        space.isRoot = this.state.isRoot
+        space.userId = this.user.userId
+        this.props.spaceHandler(space)
         e.preventDefault();
     }
 
     render() {
+        const title = <div><h3>Create Space</h3></div>
         if (this.state.space.spaceId < 1 && this.state.user.userId > 0)
         return (
+            <div>
+            <div>{title}</div>
             <form onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />
@@ -56,10 +62,17 @@ class CreateSpaceForm extends React.Component {
             </label>      
             <input type="submit" value="Submit" />
             </form>
+            </div>
         )
-        else
+        else if (this.state.user.userId < 1)
         return (
-            <div>Load new Space</div>
+            <div></div>
+        )
+        else return (
+        <div>
+        <div>{title}</div>
+        <div>Space {this.props.space.title} loaded.</div>
+        </div>
         )
     }
 }

@@ -72,3 +72,54 @@
   top: 0; /* Position the navbar at the top of the page */
   width: 100%; /* Full width */
 }
+
+
+.leftNav {
+  display: flex;
+  flex-direction: column;
+  height: 200vh;
+  width: 270px;
+  background-color: #252529;
+  color: #fff;
+  float: left;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.leftNav ul {
+  display: flex;
+  align-items: left;
+  flex-direction: column;
+  list-style: none;
+  width: 100%;
+  padding: 0px 30px;
+}
+
+.leftNav ul div {
+  display: inline-block;
+}
+
+.leftNav ul li {
+  height: 40px;
+  width: 100%;
+  display: contents;
+  text-align: left;
+}
+
+.leftNav ul li label {
+  display: grid;
+}
+
+.leftNav ul li input {
+  width: fit-content;
+}
+
+.leftNav ul li h3 {
+  font-family: "Roboto", sans-serif;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  padding: 12px 0px 6px 0px;
+  border-bottom: 1px solid whitesmoke
+}

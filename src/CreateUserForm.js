@@ -35,8 +35,10 @@ class CreateUserForm extends React.Component {
     }
 
     render() {
+        const title = <div><h3>Create User</h3></div>
         if (this.state.user.userId < 1)
-        return (
+        return (<div>
+            <div>{title}</div>
             <form onSubmit={this.handleSubmit}>
                 <label>User Name:
                     <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />
@@ -49,6 +51,7 @@ class CreateUserForm extends React.Component {
                 </label>                  
                 <input type="submit" value="Submit" />
             </form>
+            </div>
         )
         else
         return (

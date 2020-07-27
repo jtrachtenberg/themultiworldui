@@ -40,9 +40,11 @@ class UpdateSpaceForm extends React.Component {
     }
 
     render() {
+        const title = <div><h3>Edit Space</h3></div>
         let form;
         if (this.state.user.userId > 0) {
-            form = (
+            form = (<div>
+            <div>{title}</div>
             <form onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />
@@ -60,9 +62,10 @@ class UpdateSpaceForm extends React.Component {
             </label>      
             <input type="submit" value="Submit" />
             </form>
+            </div>
             )
         } else {
-            form = <p>Waiting for space.</p>
+            form = <p></p>
         }
         return (
             <div>

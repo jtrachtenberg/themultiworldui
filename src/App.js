@@ -90,12 +90,20 @@ render() {
   return (
     <div className="App">
         <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>
-      <div>
+      <div className="Header">
       <Title inUser={this.state.user} />
-      <CreateUserForm inUser={this.state.user} nameHandler={this.passName}/>
-      <LoginUserForm inUser={this.state.user} nameHandler={this.passName}/>
-      <UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/>
-      <Spaces inUser={this.state.user} />
+      </div>
+      <div className="leftNav">
+        <ul>
+        <li><CreateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
+        <li><LoginUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
+        <li><UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
+        <li><Spaces inUser={this.state.user} /></li>
+        </ul>
+      </div>
+      <div className="main">
+        <div className="viewPort" >Main</div>
+        <div className="input">input</div>
       </div>
     </div>
   );
