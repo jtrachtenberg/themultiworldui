@@ -1,4 +1,5 @@
 import React from 'react';
+import {setFormHeader} from './components/formUtils'
 
 class LoginUserForm extends React.Component {
     constructor(props) {
@@ -52,11 +53,10 @@ class LoginUserForm extends React.Component {
         this.props.nameHandler(this.user)
     }
     render() {
-        const title = <div><h3>Login</h3></div>
         let form;
         if (this.state.user.userId < 1) {
             form = (<div>
-            <div>{title}</div>
+                <div>{setFormHeader("Login")}</div>
             <form onSubmit={this.handleSubmit}>
             <label>User Name to load:
                 <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />

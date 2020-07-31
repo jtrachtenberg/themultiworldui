@@ -7,14 +7,14 @@ import UpdateUserForm from './UpdateUserForm.js'
 import LoginUserForm from './LoginUserForm.js'
 import Alert from './Alert.js'
 import Spaces from './Spaces.js'
+import Main from './main'
 
 class App extends React.Component {
 
 constructor(props) {
     super(props)
-    this.cellSpacing = [5,8]
     var user = JSON.parse(localStorage.getItem('user'))
-    if (user === null || typeof(user) == "undefined" ) user = {userName:'',email:'',userId:0,description:'',isRoot:0}
+    if (user === null || typeof(user) == "undefined" ) user = {userName:'',email:'',userId:0,description:'',isRoot:0, stateData: null}
     this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1}
 }  
 
@@ -62,6 +62,13 @@ fetch(postUrl, {
   }
   if (passUser.description === null) passUser.description = ''
   if (typeof(passUser.password) !== 'undefined') delete passUser.password 
+  if (passUser.stateData === null) {
+    const stateData = {
+      currentRoom: 0,
+      currentSpace: 0
+    }
+    passUser.stateData = stateData
+  }
   localStorage.setItem('user', JSON.stringify(passUser));
   this.setState({
     user: passUser,
@@ -102,7 +109,7 @@ render() {
         </ul>
       </div>
       <div className="main">
-        <div className="viewPort" >Main</div>
+        <div className="viewPort" ><Main inUser={this.state.user} /></div>
         <div className="input">input</div>
       </div>
     </div>

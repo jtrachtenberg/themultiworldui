@@ -1,4 +1,5 @@
 import React from 'react';
+import {setFormHeader} from './components/formUtils'
 
 class CreateUserForm extends React.Component {
     constructor(props) {
@@ -30,15 +31,19 @@ class CreateUserForm extends React.Component {
         this.user.userName = this.state.userName
         this.user.email = this.state.email
         this.user.password = this.state.password
+        const stateData = {
+            currentRoom: 0,
+            currentSpace: 0
+          }
+        this.user.stateData = stateData
         this.props.nameHandler(this.user)
         e.preventDefault();
     }
 
     render() {
-        const title = <div><h3>Create User</h3></div>
         if (this.state.user.userId < 1)
         return (<div>
-            <div>{title}</div>
+            <div>{setFormHeader("Create User")}</div>
             <form onSubmit={this.handleSubmit}>
                 <label>User Name:
                     <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />

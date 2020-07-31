@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,600,700');
 
+/*.img-rectangular img {
+  width: 200px;
+  height: 200px;
+}
+.img-rectangular:hover img {
+  transform-origin: left top;
+  animation: scale 2000ms ease-in-out forwards;
+}
+@keyframes scale {
+  to {
+    transform: scale(1.2);
+  }
+}*/
+
 #defaultLayout {
   padding: 10px
 }
@@ -27,15 +41,22 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+@media (prefers-reduced-motion: no-preference) {
+  .Header-shrink {
+    animation: App-logo-shrink 1 1s linear;
+  }
+}
+
+.Header {
+  background-color: #fff;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
+  text-align: left;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
@@ -48,6 +69,15 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes App-logo-shrink {
+  from {
+    min-height: 135px
+  }
+  to {
+    min-height: 33px
   }
 }
 
@@ -68,6 +98,7 @@
 .alert {
   overflow: hidden;
   background-color: #333;
+  color: #fff;
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
   width: 100%; /* Full width */
@@ -122,4 +153,12 @@
   text-align: left;
   padding: 12px 0px 6px 0px;
   border-bottom: 1px solid whitesmoke
+}
+
+.main {
+  width: fit-content;
+  margin: auto;
+}
+.main .viewPort {
+  display: flex;
 }

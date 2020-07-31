@@ -1,4 +1,5 @@
 import React from 'react';
+import {setFormHeader} from './components/formUtils'
 
 class UpdateUserForm extends React.Component {
     constructor(props) {
@@ -16,15 +17,6 @@ class UpdateUserForm extends React.Component {
                 isRoot: this.props.inUser.isRoot,
                 userId: this.props.inUser.userId
             })
-        /*else if (this.state.userName !== this.props.inUser.userName)
-            this.setState({
-                user: this.props.inUser,
-                userName: this.props.inUser.userName,
-                email: this.props.inUser.email,
-                description: this.props.inUser.description,
-                isRoot: this.props.inUser.isRoot,
-                userId: this.props.inUser.userId
-            })*/
     }
 
     handleChange = (e) => {
@@ -49,11 +41,10 @@ class UpdateUserForm extends React.Component {
     }
 
     render() {
-        const title = <div><h3>Edit User</h3></div>
         let form;
         if (this.state.user.userId > 0) {
             form = (<div>
-                <div>{title}</div>
+                <div>{setFormHeader("Edit User")}</div>
 <form onSubmit={this.handleSubmit}>
             <label>User Name:
                 <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />

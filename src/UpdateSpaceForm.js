@@ -1,4 +1,5 @@
 import React from 'react';
+import {setFormHeader} from './components/formUtils'
 
 class UpdateSpaceForm extends React.Component {
     constructor(props) {
@@ -40,11 +41,10 @@ class UpdateSpaceForm extends React.Component {
     }
 
     render() {
-        const title = <div><h3>Edit Space</h3></div>
         let form;
         if (this.state.user.userId > 0) {
             form = (<div>
-            <div>{title}</div>
+                <div>{setFormHeader("Edit Space")}</div>
             <form onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />

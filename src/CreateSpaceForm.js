@@ -1,4 +1,5 @@
 import React from 'react';
+import {setFormHeader} from './components/formUtils'
 
 class CreateSpaceForm extends React.Component {
     constructor(props) {
@@ -14,6 +15,8 @@ class CreateSpaceForm extends React.Component {
                 user: this.props.inUser,
             })
         var inSpace = this.state.space
+        console.log(inSpace)
+        console.log(this.props.inSpace)
         if (inSpace.spaceId !== this.props.inSpace.spaceId)
             this.setState({
                 space: this.props.inSpace,
@@ -40,11 +43,10 @@ class CreateSpaceForm extends React.Component {
     }
 
     render() {
-        const title = <div><h3>Create Space</h3></div>
         if (this.state.space.spaceId < 1 && this.state.user.userId > 0)
         return (
             <div>
-            <div>{title}</div>
+            <div>{setFormHeader("Create Space")}</div>
             <form onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />
@@ -70,8 +72,7 @@ class CreateSpaceForm extends React.Component {
         )
         else return (
         <div>
-        <div>{title}</div>
-        <div>Space {this.props.space.title} loaded.</div>
+        <div>{setFormHeader(this.state.space.title+" Loaded Successfully")}</div>
         </div>
         )
     }
