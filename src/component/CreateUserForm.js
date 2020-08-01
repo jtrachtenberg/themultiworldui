@@ -1,5 +1,5 @@
 import React from 'react';
-import {setFormHeader} from './components/formUtils'
+import {setFormHeader} from './utils/formUtils'
 
 class CreateUserForm extends React.Component {
     constructor(props) {
