@@ -4,7 +4,14 @@ import {setFormHeader} from '../utils/formUtils'
 class UpdateSpaceForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {user: props.inUser,space: props.inSpace, title: props.inSpace.title,spaceId: props.inSpace.spaceId,description: props.inSpace.description,isRoot: props.inSpace.isRoot}
+        this.state = {
+            user: props.inUser,
+            space: props.inSpace, 
+            title: props.inSpace.title,
+            spaceId: props.inSpace.spaceId,
+            description: props.inSpace.description,
+            isRoot: props.inSpace.isRoot
+        }
     }
 
     componentDidUpdate() {

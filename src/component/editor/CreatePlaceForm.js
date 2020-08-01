@@ -1,17 +1,17 @@
 import React from 'react';
 import {setFormHeader} from '../utils/formUtils'
 
-class CreateSpaceForm extends React.Component {
+class CreatePlaceForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             user: props.inUser,
-            space: props.inSpace,
-            title: props.inSpace.title,
-            description: props.inSpace.description,
-            isRoot: props.inSpace.isRoot
+            space: props.inSpace, 
+            place: props.inPlace, 
+            title: props.inPlace.title,
+            description: props.inPlace.description,
+            isRoot: props.inPlace.isRoot
         }
-        this.user = props.inUser
     }
 
     componentDidUpdate() {
@@ -21,11 +21,14 @@ class CreateSpaceForm extends React.Component {
                 user: this.props.inUser,
             })
         var inSpace = this.state.space
-        console.log(inSpace)
-        console.log(this.props.inSpace)
         if (inSpace.spaceId !== this.props.inSpace.spaceId)
             this.setState({
                 space: this.props.inSpace,
+            })
+        var inPlace = this.state.place
+        if (inPlace.placeId !== this.props.inPlace.placeId)
+            this.setState({
+                place: this.props.inPlace,
             })
     }
 
@@ -39,20 +42,21 @@ class CreateSpaceForm extends React.Component {
 
     handleSubmit = (e) => {
         console.log('handleSubmit')
-        const space = this.state.space
-        space.title = this.state.title
-        space.description = this.state.description
-        space.isRoot = this.state.isRoot
-        space.userId = this.user.userId
-        this.props.spaceHandler(space)
+        const place = this.state.place
+        place.title = this.state.title
+        place.description = this.state.description
+        place.isRoot = this.state.isRoot
+        place.userId = this.state.user.userId
+        place.spaceId = this.space.spaceId
+        this.props.placeHandler(place)
         e.preventDefault();
     }
 
     render() {
-        if (this.state.space.spaceId < 1 && this.state.user.userId > 0)
+        if (this.state.space.spaceId < 1 && this.state.user.userId > 0 && this.state.place.placeId < 1)
         return (
             <div>
-            <div>{setFormHeader("Create Space")}</div>
+            <div>{setFormHeader("Create Place")}</div>
             <form onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />
@@ -78,10 +82,10 @@ class CreateSpaceForm extends React.Component {
         )
         else return (
         <div>
-        <div>{setFormHeader(this.state.space.title+" Loaded Successfully")}</div>
+        <div>{setFormHeader(this.state.place.title+" Loaded Successfully")}</div>
         </div>
         )
     }
 }
 
-export default CreateSpaceForm
+export default CreatePlaceForm

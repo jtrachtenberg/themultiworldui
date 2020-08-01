@@ -4,7 +4,10 @@ import {setFormHeader} from '../utils/formUtils'
 class LoadSpacesForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {user: props.inUser,space: props.inSpace}
+        this.state = {
+            user: props.inUser,
+            space: props.inSpace
+        }
     }
 
     componentDidUpdate() {

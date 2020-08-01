@@ -9,7 +9,7 @@ class Editor extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {userSpaces: null, space: {spaceId:0,title:'',description:'',isRoot:0}, user: props.inUser, alertMessage: "", alertVis: false, alertSuccess: true, spaces: null}
+        this.state = {userSpaces: null, space: {spaceId:0,title:'',description:'',isRoot:0}, user: props.inUser, place: {placeId:0,title:'',description:'',isRoot:0}, alertMessage: "", alertVis: false, alertSuccess: true, spaces: null}
     }  
 
     componentDidMount() {
@@ -54,6 +54,17 @@ loadSpaces = () => {
     })
   })
 }
+
+placeHandler = (place) => {
+  let postUrl
+  if (place.placeId === 0)
+    postUrl = "http://localhost:7555/addPlace"
+  else
+    postUrl = "http://localhost:7555/updatePlace"
+
+  console.log(postUrl)
+}
+
 spaceHandler = (space) => {
   let postUrl
   if (space.spaceId === 0)
@@ -82,6 +93,7 @@ console.log(postUrl)
             <div>
                 <editorForms.LoadSpacesForm inUser={this.state.user} inSpace={this.state.space} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
                 <editorForms.CreateSpaceForm inUser={this.state.user} inSpace={this.state.space} spaceHandler={this.spaceHandler}/>
+                <editorForms.CreatePlaceForm inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} placeHandler={this.placeHandler}/>
             </div>
         )
     }

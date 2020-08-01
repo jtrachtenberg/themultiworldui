@@ -144,6 +144,11 @@
   width: fit-content;
 }
 
+.leftNav textarea {
+  min-width: 200px;
+  min-height: 100px;
+}
+
 .leftNav ul li h3 {
   font-family: "Roboto", sans-serif;
   color: #fff;
