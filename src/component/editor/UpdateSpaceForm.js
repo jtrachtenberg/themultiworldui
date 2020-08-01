@@ -1,5 +1,5 @@
 import React from 'react';
-import {setFormHeader} from './utils/formUtils'
+import {setFormHeader} from '../utils/formUtils'
 
 class UpdateSpaceForm extends React.Component {
     constructor(props) {

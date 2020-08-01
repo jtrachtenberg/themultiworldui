@@ -6,7 +6,7 @@ import CreateUserForm from './CreateUserForm.js'
 import UpdateUserForm from './UpdateUserForm.js'
 import LoginUserForm from './LoginUserForm.js'
 import Alert from './Alert.js'
-import Spaces from './Spaces.js'
+import Editor from './Editor.js'
 import Main from './main'
 
 class App extends React.Component {
@@ -105,7 +105,7 @@ render() {
         <li><CreateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
         <li><LoginUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
         <li><UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
-        <li><Spaces inUser={this.state.user} /></li>
+        <li><Editor inUser={this.state.user} /></li>
         </ul>
       </div>
       <div className="main">

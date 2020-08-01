@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.css';
 //import Alert from './Alert.js'
-import CreateSpaceForm from './CreateSpaceForm.js'
-import LoadSpacesForm from './LoadSpacesForm'
+//import CreateSpaceForm from './CreateSpaceForm.js'
+//import LoadSpacesForm from './LoadSpacesForm'
+import * as editorForms from './editor/editorForms'
 
-class Spaces extends React.Component {
+class Editor extends React.Component {
 
     constructor(props) {
         super(props)
@@ -79,11 +80,11 @@ console.log(postUrl)
     render() {
         return (
             <div>
-                <LoadSpacesForm inUser={this.state.user} inSpace={this.state.space} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
-                <CreateSpaceForm inUser={this.state.user} inSpace={this.state.space} spaceHandler={this.spaceHandler}/>
+                <editorForms.LoadSpacesForm inUser={this.state.user} inSpace={this.state.space} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
+                <editorForms.CreateSpaceForm inUser={this.state.user} inSpace={this.state.space} spaceHandler={this.spaceHandler}/>
             </div>
         )
     }
 
 }
-export default Spaces
+export default Editor
