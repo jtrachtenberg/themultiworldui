@@ -12,8 +12,17 @@ export const userStateData = {
     currentSpace: 0
 }
 
+export const Space = {
+    spaceId: 0,
+    userId: 0,
+    title: "",
+    description: ""
+}
+
 export const Place = {
     placeId: 0,
+    spaceId: 0,
+    userId: 0,
     title: "",
     description: ""
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-//import logo from './logo.svg';
 import './App.css';
 import Title from './Title.js'
 import * as userForms from './user/userForms'
@@ -14,13 +13,14 @@ class App extends React.Component {
 
 constructor(props) {
     super(props)
+
+    //check if user exists in local storage, else use default state
     var user = JSON.parse(localStorage.getItem('user'))
     if (user === null || typeof(user) === "undefined" ) user = User
     this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1}
 }  
 
 loginHandler = (user) => {
-  console.log(user)
   let message = user.userId > 0 ? `User ${user.userName} Logged in` : `Login failed`
   let success = user.userId > 0 ? true: false
   this.setState({
@@ -32,6 +32,7 @@ loginHandler = (user) => {
   })
 }
 
+//TODO: Split our create/update functions into abstracted methods
 passName = (passUser) => {
   console.log(passUser)
 // creates entity

@@ -8,6 +8,7 @@ export const loadObject = (inObj, outObj) => {
     return Object.assign(outObj, inObj)
 }
 
+//TODO: test if this causes issues
 export const handleInputChange = (e, inObj) => {
     const {checked, name, value, type} = e.target
     const valueToUpdate = type === 'checkbox' ? checked : value
