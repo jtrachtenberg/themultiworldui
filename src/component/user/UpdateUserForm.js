@@ -1,5 +1,5 @@
 import React from 'react';
-import {setFormHeader} from './utils/formUtils'
+import {setFormHeader} from '../utils/formUtils'
 
 class UpdateUserForm extends React.Component {
     constructor(props) {
@@ -8,7 +8,9 @@ class UpdateUserForm extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.props.inUser.userId !== this.state.user.userId)
+        console.log(this.props.inUser)
+        console.log(this.state.user)
+        if (this.props.inUser.userId !== this.state.user.userId || this.state.userName !== this.state.user.userName)
             this.setState({
                 user: this.props.inUser,
                 userName: this.props.inUser.userName,
@@ -44,8 +46,8 @@ class UpdateUserForm extends React.Component {
         let form;
         if (this.state.user.userId > 0) {
             form = (<div>
-                <div>{setFormHeader("Edit User")}</div>
-<form onSubmit={this.handleSubmit}>
+            <div>{setFormHeader("Edit User")}</div>
+            <form onSubmit={this.handleSubmit}>
             <label>User Name:
                 <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />
             </label>

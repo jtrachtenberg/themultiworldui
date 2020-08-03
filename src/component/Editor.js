@@ -17,6 +17,8 @@ class Editor extends React.Component {
         this.loadSpaces()
     }
     componentDidUpdate() {
+        if (this.props.inUser.userId > 0 && this.props.spaces === null)
+          this.loadSpaces()
         var inUser = this.state.user
         if (inUser.userId !== this.props.inUser.userId)
             this.setState({

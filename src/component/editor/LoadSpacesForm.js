@@ -32,7 +32,7 @@ class LoadSpacesForm extends React.Component {
     }
 
     render() {
-        if (this.props.inUser && this.props.inUser.userId && this.props.inUser.userId < 1)
+        if (this.props.inUser.userId < 1)
         return (
         <div></div>
         )

@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,600,700');
 
+#root {
+  width: 100%;
+  height: 100%;
+}
 /*.img-rectangular img {
   width: 200px;
   height: 200px;
@@ -92,7 +96,6 @@
 }
 
 .alertArea {
-  padding-bottom: 15px;
   margin-bottom: 15px;
 }
 .alert {
@@ -104,6 +107,9 @@
   width: 100%; /* Full width */
 }
 
+input[type=email]:not(:placeholder-shown):invalid {
+  color: red
+}
 
 .leftNav {
   display: flex;
@@ -121,8 +127,8 @@
   align-items: left;
   flex-direction: column;
   list-style: none;
-  width: 100%;
-  padding: 0px 30px;
+  width: 89%;
+  padding: 0px 12px;
 }
 
 .leftNav ul div {
@@ -140,8 +146,25 @@
   display: grid;
 }
 
-.leftNav ul li input {
-  width: fit-content;
+.leftNav input {
+  width: stretch;
+  padding: 6px;
+  margin: 6px;
+}
+
+.leftNav button {
+  width: stretch;
+  padding: 6px;
+  margin: 6px;
+}
+
+@media only screen and (max-width: 768px) {
+  .leftNav ul li input {
+    padding: 15px
+  }
+  button {
+    padding: 15px
+  }
 }
 
 .leftNav textarea {

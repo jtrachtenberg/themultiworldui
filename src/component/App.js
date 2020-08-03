@@ -2,23 +2,36 @@ import React from 'react';
 //import logo from './logo.svg';
 import './App.css';
 import Title from './Title.js'
-import CreateUserForm from './CreateUserForm.js'
-import UpdateUserForm from './UpdateUserForm.js'
-import LoginUserForm from './LoginUserForm.js'
+import * as userForms from './user/userForms'
 import Alert from './Alert.js'
 import Editor from './Editor.js'
 import Main from './main'
+import {User} from './utils/defaultObjects'
 
 class App extends React.Component {
 
 constructor(props) {
     super(props)
     var user = JSON.parse(localStorage.getItem('user'))
-    if (user === null || typeof(user) == "undefined" ) user = {userName:'',email:'',userId:0,description:'',isRoot:0, stateData: null}
+    if (user === null || typeof(user) === "undefined" ) user = User
     this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1}
 }  
 
+loginHandler = (user) => {
+  console.log(user)
+  let message = user.userId > 0 ? `User ${user.userName} Logged in` : `Login failed`
+  let success = user.userId > 0 ? true: false
+  this.setState({
+    user: user,
+    alertMessage: message,
+    alertVis: true,
+    alertSuccess: success,
+    alertId: Math.random().toString()
+  })
+}
+
 passName = (passUser) => {
+  console.log(passUser)
 // creates entity
 let postUrl
 if (passUser.userId === -1)
@@ -28,7 +41,7 @@ else if (passUser.userId === 0)
 else
   postUrl = "http://localhost:7555/updateUser"
 
-if (passUser.userId === 0 && passUser.userName === '') {
+if (passUser.userId === 0 && passUser.userName === "") {
   //logout
   if (typeof(passUser.password) !== 'undefined') delete passUser.password 
   localStorage.setItem('user', JSON.stringify(passUser));
@@ -102,15 +115,15 @@ render() {
       </div>
       <div className="leftNav">
         <ul>
-        <li><CreateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
-        <li><LoginUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
-        <li><UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
+        <li><userForms.LoginUserForm inUser={this.state.user} nameHandler={this.passName} loginHandler={this.loginHandler}/></li>
+        <li><userForms.CreateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
+        <li><userForms.UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
         <li><Editor inUser={this.state.user} /></li>
         </ul>
       </div>
       <div className="main">
         <div className="viewPort" ><Main inUser={this.state.user} /></div>
-        <div className="input">input</div>
+        <div className="input">Input</div>
       </div>
     </div>
   );
