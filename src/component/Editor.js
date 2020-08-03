@@ -17,8 +17,14 @@ class Editor extends React.Component {
         this.loadSpaces()
     }
     componentDidUpdate() {
-        if (this.props.inUser.userId > 0 && this.props.spaces === null)
+      console.log(this.props.inUser)
+      console.log(this.props.inUser.userId)
+      console.log(this.props.spaces)
+        if (this.props.inUser.userId > 0 && (this.state.spaces === null || typeof(this.state.spaces) === 'undefined') ) {
+          console.log('loadSpaces')
           this.loadSpaces()
+        }
+
         var inUser = this.state.user
         if (inUser.userId !== this.props.inUser.userId)
             this.setState({

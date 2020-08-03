@@ -135,6 +135,10 @@ input[type=email]:not(:placeholder-shown):invalid {
   display: inline-block;
 }
 
+.leftNav ul .fillSpace {
+  width: stretch;
+}
+
 .leftNav ul li {
   height: 40px;
   width: 100%;

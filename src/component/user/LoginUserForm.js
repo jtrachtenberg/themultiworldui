@@ -64,7 +64,7 @@ class LoginUserForm extends React.Component {
         let form;
         if (this.state.user.userId < 1) {
             form = (
-            <div>
+            <div className="fillSpace">
             <div>{setFormHeader("Login")}</div>
             <form id="login_form">
             <section>

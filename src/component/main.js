@@ -1,27 +1,31 @@
 import React from 'react'
+import {Place} from './utils/defaultObjects'
 
 class Main extends React.Component {
     constructor(props) {
         super(props)
-        const place = {
-            title: '',
-            description: ''
-        }
-        this.state = {place: place}
+        this.state = {place: Place}
     }  
 
     componentDidMount() {
-        if (this.props.inUser && this.props.inUser.userId && this.props.inUser.userId > 0)
+      console.log('didMount')
           this.loadPlace()
       }
 
+    componentDidUpdate() {
+      console.log('didUpdate')
+      console.log(this.props.inUser)
+      let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : 0)
+      if (Number(this.state.place.placeId) !== Number(currentRoom))
+        this.loadPlace()
+    }
     loadPlace = () => {
         const postUrl = "http://localhost:7555/loadPlace"
         console.log(this.props.inUser.stateData)
-        const currentRoom = this.props.inUser.stateData.currentRoom
-        const place = {
-            placeId: currentRoom
-          }
+        const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : 0)
+        const place = Place
+        place.placeId = currentRoom
+ 
         fetch(postUrl, {
           method: "POST",
           headers: {
