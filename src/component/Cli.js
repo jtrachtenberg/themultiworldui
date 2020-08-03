@@ -19,7 +19,7 @@ class Cli extends React.Component {
         return (
                 <form id="Cli">
                     <section>
-                    <span><input type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} /><button name="send" onClick={this.handleCommand}>&mdash;&mdash;&gt;</button></span>
+                    <span><input type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} /><button name="send" onClick={this.handleCommand}>&#8594;</button></span>
                     </section>
                 </form>
         )
