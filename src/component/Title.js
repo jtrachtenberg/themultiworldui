@@ -3,7 +3,7 @@ import React from 'react';
 class Title extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {user: props.inUser, smallLogo: false, classes: ""}
+        this.state = {user: props.inUser, smallLogo: true, classes: ""}
         this.timeout = null
     }
 
@@ -14,13 +14,13 @@ class Title extends React.Component {
     }*/
     
     formatLogo(inUser) {
-        this.timeout = setTimeout(() => {
+        /*this.timeout = setTimeout(() => {
             this.setState({
                 smallLogo: true,
                 classes: "Header-shrink"
             })
             clearTimeout(this.timeout)
-        },12000)
+        },12000)*/
 
         if (this.state.smallLogo)
             return <img width="40" alt="TheMultiWord" src="./tmwlogo.png" />

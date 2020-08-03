@@ -53,7 +53,7 @@
 
 .Header {
   background-color: #fff;
-  min-height: 10vh;
+  min-height: 5vh;
   display: flex;
   flex-direction: column;
   align-items: left;
@@ -96,7 +96,7 @@
 }
 
 .alertArea {
-  margin-bottom: 15px;
+  margin-bottom: 2px;
 }
 .alert {
   overflow: hidden;
@@ -188,9 +188,28 @@ input[type=email]:not(:placeholder-shown):invalid {
 }
 
 .main {
-  width: fit-content;
+  width: auto;
   margin: auto;
+  height: 85vh;
 }
+
+.main .CliInput {
+  display: flex;
+}
+.main input {
+  width: 60vw;
+  padding: 6px;
+  margin: 6px;
+}
+
+form#Cli {
+  width: stretch;
+}
+
 .main .viewPort {
   display: flex;
+  width: stretch;
+  text-align: left;
+  height: 100%;
+  padding-left: 10px;
 }

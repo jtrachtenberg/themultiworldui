@@ -6,6 +6,8 @@ import * as userForms from './user/userForms'
 import Alert from './Alert.js'
 import Editor from './Editor.js'
 import Main from './main'
+import Cli from './Cli'
+
 import {User} from './utils/defaultObjects'
 
 class App extends React.Component {
@@ -123,7 +125,7 @@ render() {
       </div>
       <div className="main">
         <div className="viewPort" ><Main inUser={this.state.user} /></div>
-        <div className="input">Input</div>
+        <div className="CliInput"><Cli inUser={this.state.user} /></div>
       </div>
     </div>
   );
