@@ -1,5 +1,6 @@
 import React from 'react';
 import {setFormHeader} from '../utils/formUtils'
+import {handleInputChange} from '../utils/formUtils'
 
 class CreatePlaceForm extends React.Component {
     constructor(props) {
@@ -33,11 +34,7 @@ class CreatePlaceForm extends React.Component {
     }
 
     handleChange = (e) => {
-        const {checked, name, value, type} = e.target
-        const valueToUpdate = type === 'checkbox' ? checked : value
-        this.setState({
-            [name]: valueToUpdate
-        })
+        this.setState(handleInputChange(e))
     }
 
     handleSubmit = (e) => {

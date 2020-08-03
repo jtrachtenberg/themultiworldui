@@ -8,7 +8,7 @@ class Cli extends React.Component {
     }  
 
     handleChange = (e) => {
-        handleInputChange(e, this)
+        this.setState(handleInputChange(e))
     }
 
     handleCommand = (e) => {
