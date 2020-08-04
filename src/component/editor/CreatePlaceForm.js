@@ -50,6 +50,13 @@ class CreatePlaceForm extends React.Component {
     }
 
     render() {
+        if (this.state.space.spaceId === 0)
+        return (
+        <div>
+        <div>{setFormHeader("Create Place")}</div>
+        <div></div>
+        </div>
+        )
         if (this.state.space.spaceId < 1 && this.state.user.userId > 0 && this.state.place.placeId < 1)
         return (
             <div>

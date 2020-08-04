@@ -78,13 +78,14 @@ fetch(postUrl, {
   }
   if (passUser.description === null) passUser.description = ''
   if (typeof(passUser.password) !== 'undefined') delete passUser.password 
-  if (passUser.stateData === null) {
+  if (passUser.stateData === null || typeof(passUser.stateData) === 'undefined') {
     const stateData = {
       currentRoom: 0,
       currentSpace: 0
     }
     passUser.stateData = stateData
   }
+  console.log(passUser)
   localStorage.setItem('user', JSON.stringify(passUser));
   this.setState({
     user: passUser,

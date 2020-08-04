@@ -27,13 +27,11 @@ class UpdateUserForm extends React.Component {
     }
 
     handleSubmit = (e) => {
-        var subUser = {
-            userName: this.state.userName,
-            email: this.state.email,
-            description: this.state.description,
-            isRoot: this.state.isRoot,
-            userId: this.state.userId
-        }
+        var subUser = this.state.user
+        subUser.userName = this.state.userName
+        subUser.email = this.state.email
+        subUser.description = this.state.description
+        subUser.isRoot = this.state.isRoot
 
         this.props.nameHandler(subUser)
         e.preventDefault();
