@@ -117,7 +117,8 @@ render() {
       <div className="Header">
       <Title inUser={this.state.user} />
       </div>
-      <div className="leftNav">
+      <div className="flex-grid">
+      <div className="leftNav edgeCol">
         <ul>
         <li><userForms.LoginUserForm inUser={this.state.user} nameHandler={this.passName} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
@@ -125,9 +126,11 @@ render() {
         <li><Editor inUser={this.state.user} /></li>
         </ul>
       </div>
-      <div className="main">
+      <div className="main midCol">
         <div className="viewPort" ><Main inUser={this.state.user} /></div>
         <div className="CliInput"><Cli inUser={this.state.user} /></div>
+      </div>
+      <div className="rightNav edgeCol"></div>
       </div>
     </div>
   );

@@ -64,13 +64,10 @@ loadSpaces = () => {
 }
 
 placeHandler = (place) => {
-  let postUrl
-  if (place.placeId === 0)
-    postUrl = "http://localhost:7555/addPlace"
-  else
-    postUrl = "http://localhost:7555/updatePlace"
-
-  console.log(postUrl)
+  console.log(place)
+  this.setState({
+    place: place
+  })
 }
 
 spaceHandler = (space) => {

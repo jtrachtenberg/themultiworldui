@@ -1,6 +1,5 @@
 import React from 'react';
-import {setFormHeader} from '../utils/formUtils'
-import {handleInputChange} from '../utils/formUtils'
+import {setFormHeader, handleInputChange, createHandler} from '../utils/formUtils'
 
 class CreatePlaceForm extends React.Component {
     constructor(props) {
@@ -27,10 +26,14 @@ class CreatePlaceForm extends React.Component {
                 space: this.props.inSpace,
             })
         var inPlace = this.state.place
-        if (inPlace.placeId !== this.props.inPlace.placeId)
+        console.log(inPlace)
+        console.log(this.props.inPlace)
+        if (inPlace.placeId !== this.props.inPlace.placeId) {
+            console.log(inPlace)
             this.setState({
                 place: this.props.inPlace,
             })
+        }
     }
 
     handleChange = (e) => {
@@ -38,15 +41,15 @@ class CreatePlaceForm extends React.Component {
     }
 
     handleSubmit = (e) => {
+        e.preventDefault();
         console.log('handleSubmit')
         const place = this.state.place
         place.title = this.state.title
         place.description = this.state.description
         place.isRoot = this.state.isRoot
         place.userId = this.state.user.userId
-        place.spaceId = this.space.spaceId
-        this.props.placeHandler(place)
-        e.preventDefault();
+        place.spaceId = this.state.space.spaceId
+        createHandler("place", place, this.props.placeHandler)
     }
 
     render() {
@@ -54,10 +57,10 @@ class CreatePlaceForm extends React.Component {
         return (
         <div>
         <div>{setFormHeader("Create Place")}</div>
-        <div></div>
+        <div>Select a space</div>
         </div>
         )
-        if (this.state.space.spaceId < 1 && this.state.user.userId > 0 && this.state.place.placeId < 1)
+        else
         return (
             <div>
             <div>{setFormHeader("Create Place")}</div>
@@ -79,15 +82,6 @@ class CreatePlaceForm extends React.Component {
             <input type="submit" value="Submit" />
             </form>
             </div>
-        )
-        else if (this.state.user.userId < 1)
-        return (
-            <div></div>
-        )
-        else return (
-        <div>
-        <div>{setFormHeader(this.state.place.title+" Loaded Successfully")}</div>
-        </div>
         )
     }
 }
