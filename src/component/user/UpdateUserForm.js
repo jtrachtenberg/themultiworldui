@@ -4,7 +4,14 @@ import {setFormHeader, handleInputChange, updateHandler, toggleIsVis} from '../u
 class UpdateUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {vis: false, user: props.inUser,userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: props.inUser.description,isRoot: props.inUser.isRoot}
+        this.state = {
+            vis: false,
+            user: props.inUser,
+            userName: props.inUser.userName,
+            email: props.inUser.email,
+            userId: props.inUser.userId,
+            description: props.inUser.description,
+            isRoot: props.inUser.isRoot}
     }
 
     componentDidUpdate() {

@@ -1,11 +1,11 @@
 import React from 'react';
-import {setFormHeader} from '../utils/formUtils'
-import {handleInputChange} from '../utils/formUtils'
+import {setFormHeader, handleInputChange, toggleIsVis, createHandler} from '../utils/formUtils'
 
 class CreateSpaceForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            vis: true,
             user: props.inUser,
             space: props.inSpace,
             title: props.inSpace.title,
@@ -41,16 +41,21 @@ class CreateSpaceForm extends React.Component {
         space.description = this.state.description
         space.isRoot = this.state.isRoot
         space.userId = this.user.userId
-        this.props.spaceHandler(space)
+        createHandler("space", space, this.props.spaceHandler)
         e.preventDefault();
+    }
+
+    handleHeaderClick = (e) => {
+        this.setState(toggleIsVis(this.state))
     }
 
     render() {
         if (this.state.space.spaceId < 1 && this.state.user.userId > 0)
         return (
             <div>
-            <div>{setFormHeader("Create Space")}</div>
-            <form onSubmit={this.handleSubmit}>
+            <div>{setFormHeader("Create Space", this.handleHeaderClick)}</div>
+            <div>
+            <form className={this.state.vis ? "n" : "invis"} onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />
             </label>
@@ -67,6 +72,7 @@ class CreateSpaceForm extends React.Component {
             </label>      
             <input type="submit" value="Submit" />
             </form>
+            </div>
             </div>
         )
         else if (this.state.user.userId < 1)

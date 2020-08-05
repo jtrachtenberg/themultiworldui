@@ -1,10 +1,11 @@
 import React from 'react';
-import {setFormHeader} from '../utils/formUtils'
+import {setFormHeader, toggleIsVis} from '../utils/formUtils'
 
 class LoadSpacesForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            vis: false,
             user: props.inUser,
             space: props.inSpace
         }
@@ -33,6 +34,10 @@ class LoadSpacesForm extends React.Component {
     handleChange = (e) => {
         console.log(e.target.value)
         this.props.loadSpace(Number(e.target.value))
+    }
+
+    handleHeaderClick = (e) => {
+        this.setState(toggleIsVis(this.state))
     }
 
     render() {

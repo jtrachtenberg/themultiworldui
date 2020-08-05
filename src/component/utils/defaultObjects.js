@@ -22,7 +22,6 @@ export const Space = {
 export const Place = {
     placeId: 0,
     spaceId: 0,
-    userId: 0,
     title: "",
     description: "",
     exits: null

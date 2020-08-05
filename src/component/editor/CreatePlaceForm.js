@@ -1,10 +1,11 @@
 import React from 'react';
-import {setFormHeader, handleInputChange, createHandler} from '../utils/formUtils'
+import {setFormHeader, handleInputChange, createHandler, toggleIsVis} from '../utils/formUtils'
 
 class CreatePlaceForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            vis: true,
             user: props.inUser,
             space: props.inSpace, 
             place: props.inPlace, 
@@ -35,13 +36,21 @@ class CreatePlaceForm extends React.Component {
         place.title = this.state.title
         place.description = this.state.description
         place.isRoot = this.state.isRoot
-        place.userId = this.props.user.userId
-        place.spaceId = this.props.space.spaceId
+        place.spaceId = this.props.inSpace.spaceId
         createHandler("place", place, this.props.placeHandler)
+        this.setState({
+            title: "",
+            description: "",
+            isRoot: false
+        })
+    }
+
+    handleHeaderClick = (e) => {
+        this.setState(toggleIsVis(this.state))
     }
 
     render() {
-        if (this.props.space === null || typeof(this.props.space) == 'undefined' || this.props.space.spaceId === 0)
+        if (this.props.inSpace === null || typeof(this.props.inSpace) == 'undefined' || this.props.inSpace.spaceId === 0)
         return (
         <div>
         <div>{setFormHeader("Create Place")}</div>
@@ -51,8 +60,9 @@ class CreatePlaceForm extends React.Component {
         else
         return (
             <div>
-            <div>{setFormHeader("Create Place")}</div>
-            <form onSubmit={this.handleSubmit}>
+            <div>{setFormHeader("Create Place", this.handleHeaderClick)}</div>
+            <div>
+            <form className={this.state.vis ? "n" : "invis"} onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />
             </label>
@@ -69,6 +79,7 @@ class CreatePlaceForm extends React.Component {
             </label>      
             <input type="submit" value="Submit" />
             </form>
+            </div>
             </div>
         )
     }

@@ -35,14 +35,24 @@ loginHandler = (user) => {
 }
 
 updateUserHandler = (user) => {
-  let message = user.failed ? `Update failed` : `User ${user.userName} Updated`
-  let success = user.failed ? false : true
-  if (typeof(user.failed) !== 'undefined') delete user.failed
+  var message
+  var success
+  var alertVis
+  if (typeof(user.failed) === 'undefined') {
+    message = ""
+    success = true
+    alertVis = false
+  } else {
+    message = user.failed ? `Update failed` : `User ${user.userName} Updated`
+    success = user.failed ? false : true
+    if (typeof(user.failed) !== 'undefined') delete user.failed
+  }
+
   if (success)
   this.setState({
     user: user,
     alertMessage: message,
-    alertVis: true,
+    alertVis: alertVis,
     alertSuccess: success,
     alertId: Math.random().toString()
   },() => {
@@ -147,7 +157,7 @@ render() {
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><Editor inUser={this.state.user} /></li>
+        <li><Editor inUser={this.state.user} userHandler={this.updateUserHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">

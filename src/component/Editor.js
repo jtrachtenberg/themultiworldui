@@ -1,15 +1,13 @@
 import React from 'react';
 import './App.css';
-//import Alert from './Alert.js'
-//import CreateSpaceForm from './CreateSpaceForm.js'
-//import LoadSpacesForm from './LoadSpacesForm'
 import * as editorForms from './editor/editorForms'
+import {Space} from './utils/defaultObjects'
 
 class Editor extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {userSpaces: null, space: {spaceId:0,title:'',description:'',isRoot:0}, user: props.inUser, place: {placeId:0,title:'',description:'',isRoot:0}, alertMessage: "", alertVis: false, alertSuccess: true, spaces: null}
+        this.state = {userSpaces: null, space: Space, user: props.inUser, place: {placeId:0,title:'',description:'',isRoot:0}, alertMessage: "", alertVis: false, alertSuccess: true, spaces: null}
     }  
 
     componentDidMount() {
@@ -25,7 +23,7 @@ class Editor extends React.Component {
           this.loadSpaces()
         }
 
-        var inUser = this.state.user
+        var inUser = this.props.inUser
         if (inUser.userId !== this.props.inUser.userId)
             this.setState({
                 user: this.props.inUser
@@ -64,7 +62,10 @@ loadSpaces = () => {
 }
 
 placeHandler = (place) => {
-  console.log(place)
+  const user = this.props.inUser
+  user.stateData.currentRoom = place.placeId
+  user.stateData.currentSpace = place.spaceId
+  this.props.userHandler(user)
   this.setState({
     place: place
   })
@@ -96,9 +97,9 @@ console.log(postUrl)
     render() {
         return (
             <div>
-                <editorForms.LoadSpacesForm inUser={this.state.user} inSpace={this.state.space} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
-                <editorForms.CreateSpaceForm inUser={this.state.user} inSpace={this.state.space} spaceHandler={this.spaceHandler}/>
-                <editorForms.CreatePlaceForm inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} placeHandler={this.placeHandler}/>
+                <editorForms.LoadSpacesForm inUser={this.props.inUser} inSpace={this.state.space} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
+                <editorForms.CreateSpaceForm inUser={this.props.inUser} inSpace={this.state.space} spaceHandler={this.spaceHandler}/>
+                <editorForms.CreatePlaceForm inUser={this.props.inUser} inSpace={this.state.space} inPlace={this.state.place} placeHandler={this.placeHandler}/>
             </div>
         )
     }

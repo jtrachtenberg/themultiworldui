@@ -1,11 +1,11 @@
 import React from 'react';
-import {setFormHeader} from '../utils/formUtils'
-import {handleInputChange} from '../utils/formUtils'
+import {setFormHeader, handleInputChange, toggleIsVis, updateHandler} from '../utils/formUtils'
 
 class UpdateSpaceForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            vis: false,
             user: props.inUser,
             space: props.inSpace, 
             title: props.inSpace.title,
@@ -39,9 +39,12 @@ class UpdateSpaceForm extends React.Component {
             spaceId: this.state.spaceId,
             userId: this.state.user.userId
         }
-
-        this.props.spaceHandler(subSpace)
+        updateHandler("space", subSpace, this.props.spaceHandler)
         e.preventDefault();
+    }
+    
+    handleHeaderClick = (e) => {
+        this.setState(toggleIsVis(this.state))
     }
 
     render() {
