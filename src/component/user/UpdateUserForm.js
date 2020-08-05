@@ -1,11 +1,10 @@
 import React from 'react';
-import {setFormHeader} from '../utils/formUtils'
-import {handleInputChange} from '../utils/formUtils'
+import {setFormHeader, handleInputChange, updateHandler, toggleIsVis} from '../utils/formUtils'
 
 class UpdateUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {user: props.inUser,userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: props.inUser.description,isRoot: props.inUser.isRoot}
+        this.state = {vis: false, user: props.inUser,userName: props.inUser.userName,email: props.inUser.email,userId: props.inUser.userId,description: props.inUser.description,isRoot: props.inUser.isRoot}
     }
 
     componentDidUpdate() {
@@ -26,6 +25,10 @@ class UpdateUserForm extends React.Component {
         this.setState(handleInputChange(e))
     }
 
+    handleHeaderClick = (e) => {
+        this.setState(toggleIsVis(this.state))
+    }
+
     handleSubmit = (e) => {
         var subUser = this.state.user
         subUser.userName = this.state.userName
@@ -33,15 +36,16 @@ class UpdateUserForm extends React.Component {
         subUser.description = this.state.description
         subUser.isRoot = this.state.isRoot
 
-        this.props.nameHandler(subUser)
+        updateHandler("user", subUser, this.props.updateUserHandler)
         e.preventDefault();
+
     }
 
     render() {
         let form;
-        if (this.state.user.userId > 0) {
+        if (this.state.user.userId > 0 && this.state.vis) {
             form = (<div>
-            <div>{setFormHeader("Edit User")}</div>
+            <div>{setFormHeader("Edit User", this.handleHeaderClick)}</div>
             <form onSubmit={this.handleSubmit}>
             <label>User Name:
                 <input name="userName" type="text" value={this.state.userName} onChange={this.handleChange} />
@@ -63,6 +67,10 @@ class UpdateUserForm extends React.Component {
             <input type="submit" value="Submit" />
             </form></div>
             )
+        } else if (this.state.user.userId > 0 && !this.state.vis) {
+            form = (<div>   
+            <div>{setFormHeader("Edit User", this.handleHeaderClick)}</div>
+            </div>)
         } else {
             form = <p></p>
         }

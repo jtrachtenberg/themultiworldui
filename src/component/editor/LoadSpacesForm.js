@@ -10,6 +10,10 @@ class LoadSpacesForm extends React.Component {
         }
     }
 
+    componentDidMount() {
+
+    }
+
     componentDidUpdate() {
         if (this.state.user !== this.props.user) {
             this.setState({
@@ -40,7 +44,10 @@ class LoadSpacesForm extends React.Component {
         return (
         <div>
         <div>{setFormHeader("Select a space")}</div>
-        <form><select onChange={this.handleChange}>{this.formatSpaces()}</select></form>
+        <form><select onChange={this.handleChange}>
+            <option value="" disabled>Select a Space</option>
+            {this.formatSpaces()}
+        </select></form>
         </div>
         )
     }

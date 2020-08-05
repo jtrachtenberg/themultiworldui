@@ -29,9 +29,33 @@ loginHandler = (user) => {
     alertVis: true,
     alertSuccess: success,
     alertId: Math.random().toString()
+  },() => {
+    localStorage.setItem('user', JSON.stringify(this.state.user));
   })
 }
 
+updateUserHandler = (user) => {
+  let message = user.failed ? `Update failed` : `User ${user.userName} Updated`
+  let success = user.failed ? false : true
+  if (typeof(user.failed) !== 'undefined') delete user.failed
+  if (success)
+  this.setState({
+    user: user,
+    alertMessage: message,
+    alertVis: true,
+    alertSuccess: success,
+    alertId: Math.random().toString()
+  },() => {
+    localStorage.setItem('user', JSON.stringify(this.state.user));
+  })
+  else
+  this.setState({
+    alertMessage: message,
+    alertVis: true,
+    alertSuccess: success,
+    alertId: Math.random().toString()
+  })
+}
 //TODO: Split our create/update functions into abstracted methods
 passName = (passUser) => {
   console.log(passUser)
@@ -120,9 +144,9 @@ render() {
       <div className="flex-grid">
       <div className="leftNav edgeCol">
         <ul>
-        <li><userForms.LoginUserForm inUser={this.state.user} nameHandler={this.passName} loginHandler={this.loginHandler}/></li>
+        <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
-        <li><userForms.UpdateUserForm inUser={this.state.user} nameHandler={this.passName}/></li>
+        <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><Editor inUser={this.state.user} /></li>
         </ul>
       </div>

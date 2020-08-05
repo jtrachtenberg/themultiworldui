@@ -170,6 +170,10 @@ input[type=email]:not(:placeholder-shown):invalid {
   margin: 6px;
 }
 
+button[name="send"] {
+  position: relative;
+  top: 6px;
+}
 @media only screen and (max-width: 768px) {
   .leftNav ul li input {
     padding: 15px
@@ -187,12 +191,18 @@ input[type=email]:not(:placeholder-shown):invalid {
 .leftNav ul li h3 {
   font-family: "Roboto", sans-serif;
   color: #fff;
+  display: flex;
+  align-items: center;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.3;
   text-align: left;
   padding: 12px 0px 6px 0px;
   border-bottom: 1px solid whitesmoke
+}
+
+.leftNav ul li h3 svg:hover {
+  background-color: rgba(232,234,237,.08)
 }
 
 .main {
@@ -220,4 +230,8 @@ form#Cli {
   text-align: left;
   height: 100%;
   padding-left: 10px;
+}
+
+.clickable:hover {
+  cursor: pointer;
 }

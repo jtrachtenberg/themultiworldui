@@ -15,19 +15,7 @@ class CreatePlaceForm extends React.Component {
     }
 
     componentDidUpdate() {
-        var inUser = this.state.user
-        if (inUser.userId !== this.props.inUser.userId)
-            this.setState({
-                user: this.props.inUser,
-            })
-        var inSpace = this.state.space
-        if (inSpace.spaceId !== this.props.inSpace.spaceId)
-            this.setState({
-                space: this.props.inSpace,
-            })
         var inPlace = this.state.place
-        console.log(inPlace)
-        console.log(this.props.inPlace)
         if (inPlace.placeId !== this.props.inPlace.placeId) {
             console.log(inPlace)
             this.setState({
@@ -47,13 +35,13 @@ class CreatePlaceForm extends React.Component {
         place.title = this.state.title
         place.description = this.state.description
         place.isRoot = this.state.isRoot
-        place.userId = this.state.user.userId
-        place.spaceId = this.state.space.spaceId
+        place.userId = this.props.user.userId
+        place.spaceId = this.props.space.spaceId
         createHandler("place", place, this.props.placeHandler)
     }
 
     render() {
-        if (this.state.space.spaceId === 0)
+        if (this.props.space === null || typeof(this.props.space) == 'undefined' || this.props.space.spaceId === 0)
         return (
         <div>
         <div>{setFormHeader("Create Place")}</div>
