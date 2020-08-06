@@ -6,7 +6,7 @@ import Alert from './Alert.js'
 import Editor from './Editor.js'
 import Main from './main'
 import Cli from './Cli'
-
+import Exits from './Exits'
 import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
 
@@ -138,7 +138,9 @@ render() {
         <div className="viewPort" ><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childUpdateHandler} /></div>
         <div className="CliInput"><Cli inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} /></div>
       </div>
-      <div className="rightNav edgeCol"></div>
+      <div className="rightNav edgeCol">
+        <div className="exits"><Exits inPlace={this.state.place}/></div>
+      </div>
       </div>
     </div>
   );
