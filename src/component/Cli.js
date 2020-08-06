@@ -6,39 +6,80 @@ import * as GlobalCommands from './globalCommands/globalCommands'
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {user: props.inUser, currentInput: "", availableCommands: Object.keys(GlobalCommands), results: ""}
+        this.state = {loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: 0}
     }  
 
     loadCommands = () => {
-        //const exits = this.props.inPlace.exits
+        let commands = []
+        for (const [key, value] of Object.entries(GlobalCommands)) {
+            commands.push({[key]: value})
+        }
+
+        for (const [key, value] of Object.entries(this.props.inPlace.exits)) {
+            commands.push({[key]:value})
+        }
+
         this.setState({
-            availableCommands: Object.keys(GlobalCommands)
+            availableCommands: commands,
+            loadCommands: false
         })
     }
 
+    componentDidUpdate() {
+        if (this.props.inPlace.exits !== null && typeof(this.props.inPlace.exits) !== 'undefined' && this.state.loadCommands && this.props.inPlace.placeId !== this.state.placeId) {
+            this.setState({
+                placeId: this.props.inPlace.placeId
+            }, this.loadCommands())
+        }
+    }
+    
     handleChange = (e) => {
         this.setState(handleInputChange(e))
-        console.log(Object.keys(GlobalCommands))
     }
 
     handleCommand = (e) => {
         e.preventDefault()
-        console.log(e)
-        const cmd = this.state.currentInput
-        if (this.state.availableCommands.find((cmd) => {
-            return cmd === this.state.currentInput
-        })) {
-            let result
-            if (this.state.results.length === 0)
-                result = GlobalCommands[cmd]()
-            else
-            result = 
+        const input = this.state.currentInput
+        const inputParts = input.split(" ")
+        const cmdString = inputParts[0]
+
+        const availableCommands = this.state.availableCommands
+
+        const executeCommand = availableCommands.find((cmd) => {
+            let cmdCheck
+            Object.keys(cmd)
+                .forEach(function eachKey(key) { 
+                    if (key === cmdString) {
+                        cmdCheck = key
+                    }
+                })
+                return cmdCheck === cmdString
+        })
+        
+        const action = executeCommand[cmdString]
+        if (typeof(action) === 'function') {
+        let result
+
+        if (this.state.results.length === 0)
+            result = action(this.props.inPlace, inputParts)
+        else
+        result = 
 `${this.state.results}
-${GlobalCommands[cmd]()}`
+${action(this.props.inPlace, inputParts)}`
+        this.setState({
+            results: result,
+            currentInput: "",
+            loadCommands: true
+        })
+        } else if (typeof(action) === 'object') {
+            const newPlaceId = action.placeId
+            const newUser = this.props.inUser
+            newUser.stateData.currentRoom = newPlaceId
             this.setState({
-                results: result,
-                currentInput: ""
-            })
+                results: "",
+                currentInput: "",
+                loadCommands: true
+            },this.props.updateUserHandler(newUser))
         }
     }
 

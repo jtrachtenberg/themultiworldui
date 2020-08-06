@@ -16,9 +16,12 @@ class Main extends React.Component {
       console.log('didUpdate')
       console.log(this.props.inUser)
       let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : 0)
-      if (Number(this.state.place.placeId) !== Number(currentRoom))
+      const oldRoom = typeof(this.props.inPlace) === 'undefined' ? 0 : this.props.inPlace.placeId
+      if (Number(oldRoom) !== Number(currentRoom)) {
         this.loadPlace()
+      }
     }
+
     loadPlace = () => {
         const postUrl = "http://localhost:7555/loadPlace"
         console.log(this.props.inUser.stateData)
@@ -35,16 +38,13 @@ class Main extends React.Component {
         })
         .then(response => response.json())
         .then(response => {
-          this.setState({
-            place: response[0]
-          },() => {
-              console.log(this.state.place)
-          })
+          this.props.childUpdateHandler(response[0],'place')
         })
       }
     
     formatPlace = () => {
-        return <div><h3>{this.state.place.title}</h3><p>{this.state.place.description}</p></div>
+        const place = typeof(this.props.inPlace) === 'undefined' ? Place : this.props.inPlace
+        return <div><h3>{place.title}</h3><p>{place.description}</p></div>
     }
     render() {
         return (

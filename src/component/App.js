@@ -8,20 +8,23 @@ import Main from './main'
 import Cli from './Cli'
 
 import {User} from './utils/defaultObjects'
+import {Space,Place} from './utils/defaultObjects'
 
 class App extends React.Component {
 
 constructor(props) {
     super(props)
-
+    console.log("")
     //check if user exists in local storage, else use default state
     var user = JSON.parse(localStorage.getItem('user'))
     if (user === null || typeof(user) === "undefined" ) user = User
-    this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1}
+    this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1, space: Space, place: Place}
 }
 
-childUpdateHandler = (inObj) => {
-
+childUpdateHandler = (inObj, type) => {
+  this.setState({
+    [type]: inObj
+  })
 }
 
 loginHandler = (user) => {
@@ -128,12 +131,12 @@ render() {
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} nameHandler={this.addUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><Editor inUser={this.state.user} userHandler={this.updateUserHandler}/></li>
+        <li><Editor inUser={this.state.user} userHandler={this.updateUserHandler} childUpdateHandler={this.childUpdateHandler} /></li>
         </ul>
       </div>
       <div className="main midCol">
-        <div className="viewPort" ><Main inUser={this.state.user} /></div>
-        <div className="CliInput"><Cli inUser={this.state.user} /></div>
+        <div className="viewPort" ><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childUpdateHandler} /></div>
+        <div className="CliInput"><Cli inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} /></div>
       </div>
       <div className="rightNav edgeCol"></div>
       </div>

@@ -33,7 +33,7 @@ class Editor extends React.Component {
     console.log(newSpace)
     this.setState({
       space: newSpace
-    })
+    }, this.props.childUpdateHandler(newSpace,'space'))
   }
 
   loadSpaces = () => {
@@ -63,7 +63,7 @@ class Editor extends React.Component {
     this.props.userHandler(user)
     this.setState({
       place: place
-    })
+    }, this.props.childUpdateHandler(place,'place'))
   }
 
   spaceHandler = (space) => {
