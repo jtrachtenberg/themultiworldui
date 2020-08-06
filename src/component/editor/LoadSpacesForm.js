@@ -6,23 +6,17 @@ class LoadSpacesForm extends React.Component {
         super(props)
         this.state = {
             vis: false,
-            user: props.inUser,
-            space: props.inSpace
+            loaded: false
         }
-    }
-
-    componentDidMount() {
-
     }
 
     componentDidUpdate() {
-        if (this.state.user !== this.props.user) {
+        if (this.props.inUser.userId > 0 && (typeof(this.props.spaces) !== 'undefined') && !this.state.loaded) {
             this.setState({
-                user: this.props.user
-            })
+                loaded: true
+            }, this.props.loadSpace(this.props.spaces[0].spaceId))
         }
     }
-
     handleSubmit = (e) => {
         e.preventDefault();
     }
