@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.css';
 import * as editorForms from './editor/editorForms'
-import {Space} from './utils/defaultObjects'
+//mport {Space} from './utils/defaultObjects'
 
 class Editor extends React.Component {
 
   constructor(props) {
       super(props)
-      this.state = {userSpaces: null, space: Space, user: props.inUser, place: {placeId:0,title:'',description:'',isRoot:0}, alertMessage: "", alertVis: false, alertSuccess: true, spaces: null}
+      this.state = {userSpaces: null, space: this.props.inSpace, user: props.inUser, place: this.props.inPlace, alertMessage: "", alertVis: false, alertSuccess: true, spaces: null}
   }  
 
   componentDidMount() {
@@ -26,6 +26,13 @@ class Editor extends React.Component {
           this.setState({
               user: this.props.inUser
           })
+      var inPlace = this.props.inPlace
+      console.log(inPlace)
+      console.log(this.state.place)
+      if (inPlace !== this.state.place)
+          this.setState({
+              place: this.props.inPlace
+          })  
   }
 
   loadSpace = (inSpaceId) => {
@@ -96,6 +103,7 @@ class Editor extends React.Component {
               <editorForms.LoadSpacesForm inUser={this.props.inUser} inSpace={this.state.space} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
               <editorForms.CreateSpaceForm inUser={this.props.inUser} inSpace={this.state.space} spaceHandler={this.spaceHandler}/>
               <editorForms.CreatePlaceForm inUser={this.props.inUser} inSpace={this.state.space} inPlace={this.state.place} placeHandler={this.placeHandler}/>
+              <editorForms.UpdatePlaceForm inUser={this.props.inUser} inSpace={this.state.space} inPlace={this.state.place} placeHandler={this.placeHandler}/>
           </div>
       )
   }
