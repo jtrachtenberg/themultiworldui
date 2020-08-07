@@ -7,6 +7,7 @@ class Cli extends React.Component {
     constructor(props) {
         super(props)
         this.state = {loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: 0}
+        this.resultRef = React.createRef()
     }  
 
     loadCommands = () => {
@@ -83,6 +84,8 @@ ${getResult}`
             results: result,
             currentInput: "",
             loadCommands: true
+        },() => {
+            this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
         })
         } else if (typeof(action) === 'object') {
             console.log(action)
@@ -101,7 +104,7 @@ ${getResult}`
         return (
                 <form id="Cli">
                     <section>
-                        <textarea name="resultsWindow" className="resultsWindow" readOnly value={this.state.results} />
+                        <textarea ref={this.resultRef} name="resultsWindow" className="resultsWindow" readOnly value={this.state.results} />
                     </section>
                     <section>
                     <span>
