@@ -37,6 +37,7 @@ class CreatePlaceForm extends React.Component {
         place.description = this.state.description
         place.isRoot = this.state.isRoot
         place.spaceId = this.props.inSpace.spaceId
+        place.exits = []
         createHandler("place", place, this.props.placeHandler)
         this.setState({
             title: "",

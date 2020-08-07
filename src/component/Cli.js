@@ -14,9 +14,19 @@ class Cli extends React.Component {
         for (const [key, value] of Object.entries(GlobalCommands)) {
             commands.push({[key]: value})
         }
+        console.log(typeof(this.props.inPlace.exits))
+        if (Array.isArray(this.props.inPlace.exits)) {
 
-        for (const [key, value] of Object.entries(this.props.inPlace.exits)) {
-            commands.push({[key]:value})
+        const exits = this.props.inPlace.exits
+
+        exits.forEach(exit => {
+         for (const [key,value] of Object.entries(exit)) {
+            const exitObj = {
+                [key]:value
+            }
+            commands.push(exitObj)
+         }
+        })
         }
 
         this.setState({
@@ -26,18 +36,20 @@ class Cli extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.props.inPlace.exits !== null && typeof(this.props.inPlace.exits) !== 'undefined' && this.state.loadCommands && this.props.inPlace.placeId !== this.state.placeId) {
+        console.log(`${this.state.placeId}:${this.props.inPlace.placeId}`)
+        if (this.state.loadCommands && this.props.inPlace.placeId !== this.state.placeId) {
+
             this.setState({
                 placeId: this.props.inPlace.placeId
             }, this.loadCommands())
         }
     }
-    
+
     handleChange = (e) => {
         this.setState(handleInputChange(e))
     }
 
-    handleCommand = (e) => {
+    handleCommand = async (e) => {
         e.preventDefault()
         const input = this.state.currentInput
         const inputParts = input.split(" ")
@@ -58,20 +70,22 @@ class Cli extends React.Component {
         
         const action = executeCommand[cmdString]
         if (typeof(action) === 'function') {
+        let getResult = await action(this.props.inPlace, inputParts).then(result => result)
         let result
 
         if (this.state.results.length === 0)
-            result = action(this.props.inPlace, inputParts)
+            result = getResult
         else
         result = 
 `${this.state.results}
-${action(this.props.inPlace, inputParts)}`
+${getResult}`
         this.setState({
             results: result,
             currentInput: "",
             loadCommands: true
         })
         } else if (typeof(action) === 'object') {
+            console.log(action)
             const newPlaceId = action.placeId
             const newUser = this.props.inUser
             newUser.stateData.currentRoom = newPlaceId

@@ -24,5 +24,7 @@ export const Place = {
     spaceId: 0,
     title: "",
     description: "",
-    exits: null
+    exits: null,
+    poi: null,
+    objects: null
 }

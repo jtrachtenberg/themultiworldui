@@ -1,4 +1,4 @@
-const wait = () => {
+const wait = async () => {
     return "Time passes."
 }
 
