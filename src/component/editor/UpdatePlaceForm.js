@@ -20,14 +20,9 @@ class UpdatePlaceForm extends React.Component {
         }
     }
 
-    componentDidMount() {
-        console.log(this.props.inPlace)
-    }
-    
     componentDidUpdate() {
         var inPlace = this.state.place
         if (inPlace !== this.props.inPlace) {
-            console.log(inPlace)
             this.setState({
                 place: this.props.inPlace,
                 title: this.props.inPlace.title,
@@ -63,7 +58,6 @@ class UpdatePlaceForm extends React.Component {
         this.setState({
             disabled: true
         })
-        console.log('handleSubmit')
         const place = this.state.place
         place.title = this.state.title
         place.description = this.state.description
@@ -88,7 +82,6 @@ class UpdatePlaceForm extends React.Component {
     }
 
     formatPoi = () => {
-        console.log(this.props.inPlace)
         if (Array.isArray(this.props.inPlace.poi))
         return this.props.inPlace.poi.map((value,i) => 
         <section key={i}><label>Keyword {value.word}</label>

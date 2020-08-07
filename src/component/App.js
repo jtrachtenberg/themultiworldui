@@ -18,21 +18,9 @@ constructor(props) {
     var user = JSON.parse(localStorage.getItem('user'))
     if (user === null || typeof(user) === "undefined" ) user = User
     this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1, space: Space, place: Place}
-    console.log(this.state.place)
-}
-
-componentDidMount() {
-  console.log('mount')
-  console.log(this.state.place)
-}
-
-componentDidUpdate() {
-  console.log(this.state.place)
 }
 
 childUpdateHandler = (inObj, type) => {
-  console.log(inObj)
-  console.log(type)
   this.setState({
     [type]: inObj
   })

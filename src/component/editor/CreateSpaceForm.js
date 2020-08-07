@@ -22,8 +22,6 @@ class CreateSpaceForm extends React.Component {
                 user: this.props.inUser,
             })
         var inSpace = this.state.space
-        console.log(inSpace)
-        console.log(this.props.inSpace)
         if (inSpace.spaceId !== this.props.inSpace.spaceId)
             this.setState({
                 space: this.props.inSpace,
@@ -35,7 +33,6 @@ class CreateSpaceForm extends React.Component {
     }
 
     handleSubmit = (e) => {
-        console.log('handleSubmit')
         const space = this.state.space
         space.title = this.state.title
         space.description = this.state.description

@@ -26,7 +26,6 @@ class LoadSpacesForm extends React.Component {
         return this.props.spaces.map((value,i) => <option key={i} value={value.spaceId}>{value.title}</option>)
     }
     handleChange = (e) => {
-        console.log(e.target.value)
         this.props.loadSpace(Number(e.target.value))
     }
 

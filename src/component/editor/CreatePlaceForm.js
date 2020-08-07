@@ -15,14 +15,9 @@ class CreatePlaceForm extends React.Component {
         }
     }
 
-    componentDidMount() {
-        console.log(this.props.inPlace)
-    }
-    
     componentDidUpdate() {
         var inPlace = this.state.place
         if (inPlace.placeId !== this.props.inPlace.placeId) {
-            console.log(inPlace)
             this.setState({
                 place: this.props.inPlace,
             })
@@ -35,7 +30,6 @@ class CreatePlaceForm extends React.Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        console.log('handleSubmit')
         const place = this.state.place
         const prevPlace = this.props.inPlace
         place.title = this.state.title

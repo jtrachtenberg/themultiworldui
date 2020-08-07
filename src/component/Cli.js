@@ -16,7 +16,6 @@ class Cli extends React.Component {
         for (const [key, value] of Object.entries(GlobalCommands)) {
             commands.push({[key]: value})
         }
-        console.log(typeof(this.props.inPlace.exits))
         if (Array.isArray(this.props.inPlace.exits)) {
 
         const exits = this.props.inPlace.exits
@@ -54,16 +53,17 @@ class Cli extends React.Component {
         e.preventDefault()
         const input = this.state.currentInput
         const inputParts = input.split(" ")
-        const cmdString = inputParts[0]
-
+        let cmdString = inputParts[0]
         const availableCommands = this.state.availableCommands
 
         const executeCommand = availableCommands.find((cmd) => {
             let cmdCheck
             Object.keys(cmd)
                 .forEach(function eachKey(key) { 
-                    if (key === cmdString) {
+                    if (key.toLowerCase() === cmdString.toLowerCase()) {
+                        //reset incase of case mismatch
                         cmdCheck = key
+                        cmdString = key
                     }
                 })
                 return cmdCheck === cmdString
@@ -88,7 +88,6 @@ ${getResult}`
             this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
         })
         } else if (typeof(action) === 'object') {//exit
-            console.log(action)
             const newPlaceId = action.placeId
             const newUser = this.props.inUser
             newUser.stateData.currentRoom = newPlaceId

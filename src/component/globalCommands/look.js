@@ -36,7 +36,6 @@ function setResponse(resolve, msg) {
 function checkPoi(poi,target,resolve,reject) {
     if (Array.isArray(poi))
     poi.forEach(poi => {
-        console.log(poi)
         if (poi.word.toLowerCase() === target.toLowerCase()) return resolve(poi.description)
     })
     const article = target.slice(-1) === 's' ? 'are' : 'is'

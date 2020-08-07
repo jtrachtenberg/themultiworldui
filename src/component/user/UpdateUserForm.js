@@ -15,8 +15,6 @@ class UpdateUserForm extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log(this.props.inUser)
-        console.log(this.state.user)
         if (this.props.inUser.userId !== this.state.user.userId || this.state.userName !== this.state.user.userName)
             this.setState({
                 user: this.props.inUser,
