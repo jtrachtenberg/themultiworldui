@@ -46,7 +46,7 @@ function checkExits(exits,target,resolve, reject) {
     if (Array.isArray(exits))
     exits.forEach(exit => {
         for (const [key,value] of Object.entries(exit)) {
-            if (key === target) {
+            if (key.toLowerCase() === target.toLowerCase()) {
                 return resolve(value.title)
             }
         }

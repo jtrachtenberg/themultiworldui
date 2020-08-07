@@ -8,14 +8,23 @@ class Editor extends React.Component {
   constructor(props) {
       super(props)
       this.state = {userSpaces: null, space: this.props.inSpace, user: props.inUser, place: this.props.inPlace, alertMessage: "", alertVis: false, alertSuccess: true, spaces: null}
+      console.log(this.state.place)
   }  
 
   componentDidMount() {
+    console.log(this.props.inPlace)
     if (this.props.inUser && this.props.inUser.userId && this.props.inUser.userId > 0)
       this.loadSpaces()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log(this.props.inPlace)
+    console.log(this.state.place)
+    console.log(prevProps)
+    console.log(this.props)
+    Object.entries(this.props).forEach(([key, val]) =>
+     prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    );
       if (this.props.inUser.userId > 0 && (this.state.spaces === null || typeof(this.state.spaces) === 'undefined') ) {
         console.log('loadSpaces')
         this.loadSpaces()
@@ -29,10 +38,13 @@ class Editor extends React.Component {
       var inPlace = this.props.inPlace
       console.log(inPlace)
       console.log(this.state.place)
-      if (inPlace !== this.state.place)
+      if (inPlace !== this.state.place) {
+        console.log('setting place')
+        console.log(this.props.inPlace)
           this.setState({
               place: this.props.inPlace
           })  
+      }
   }
 
   loadSpace = (inSpaceId) => {
@@ -64,6 +76,7 @@ class Editor extends React.Component {
   }
 
   placeHandler = (place) => {
+    console.log(place)
     const user = this.props.inUser
     user.stateData.currentRoom = place.placeId
     user.stateData.currentSpace = place.spaceId

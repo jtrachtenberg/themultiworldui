@@ -6,11 +6,12 @@ import * as GlobalCommands from './globalCommands/globalCommands'
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: 0}
+        this.state = {loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: 0, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
     loadCommands = () => {
+
         let commands = []
         for (const [key, value] of Object.entries(GlobalCommands)) {
             commands.push({[key]: value})
@@ -36,13 +37,12 @@ class Cli extends React.Component {
         })
     }
 
-    componentDidUpdate() {
-        console.log(`${this.state.placeId}:${this.props.inPlace.placeId}`)
-        if (this.state.loadCommands && this.props.inPlace.placeId !== this.state.placeId) {
-
+    componentDidUpdate(prevProps) {
+        if (prevProps.inPlace !== this.state.place && this.state.loadCommands) {
             this.setState({
-                placeId: this.props.inPlace.placeId
-            }, this.loadCommands())
+                placeId: this.props.inPlace.placeId,
+                place: this.props.place
+            },this.loadCommands())
         }
     }
 
@@ -68,9 +68,9 @@ class Cli extends React.Component {
                 })
                 return cmdCheck === cmdString
         })
-        
+        if (typeof(executeCommand) !== 'undefined') {
         const action = executeCommand[cmdString]
-        if (typeof(action) === 'function') {
+        if (typeof(action) === 'function') {//Global command
         let getResult = await action(this.props.inPlace, inputParts).then(result => result)
         let result
 
@@ -87,7 +87,7 @@ ${getResult}`
         },() => {
             this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
         })
-        } else if (typeof(action) === 'object') {
+        } else if (typeof(action) === 'object') {//exit
             console.log(action)
             const newPlaceId = action.placeId
             const newUser = this.props.inUser
@@ -97,6 +97,18 @@ ${getResult}`
                 currentInput: "",
                 loadCommands: true
             },this.props.updateUserHandler(newUser))
+        }
+        } else {//invalid command
+            let result
+            if (this.state.results.length === 0)
+                result = "Nothing to do here."
+             else
+                result = 
+`${this.state.results}
+Nothing to do here.`
+            this.setState({
+                results: result
+            })
         }
     }
 

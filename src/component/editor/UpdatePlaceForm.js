@@ -20,6 +20,10 @@ class UpdatePlaceForm extends React.Component {
         }
     }
 
+    componentDidMount() {
+        console.log(this.props.inPlace)
+    }
+    
     componentDidUpdate() {
         var inPlace = this.state.place
         if (inPlace !== this.props.inPlace) {
@@ -65,7 +69,7 @@ class UpdatePlaceForm extends React.Component {
         place.description = this.state.description
         place.isRoot = this.state.isRoot
         place.spaceId = this.props.inSpace.spaceId
-        place.exits = []
+        place.exits = this.props.inPlace.exits
 
         const poi = []
         this.state.poi.forEach((element) => {

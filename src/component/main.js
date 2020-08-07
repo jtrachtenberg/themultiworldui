@@ -4,17 +4,14 @@ import {Place} from './utils/defaultObjects'
 class Main extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {place: Place}
+        this.state = {place: this.props.inPlace}
     }  
 
     componentDidMount() {
-      console.log('didMount')
           this.loadPlace()
       }
 
     componentDidUpdate() {
-      console.log('didUpdate')
-      console.log(this.props.inUser)
       let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : 0)
       const oldRoom = typeof(this.props.inPlace) === 'undefined' ? 0 : this.props.inPlace.placeId
       if (Number(oldRoom) !== Number(currentRoom)) {
@@ -22,19 +19,17 @@ class Main extends React.Component {
       }
     }
 
-    loadPlace = () => {
+    loadPlace = async () => {
         const postUrl = "http://localhost:7555/loadPlace"
-        console.log(this.props.inUser.stateData)
         const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : 0)
-        const place = Place
-        place.placeId = currentRoom
+        const tmpPlace = {placeId: currentRoom}
  
-        fetch(postUrl, {
+        await fetch(postUrl, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(place)
+          body: JSON.stringify(tmpPlace)
         })
         .then(response => response.json())
         .then(response => {

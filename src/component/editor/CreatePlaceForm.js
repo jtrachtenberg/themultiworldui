@@ -15,6 +15,10 @@ class CreatePlaceForm extends React.Component {
         }
     }
 
+    componentDidMount() {
+        console.log(this.props.inPlace)
+    }
+    
     componentDidUpdate() {
         var inPlace = this.state.place
         if (inPlace.placeId !== this.props.inPlace.placeId) {
@@ -33,16 +37,24 @@ class CreatePlaceForm extends React.Component {
         e.preventDefault();
         console.log('handleSubmit')
         const place = this.state.place
+        const prevPlace = this.props.inPlace
         place.title = this.state.title
         place.description = this.state.description
         place.isRoot = this.state.isRoot
         place.spaceId = this.props.inSpace.spaceId
-        place.exits = []
+        let exits = []
+        const cmd = prevPlace.split(" ")[0]
+        if (this.state.isExit) {
+            exits.push({[cmd]:{placeId:prevPlace.placeId,title:prevPlace.title}})
+        }
+        place.exits = exits
+
         createHandler("place", place, this.props.placeHandler)
         this.setState({
             title: "",
             description: "",
-            isRoot: false
+            isRoot: false,
+            isExit: true
         })
     }
 
@@ -77,7 +89,9 @@ class CreatePlaceForm extends React.Component {
                 type="checkbox"
                 checked={this.state.isRoot}
                 onChange={this.handleChange} />
-            </label>      
+            </label>
+            <label>Add as Exit?</label>
+            <input name="isExit" type="checkbox" checked={this.state.isExit} onChange={this.handleChange} />      
             <input type="submit" value="Submit" />
             </form>
             </div>

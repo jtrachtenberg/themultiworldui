@@ -55,7 +55,7 @@ class LoginUserForm extends React.Component {
         e.preventDefault();
         console.log('logout')
         const blankUser = User
-        this.props.nameHandler(blankUser)
+        this.props.loginHandler(blankUser)
     }
     render() {
         let form;
