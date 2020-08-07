@@ -9,18 +9,28 @@ class UpdatePlaceForm extends React.Component {
             user: props.inUser,
             space: props.inSpace, 
             place: props.inPlace, 
+            places: [],
             title: props.inPlace.title,
             description: props.inPlace.description,
             isRoot: props.inPlace.isRoot,
             isExit: true,
             exits: props.inPlace.exits,
+            addExit: null,
+            direction: null,
             poi: props.inPlace.poi,
             objects: props.inPlace.objects,
             disabled: false
         }
     }
 
-    componentDidUpdate() {
+    componentDidMount() {
+        this.loadPlaces()
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.inSpace !== this.props.inSpace) {
+            this.loadPlaces()
+        }
         var inPlace = this.state.place
         if (inPlace !== this.props.inPlace) {
             this.setState({
@@ -39,12 +49,34 @@ class UpdatePlaceForm extends React.Component {
                         stateArray[element.word] = element.description
                         //stateArray.push({[element.word]:[element.description]})
                     })
-                    this.setState({...stateArray})
+                    this.setState({...stateArray},this.loadPlaces())
                 }
                     
             })
         }
     }
+
+    loadPlaces = () => {
+        const postUrl = "http://localhost:7555/loadPlaces"
+        const postData = { spaceId: this.props.inSpace.spaceId}
+        //const place = this.props.inPlace
+        fetch(postUrl, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData)
+        }).then(response => response.json())
+        .then (response => {
+          //remove current place
+          /*response = response.filter(function( obj ) {
+            return obj.placeId !== place.placeId;
+          });*/  
+          this.setState({
+            places: response
+          })
+        })
+      }
 
     handleChange = (e) => {
         this.setState(handleInputChange(e))
@@ -65,12 +97,27 @@ class UpdatePlaceForm extends React.Component {
         place.spaceId = this.props.inSpace.spaceId
         place.exits = this.props.inPlace.exits
 
-        const poi = []
-        this.state.poi.forEach((element) => {
-            element.description = this.state[element.word]
-            poi.push(element)
-        })
-        place.poi = poi
+        if (this.state.addExit !== null) {
+            const tmpArray = place.exits||[]
+            const placeId = this.state.addExit
+            console.log(placeId)
+            const exit = this.state.places.find((element) => {
+                return Number(element.placeId) === Number(placeId)
+            })
+            console.log(exit)
+            const title = exit.title
+            const cmd = this.state.direction||title.split(" ")[0]
+            tmpArray.push({[cmd]:{title:title,placeId:placeId}})
+            place.exits = tmpArray
+        }
+        if (Array.isArray(this.state.poi)) {
+            const poi = []
+            this.state.poi.forEach((element) => {
+                element.description = this.state[element.word]
+                poi.push(element)
+            })
+            place.poi = poi
+        }
         updateHandler("place", place, this.props.placeHandler)
         this.setState({
             disabled: false
@@ -89,6 +136,12 @@ class UpdatePlaceForm extends React.Component {
         </section>
         )
     }
+
+    formatPlaces = () => {
+        if (this.state.places)
+        return this.state.places.map((value,i) => Number(value.placeId) === Number(this.props.inPlace.placeId) ? "" : <option key={i} value={value.placeId}>{value.title}</option>)
+    }
+
     render() {
         if (this.props.inSpace === null || typeof(this.props.inSpace) == 'undefined' || this.props.inSpace.spaceId === 0)
         return (
@@ -120,6 +173,15 @@ class UpdatePlaceForm extends React.Component {
             </label>
             <label>Add as Exit?</label>
             <input name="isExit" type="checkbox" checked={this.state.isExit} onChange={this.handleChange} />
+            </section>
+            <section>
+                <label>Add an Exit?</label>
+                <select name="addExit" defaultValue="-1" onChange={this.handleChange}>
+                     <option value="-1" disabled>Select a Place to exit</option>
+                     {this.formatPlaces()}
+                 </select>
+                 <label>Direction for Exit?</label>
+                 <input name="direction" type="text" onChange={this.handleChange} />
             </section>
             <section>
                 {this.formatPoi()}

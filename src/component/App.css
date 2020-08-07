@@ -245,3 +245,14 @@ form#Cli {
   overflow: scroll;
   margin-left: 6px;
 }
+
+.exits ul {
+  list-style: none;
+  text-align: left;
+  width: max-content;
+  padding-left: 0px;
+}
+
+.exits ul li {
+  margin-bottom: 6px;
+}

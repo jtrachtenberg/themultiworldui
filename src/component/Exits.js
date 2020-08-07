@@ -31,14 +31,14 @@ class Exits extends React.Component {
          }
         })
 
-    return exitsArray.map((exit,i) => <span key={exit.placeId}>{exit.name} - {exit.title}</span>)
+    return exitsArray.map((exit,i) => <li key={exit.placeId}>{exit.name} - {exit.title}</li>)
     }
 
     render() {
         return (
             <div>
             <div>{setFormHeader("Exits", this.handleHeaderClick)}</div>
-            <div>{this.formatExits()}</div>
+            <div><ul>{this.formatExits()}</ul></div>
             </div>
         )
     }
