@@ -1,5 +1,6 @@
 import React from 'react';
 import {setFormHeader, handleInputChange, updateHandler, toggleIsVis} from '../utils/formUtils'
+import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
 
 class UpdatePlaceForm extends React.Component {
     constructor(props) {
@@ -19,7 +20,8 @@ class UpdatePlaceForm extends React.Component {
             direction: null,
             poi: props.inPlace.poi,
             objects: props.inPlace.objects,
-            disabled: false
+            disabled: false,
+            imageInfo: null
         }
     }
 
@@ -78,6 +80,10 @@ class UpdatePlaceForm extends React.Component {
         })
       }
 
+    handleImageChange = (e) => {
+
+    }
+    
     handleChange = (e) => {
         this.setState(handleInputChange(e))
     }
@@ -142,6 +148,10 @@ class UpdatePlaceForm extends React.Component {
         return this.state.places.map((value,i) => Number(value.placeId) === Number(this.props.inPlace.placeId) ? "" : <option key={i} value={value.placeId}>{value.title}</option>)
     }
 
+    handleModalClick = () => {
+        this.props.modalHandler()
+    }
+
     render() {
         if (this.props.inSpace === null || typeof(this.props.inSpace) == 'undefined' || this.props.inSpace.spaceId === 0)
         return (
@@ -156,6 +166,9 @@ class UpdatePlaceForm extends React.Component {
             <div>{setFormHeader("Update Place", this.handleHeaderClick)}</div>
             <div>
             <form className={this.state.vis ? "n" : "invis"} onSubmit={this.handleSubmit}>
+                <section>
+                    <span>Add Image <ImageSearchIcon onClick={this.handleModalClick}/></span>
+                </section>
                 <section>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />

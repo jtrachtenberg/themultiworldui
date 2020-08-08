@@ -11,10 +11,17 @@ class UpdateUserForm extends React.Component {
             email: props.inUser.email,
             userId: props.inUser.userId,
             description: props.inUser.description,
-            isRoot: props.inUser.isRoot}
+            isRoot: props.inUser.isRoot,
+            modalReturn: props.modalReturn
+        }
     }
 
     componentDidUpdate() {
+        if (this.props.modalReturn !== this.state.modalReturn) {
+            this.setState({
+                modalReturn: this.props.modalReturn
+            },this.handleModalData())
+        }
         if (this.props.inUser.userId !== this.state.user.userId || this.state.userName !== this.state.user.userName)
             this.setState({
                 user: this.props.inUser,
@@ -28,6 +35,10 @@ class UpdateUserForm extends React.Component {
 
     handleChange = (e) => {
         this.setState(handleInputChange(e))
+    }
+
+    handleModalData = () => {
+        console.log(this.state.modalReturn)
     }
 
     handleHeaderClick = (e) => {

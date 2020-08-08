@@ -9,6 +9,8 @@ import Cli from './Cli'
 import Exits from './Exits'
 import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
+import {Modal} from './utils/Modal'
+import Unsplash from './editor/Unsplash'
 
 class App extends React.Component {
 
@@ -17,9 +19,34 @@ constructor(props) {
     //check if user exists in local storage, else use default state
     var user = JSON.parse(localStorage.getItem('user'))
     if (user === null || typeof(user) === "undefined" ) user = User
-    this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1, space: Space, place: Place}
+    this.state = {
+      user: user, 
+      alertMessage: "", 
+      alertVis: false, 
+      alertSuccess: true, 
+      alertId: 1, 
+      space: Space, 
+      place: Place,
+      showModal: false,
+      modalType: null,
+      modalReturn: null
+    }
 }
 
+showModal = () => {
+  this.setState({ showModal: true });
+};
+
+hideModal = (e) => {
+  e = e||{}
+  this.setState({ showModal: false, modalReturn: e });
+};
+
+formatModal = () => {
+  if (this.state.modalType === 'Unsplash') {
+    return <Unsplash modalClose={this.hideModal} />
+  }
+}
 childUpdateHandler = (inObj, type, message) => {
   message = message||null
   if (message)
@@ -130,6 +157,9 @@ addUserHandler = (user) => {
 render() {
   return (
     <div className="App">
+        <Modal handleClose={this.hideModal} show={this.state.showModal} >
+          {this.formatModal()}
+        </Modal>
         <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>
       <div className="Header">
       <Title inUser={this.state.user} />
@@ -140,7 +170,7 @@ render() {
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} nameHandler={this.addUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><Editor inUser={this.state.user} userHandler={this.updateUserHandler} childUpdateHandler={this.childUpdateHandler} inSpace={this.state.space} inPlace={this.state.place} /></li>
+        <li><Editor inUser={this.state.user} userHandler={this.updateUserHandler} childUpdateHandler={this.childUpdateHandler} inSpace={this.state.space} inPlace={this.state.place} modalReturn={this.state.modalReturn} modalClose={this.modalClose} /></li>
         </ul>
       </div>
       <div className="main midCol">

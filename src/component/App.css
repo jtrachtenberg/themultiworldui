@@ -3,6 +3,35 @@
 .invis {
   display:  none;
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-main {
+  position:fixed;
+  background: white;
+  width: 80%;
+  height: auto;
+  max-height: 80vh;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+}
+
+.display-block {
+  display: block;
+}
+
+.display-none {
+  display: none;
+}
+
 #root {
   width: 100%;
   height: 100%;
@@ -186,6 +215,10 @@ button[name="send"] {
   }
 }
 
+form section span {
+  align-items: center;
+}
+
 .leftNav textarea {
   min-width: 200px;
   min-height: 100px;
@@ -208,6 +241,24 @@ button[name="send"] {
   background-color: rgba(232,234,237,.08)
 }
 
+span.attribution {
+  display: grid;
+  font-size: .5em;
+}
+
+div.searchImage {
+  float:left;
+  width: 200px;
+  text-align: center;
+  border: 1px solid black;
+  margin: 0px 2px 0px 2px;
+}
+
+div.imageList {
+  display: flex;
+  overflow: scroll;
+}
+
 .main {
   width: auto;
 }
@@ -216,6 +267,7 @@ button[name="send"] {
   display: flex;
   position: fixed;
   bottom: 25px;
+  z-index: -10;
 }
 .main input {
   width: 60vw;

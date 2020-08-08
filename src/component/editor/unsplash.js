@@ -1,11 +1,12 @@
-import React from './react'
+import React from 'react'
 import {setFormHeader, toggleIsVis, handleInputChange} from '../utils/formUtils'
 
-class unsplash extends React.Component {
+//const CLIENT_ID = "T96xrE-u_EqE-WdvwR47aNL0QWd_CNAsZQKr6OJ0yF4"
+
+class Unsplash extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            vis: false,
             search: "", 
             page: 1,
             perpage: 10,
@@ -14,14 +15,32 @@ class unsplash extends React.Component {
     }
 
     componentDidMount() {
-
     }
 
+    formatPlaces = () => {
+        if (this.state.places)
+        return this.state.places.map((value,i) => Number(value.placeId) === Number(this.props.inPlace.placeId) ? "" : <option key={i} value={value.placeId}>{value.title}</option>)
+    }
+    handleImageClick = (e) => {
+        const target = e.target
+        console.log(target.longdesc)
+        console.log(target.id)
+        const retObj = {
+            src: e.target.src,
+            id: e.target.id,
+            apilink: e.target.alt,
+            alt: e.target.title
+        }
+        this.props.modalClose(retObj)
+    }
     formatResults = () => {
-
+        const results = this.state.results.results||null
+        if (Array.isArray(results)) {
+        return results.map((value,i) => <div className="searchImage" key={value.id}><img id={value.id} alt={value.links.download_location} title={value.alt_description} src={value.urls.thumb} onClick={this.handleImageClick} /><span className="attribution">Photo by <a rel="noopener noreferrer" target="_blank" href={value.user.links.html+"?utm_source=themulti.world&utm_medium=referral"}>{value.user.name}</a> on <a rel="noopener noreferrer" target="_blank" href={"https://unsplash.com?utm_source=themulti.world&utm_medium=referral"}>Unsplash</a></span></div>)
+        }
     }
     loadResults = () => {
-        const postUrl = "http://localhost:3001/unsplash/loadPlaces"
+        const postUrl = "http://localhost:3001/unsplash/search"
         const postData = { keyword: this.state.search, page: this.state.page, perpage: this.state.perpage}
         //const place = this.props.inPlace
         fetch(postUrl, {
@@ -32,12 +51,9 @@ class unsplash extends React.Component {
           body: JSON.stringify(postData)
         }).then(response => response.json())
         .then (response => {
-          //remove current place
-          /*response = response.filter(function( obj ) {
-            return obj.placeId !== place.placeId;
-          });*/  
+          console.log(response)
           this.setState({
-            places: response
+            results: response
           })
         })
       }
@@ -50,15 +66,20 @@ class unsplash extends React.Component {
         this.setState(toggleIsVis(this.state))
     }
 
+    clickHandler = (e) => {
+        this.loadResults()
+    }
+
     render() {
         return (
             <div>
                 <div>{setFormHeader("Choose an Image",this.handleHeaderClick)}</div>
-                <div>{this.formatResults()}</div>
+                <div className="imageList">{this.formatResults()}</div>
                 <div><input name="search" id="search" value={this.state.search} onChange={this.handleChange} /></div>
+                <button name="search" id="search" value="search" onClick={this.clickHandler}>Search</button>
             </div>
         )
     }
 }
 
-export default unsplash
+export default Unsplash
