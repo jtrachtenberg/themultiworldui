@@ -66,9 +66,14 @@ class Editor extends React.Component {
     user.stateData.currentRoom = place.placeId
     user.stateData.currentSpace = place.spaceId
     this.props.userHandler(user)
+    let message
+    if (place.failed)
+      message = `Update to ${place.title} failed.`
+    else
+      message = `${place.title} updated`
     this.setState({
       place: place
-    }, this.props.childUpdateHandler(place,'place'))
+    }, this.props.childUpdateHandler(place,'place',message))
   }
 
   spaceHandler = (space) => {

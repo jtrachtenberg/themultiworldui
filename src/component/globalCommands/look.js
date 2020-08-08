@@ -17,9 +17,9 @@ const look = async (inObj, inCmd) => {
         const target = inCmd[1]
         try {
         //Check for valid look targets in the place
-        retVal = await new Promise((resolve, reject) => checkExits(exits,target,resolve, reject))
+        retVal = await new Promise((resolve, reject) => checkPoi(poi,target,resolve, reject))
         if (retVal === null)
-            retVal = await new Promise((resolve, reject) => checkPoi(poi,target,resolve, reject))
+            retVal = await new Promise((resolve, reject) => checkExits(exits,target,resolve, reject))
 
         //retVal = await checkExits(exits,target)  
         
@@ -38,8 +38,7 @@ function checkPoi(poi,target,resolve,reject) {
     poi.forEach(poi => {
         if (poi.word.toLowerCase() === target.toLowerCase()) return resolve(poi.description)
     })
-    const article = target.slice(-1) === 's' ? 'are' : 'is'
-    return resolve(`There ${article} no ${target} here.`)
+    return resolve(null)
 }
 function checkExits(exits,target,resolve, reject) {
     if (Array.isArray(exits))
@@ -50,6 +49,7 @@ function checkExits(exits,target,resolve, reject) {
             }
         }
     })
-    return resolve(null)
+    const article = target.slice(-1) === 's' ? 'are' : 'is'
+    return resolve(`There ${article} no ${target} here.`)
 }
 export default look

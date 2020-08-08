@@ -20,7 +20,17 @@ constructor(props) {
     this.state = {user: user, alertMessage: "", alertVis: false, alertSuccess: true, alertId: 1, space: Space, place: Place}
 }
 
-childUpdateHandler = (inObj, type) => {
+childUpdateHandler = (inObj, type, message) => {
+  message = message||null
+  if (message)
+  this.setState({
+    [type]: inObj,
+    alertMessage: message,
+    alertVis: true,
+    alertSuccess: true,
+    alertId: Math.random().toString()
+  })
+  else
   this.setState({
     [type]: inObj
   })

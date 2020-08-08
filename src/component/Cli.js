@@ -37,9 +37,6 @@ class Cli extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log(prevProps.inPlace)
-        console.log(this.props.inPlace)
-        console.log(this.state.loadCommands)
         if (prevProps.inPlace !== this.props.inPlace && this.state.loadCommands) {
             this.setState({
                 placeId: this.props.inPlace.placeId,
