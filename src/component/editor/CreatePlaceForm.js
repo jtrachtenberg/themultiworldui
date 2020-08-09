@@ -1,5 +1,6 @@
 import React from 'react';
 import {setFormHeader, handleInputChange, createHandler, toggleIsVis} from '../utils/formUtils'
+import * as Constants from '../constants'
 
 class CreatePlaceForm extends React.Component {
     constructor(props) {
@@ -11,7 +12,9 @@ class CreatePlaceForm extends React.Component {
             place: props.inPlace, 
             title: props.inPlace.title,
             description: props.inPlace.description,
-            isRoot: props.inPlace.isRoot
+            isRoot: props.inPlace.isRoot,
+            isExit: false,
+            cmd: ""
         }
     }
 
@@ -37,7 +40,7 @@ class CreatePlaceForm extends React.Component {
         place.isRoot = this.state.isRoot
         place.spaceId = this.props.inSpace.spaceId
         let exits = []
-        const cmd = prevPlace.title.split(" ")[0]
+        const cmd = this.state.cmd.length > 0 ? this.state.cmd : prevPlace.title.split(" ")[0]
         if (this.state.isExit) {
             exits.push({[cmd]:{placeId:prevPlace.placeId,title:prevPlace.title}})
         }
@@ -57,7 +60,11 @@ class CreatePlaceForm extends React.Component {
     }
 
     render() {
-        if (this.props.inSpace === null || typeof(this.props.inSpace) == 'undefined' || this.props.inSpace.spaceId === 0)
+        if (this.props.inUser.userId < 1)
+        return (
+        <div></div>
+        )
+        else if (this.props.inSpace === null || typeof(this.props.inSpace) == 'undefined' || this.props.inSpace.spaceId === 0 || this.props.inSpace.spaceId === Constants.DEFAULT_SPACE)
         return (
         <div>
         <div>{setFormHeader("Create Place")}</div>
@@ -80,12 +87,14 @@ class CreatePlaceForm extends React.Component {
             Is Root?:
             <input
                 name="isRoot"
-                type="checkbox"
+                type="checkbox" 
+                value={this.state.isRoot}
                 checked={this.state.isRoot}
                 onChange={this.handleChange} />
             </label>
             <label>Add as Exit?</label>
-            <input name="isExit" type="checkbox" checked={this.state.isExit} onChange={this.handleChange} />      
+            <input name="isExit" type="checkbox" value={this.state.isExit} checked={this.state.isExit} onChange={this.handleChange} />  
+            <label>Exit Command</label><input name="cmd"  type="text" value={this.state.cmd} onChange={this.handleChange}  /> 
             <input type="submit" value="Submit" />
             </form>
             </div>

@@ -2,11 +2,12 @@ import React from 'react'
 import {handleInputChange} from './utils/formUtils'
 import {downArrowBlack} from './utils/svgDefaults'
 import * as GlobalCommands from './globalCommands/globalCommands'
+import * as Constants from './constants'
 
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: 0, place: this.props.inPlace}
+        this.state = {loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
@@ -37,7 +38,9 @@ class Cli extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.inPlace !== this.props.inPlace) {
+        console.log(prevProps.inPlace)
+        console.log(this.props.inPlace)
+        if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
             this.setState({
                 placeId: this.props.inPlace.placeId,
                 place: this.props.place

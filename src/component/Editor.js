@@ -44,6 +44,8 @@ class Editor extends React.Component {
   }
 
   loadSpaces = () => {
+    console.log('loadSpaces')
+    console.log(this.props.inUser.userId)
     const postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loadSpaces`
     const postData = { userId: this.props.inUser.userId}
     if (this.props.inUser.userId > 0)
@@ -55,6 +57,7 @@ class Editor extends React.Component {
       body: JSON.stringify(postData)
     }).then(response => response.json())
     .then (response => {
+      console.log(response)
       this.setState({
         spaces: response
       })
@@ -77,24 +80,16 @@ class Editor extends React.Component {
   }
 
   spaceHandler = (space) => {
-    let postUrl
-    if (space.spaceId === 0)
-      postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/addSpace`
+    let message
+    if (space.failed)
+      message = `Update to ${space.title} failed.`
     else
-      postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/updateSpace`
-    fetch(postUrl, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(space)
-    })
-    .then(response => response.json())
-    .then(response => {
-      space = response
-      this.setState ({
-          space: space
-      })
+      message = `${space.title} updated`
+    this.setState({
+      space: space
+    }, () => {
+      this.props.childUpdateHandler(space,'space',message)
+      this.loadSpaces()
     })
   }   
 

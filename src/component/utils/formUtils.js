@@ -61,6 +61,7 @@ export const createHandler = (type, obj, handler) => {
   .then(response => {
     const idName = type+"Id"
     obj[idName] = response[0]
+    console.log(obj)
     handler(obj)
   })
   .catch(err => {

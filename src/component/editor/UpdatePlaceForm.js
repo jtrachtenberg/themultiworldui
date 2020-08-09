@@ -157,7 +157,11 @@ class UpdatePlaceForm extends React.Component {
     }
 
     render() {
-        if (this.props.inSpace === null || typeof(this.props.inSpace) == 'undefined' || this.props.inSpace.spaceId === 0)
+        if (this.props.inUser.userId < 1)
+        return (
+        <div></div>
+        )
+        else if (this.props.inSpace === null || typeof(this.props.inSpace) == 'undefined' || this.props.inSpace.spaceId === 0)
         return (
         <div>
         <div>{setFormHeader("Create Place")}</div>

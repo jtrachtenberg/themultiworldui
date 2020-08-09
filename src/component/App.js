@@ -12,6 +12,7 @@ import {Space,Place} from './utils/defaultObjects'
 import {Modal} from './utils/Modal'
 import Unsplash from './editor/Unsplash'
 import * as Constants from './constants'
+import {userStateData} from './utils/defaultObjects'
 
 class App extends React.Component {
 
@@ -127,10 +128,7 @@ addUserHandler = (user) => {
     if (user.description === null) user.description = ''
     if (typeof(user.password) !== 'undefined') delete user.password 
     if (user.stateData === null || typeof(user.stateData) === 'undefined') {
-      const stateData = {
-        currentRoom: 0,
-        currentSpace: 0
-      }
+      const stateData = userStateData
       user.stateData = stateData
     }
     localStorage.setItem('user', JSON.stringify(user));

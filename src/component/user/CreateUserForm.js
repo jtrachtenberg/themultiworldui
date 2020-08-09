@@ -1,7 +1,7 @@
 import React from 'react';
 import {setFormHeader} from '../utils/formUtils'
 import {handleInputChange} from '../utils/formUtils'
-
+import {userStateData} from '../utils/defaultObjects'
 class CreateUserForm extends React.Component {
     constructor(props) {
         super(props)
@@ -28,10 +28,7 @@ class CreateUserForm extends React.Component {
         this.user.userName = this.state.userName
         this.user.email = this.state.email
         this.user.password = this.state.password
-        const stateData = {
-            currentRoom: 0,
-            currentSpace: 0
-          }
+        const stateData = userStateData
         this.user.stateData = stateData
         this.props.nameHandler(this.user)
         e.preventDefault();

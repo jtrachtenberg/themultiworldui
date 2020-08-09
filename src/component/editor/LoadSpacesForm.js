@@ -11,7 +11,8 @@ class LoadSpacesForm extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.props.inUser.userId > 0 && (typeof(this.props.spaces) !== 'undefined') && !this.state.loaded) {
+        console.log(this.props.spaces)
+        if (this.props.inUser.userId > 0 && (Array.isArray(this.props.spaces)) && this.props.spaces.length > 0 && !this.state.loaded) {
             this.setState({
                 loaded: true
             }, this.props.loadSpace(this.props.spaces[0].spaceId))
@@ -38,7 +39,7 @@ class LoadSpacesForm extends React.Component {
         return (
         <div></div>
         )
-        else
+        else if (Array.isArray(this.props.spaces) && this.props.spaces.length > 0)
         return (
         <div>
         <div>{setFormHeader("Select a space")}</div>
@@ -47,6 +48,11 @@ class LoadSpacesForm extends React.Component {
             {this.formatSpaces()}
         </select></form>
         </div>
+        ) 
+        else return (
+            <div>
+                <div>{setFormHeader("No spaces created.")}</div>
+            </div>
         )
     }
 }

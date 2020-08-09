@@ -1,12 +1,12 @@
 import React from 'react';
 import {setFormHeader, handleInputChange, toggleIsVis, createHandler} from '../utils/formUtils'
+import * as Constants from '../constants'
 
 class CreateSpaceForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             vis: true,
-            user: props.inUser,
             space: props.inSpace,
             title: props.inSpace.title,
             description: props.inSpace.description,
@@ -16,11 +16,6 @@ class CreateSpaceForm extends React.Component {
     }
 
     componentDidUpdate() {
-        var inUser = this.state.user
-        if (inUser.userId !== this.props.inUser.userId)
-            this.setState({
-                user: this.props.inUser,
-            })
         var inSpace = this.state.space
         if (inSpace.spaceId !== this.props.inSpace.spaceId)
             this.setState({
@@ -47,7 +42,7 @@ class CreateSpaceForm extends React.Component {
     }
 
     render() {
-        if (this.state.space.spaceId < 1 && this.state.user.userId > 0)
+        if (this.props.inUser.userId > 0 && (this.props.inSpace.spaceId < 1 || Number(this.props.inSpace.spaceId) === Number(Constants.DEFAULT_SPACE) ) )
         return (
             <div>
             <div>{setFormHeader("Create Space", this.handleHeaderClick)}</div>
@@ -64,6 +59,7 @@ class CreateSpaceForm extends React.Component {
             <input
                 name="isRoot"
                 type="checkbox"
+                value={this.state.isRoot}
                 checked={this.state.isRoot}
                 onChange={this.handleChange} />
             </label>      
@@ -72,7 +68,7 @@ class CreateSpaceForm extends React.Component {
             </div>
             </div>
         )
-        else if (this.state.user.userId < 1)
+        else if (this.props.inUser.userId < 1)
         return (
             <div></div>
         )

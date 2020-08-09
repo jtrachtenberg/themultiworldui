@@ -1,3 +1,5 @@
+import * as Constants from '../constants'
+
 export const User = {
     userId: 0,
     userName: "",
@@ -8,12 +10,12 @@ export const User = {
 }
 
 export const userStateData = {
-    currentRoom: 0,
-    currentSpace: 0
+    currentRoom: Constants.DEFAULT_PLACE,
+    currentSpace: Constants.DEFAULT_SPACE
 }
 
 export const Space = {
-    spaceId: 0,
+    spaceId: Constants.DEFAULT_SPACE,
     userId: 0,
     title: "",
     description: ""

@@ -13,17 +13,16 @@ class Main extends React.Component {
       }
 
     componentDidUpdate() {
-      let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : 0)
-      const oldRoom = typeof(this.props.inPlace) === 'undefined' ? 0 : this.props.inPlace.placeId
+      let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
+      const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
       if (Number(oldRoom) !== Number(currentRoom)) {
         this.loadPlace()
       }
     }
 
     loadPlace = () => {
-      console.log('loadPlace')
         const postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loadPlace`
-        const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : 0)
+        const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
         const tmpPlace = {placeId: currentRoom}
  
         fetch(postUrl, {
@@ -39,9 +38,17 @@ class Main extends React.Component {
         })
       }
     
+    formatImage = () => {
+      if (this.props.inPlace && this.props.inPlace.src) {
+        return <p><img alt={this.props.inPlace.alt} src={this.props.inPlace.src} /></p>
+      } else {
+        return <p></p>
+      }
+    }
+
     formatPlace = () => {
         const place = typeof(this.props.inPlace) === 'undefined' ? Place : this.props.inPlace
-        return <div><h3>{place.title}</h3><p>{place.description}</p></div>
+      return <div><h3>{place.title}</h3><p>{place.description}</p>{this.formatImage()}</div>
     }
     render() {
         return (
