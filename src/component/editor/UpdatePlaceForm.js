@@ -1,6 +1,7 @@
 import React from 'react';
 import {setFormHeader, handleInputChange, updateHandler, toggleIsVis} from '../utils/formUtils'
 import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
+import * as Constants from '../constants'
 
 class UpdatePlaceForm extends React.Component {
     constructor(props) {
@@ -33,8 +34,16 @@ class UpdatePlaceForm extends React.Component {
         if (prevProps.inSpace !== this.props.inSpace) {
             this.loadPlaces()
         }
-        var inPlace = this.state.place
-        if (inPlace !== this.props.inPlace) {
+        //var inPlace = this.state.place
+        
+        if (prevProps.inPlace !== this.props.inPlace) {
+            const poi = this.props.inPlace.poi
+            let stateArray = {}
+            if (Array.isArray(poi)) {
+                poi.forEach((element) => {
+                    stateArray[`${element.word}Str`] = element.description
+                })
+            }
             this.setState({
                 place: this.props.inPlace,
                 title: this.props.inPlace.title,
@@ -42,24 +51,14 @@ class UpdatePlaceForm extends React.Component {
                 isRoot: this.props.inPlace.isRoot,
                 exits: this.props.inPlace.exits,
                 poi: this.props.inPlace.poi,
-                objects: this.props.inPlace.objects
-            },() => {
-                const poi = this.state.poi
-                let stateArray = {}
-                if (Array.isArray(poi)) {
-                    poi.forEach((element) => {
-                        stateArray[element.word] = element.description
-                        //stateArray.push({[element.word]:[element.description]})
-                    })
-                    this.setState({...stateArray},this.loadPlaces())
-                }
-                    
-            })
+                objects: this.props.inPlace.objects,
+                ...stateArray
+            }, this.loadPlaces())       
         }
     }
 
     loadPlaces = () => {
-        const postUrl = "http://localhost:7555/loadPlaces"
+        const postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loadPlaces`
         const postData = { spaceId: this.props.inSpace.spaceId}
         //const place = this.props.inPlace
         fetch(postUrl, {
@@ -83,7 +82,7 @@ class UpdatePlaceForm extends React.Component {
     handleImageChange = (e) => {
 
     }
-    
+
     handleChange = (e) => {
         this.setState(handleInputChange(e))
     }
@@ -97,6 +96,8 @@ class UpdatePlaceForm extends React.Component {
             disabled: true
         })
         const place = this.state.place
+        console.log(place)
+        console.log(this.state.place)
         place.title = this.state.title
         place.description = this.state.description
         place.isRoot = this.state.isRoot
@@ -119,11 +120,14 @@ class UpdatePlaceForm extends React.Component {
         if (Array.isArray(this.state.poi)) {
             const poi = []
             this.state.poi.forEach((element) => {
-                element.description = this.state[element.word]
+                element.description = this.state[`${element.word}Str`]
                 poi.push(element)
             })
             place.poi = poi
         }
+        if (this.props.modalReturn)
+            place.modalReturn = this.props.modalReturn
+            
         updateHandler("place", place, this.props.placeHandler)
         this.setState({
             disabled: false
@@ -138,7 +142,7 @@ class UpdatePlaceForm extends React.Component {
         if (Array.isArray(this.props.inPlace.poi))
         return this.props.inPlace.poi.map((value,i) => 
         <section key={i}><label>Keyword {value.word}</label>
-        <input name={value.word} type="text" value={this.state[value.word]||''} onChange={this.handleChange} />
+        <input name={value.word+"Str"} type="text" value={this.state[`${value.word}Str`]||''} onChange={this.handleChange} />
         </section>
         )
     }

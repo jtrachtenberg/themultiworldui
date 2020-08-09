@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import * as editorForms from './editor/editorForms'
-//mport {Space} from './utils/defaultObjects'
+import * as Constants from './constants'
 
 class Editor extends React.Component {
 
@@ -44,7 +44,7 @@ class Editor extends React.Component {
   }
 
   loadSpaces = () => {
-    const postUrl = "http://localhost:7555/loadSpaces"
+    const postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loadSpaces`
     const postData = { userId: this.props.inUser.userId}
     if (this.props.inUser.userId > 0)
     fetch(postUrl, {
@@ -79,9 +79,9 @@ class Editor extends React.Component {
   spaceHandler = (space) => {
     let postUrl
     if (space.spaceId === 0)
-      postUrl = "http://localhost:7555/addSpace"
+      postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/addSpace`
     else
-      postUrl = "http://localhost:7555/updateSpace"
+      postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/updateSpace`
     fetch(postUrl, {
       method: "POST",
       headers: {

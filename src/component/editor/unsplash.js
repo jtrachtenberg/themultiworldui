@@ -1,5 +1,6 @@
 import React from 'react'
 import {setFormHeader, toggleIsVis, handleInputChange} from '../utils/formUtils'
+import * as Constants from '../constants'
 
 //const CLIENT_ID = "T96xrE-u_EqE-WdvwR47aNL0QWd_CNAsZQKr6OJ0yF4"
 
@@ -23,6 +24,7 @@ class Unsplash extends React.Component {
     }
     handleImageClick = (e) => {
         const target = e.target
+        this.triggerEndpoint(target.id)
         console.log(target.longdesc)
         console.log(target.id)
         const retObj = {
@@ -32,6 +34,7 @@ class Unsplash extends React.Component {
             alt: e.target.title
         }
         this.props.modalClose(retObj)
+
     }
     formatResults = () => {
         const results = this.state.results.results||null
@@ -39,8 +42,24 @@ class Unsplash extends React.Component {
         return results.map((value,i) => <div className="searchImage" key={value.id}><img id={value.id} alt={value.links.download_location} title={value.alt_description} src={value.urls.thumb} onClick={this.handleImageClick} /><span className="attribution">Photo by <a rel="noopener noreferrer" target="_blank" href={value.user.links.html+"?utm_source=themulti.world&utm_medium=referral"}>{value.user.name}</a> on <a rel="noopener noreferrer" target="_blank" href={"https://unsplash.com?utm_source=themulti.world&utm_medium=referral"}>Unsplash</a></span></div>)
         }
     }
+
+    triggerEndpoint = (id) => {
+        const postUrl = `${Constants.HOST_URL}:${Constants.UNSPLASH_PORT}/unsplash/endpointtrigger`
+        const postData = { id: id}
+        console.log(postData)
+        fetch(postUrl, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData)
+        }).then(response => response.json())
+        .then (response => {
+          //console.log(response)
+        })
+    }
     loadResults = () => {
-        const postUrl = "http://localhost:3001/unsplash/search"
+        const postUrl = `${Constants.HOST_URL}:${Constants.UNSPLASH_PORT}/unsplash/search`
         const postData = { keyword: this.state.search, page: this.state.page, perpage: this.state.perpage}
         //const place = this.props.inPlace
         fetch(postUrl, {

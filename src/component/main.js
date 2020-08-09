@@ -1,5 +1,6 @@
 import React from 'react'
 import {Place} from './utils/defaultObjects'
+import * as Constants from './constants'
 
 class Main extends React.Component {
     constructor(props) {
@@ -19,12 +20,13 @@ class Main extends React.Component {
       }
     }
 
-    loadPlace = async () => {
-        const postUrl = "http://localhost:7555/loadPlace"
+    loadPlace = () => {
+      console.log('loadPlace')
+        const postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loadPlace`
         const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : 0)
         const tmpPlace = {placeId: currentRoom}
  
-        await fetch(postUrl, {
+        fetch(postUrl, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',

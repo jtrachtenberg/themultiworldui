@@ -1,10 +1,11 @@
 import {loadObject} from '../utils/formUtils'
 import {userStateData} from '../utils/defaultObjects'
+import * as Constants from '../constants'
 
 export const userLogin = (user, handler) => {
-    let postUrl = "http://localhost:7555/loginUser"
+    let postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loginUser`
     if (user.userId === -1)
-        postUrl = "http://localhost:7555/addUser"
+        postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/addUser`
 
     fetch(postUrl, {
     method: "POST",

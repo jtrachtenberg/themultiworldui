@@ -11,6 +11,7 @@ import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
 import {Modal} from './utils/Modal'
 import Unsplash from './editor/Unsplash'
+import * as Constants from './constants'
 
 class App extends React.Component {
 
@@ -49,6 +50,7 @@ formatModal = () => {
 }
 childUpdateHandler = (inObj, type, message) => {
   message = message||null
+  console.log(inObj)
   if (message)
   this.setState({
     [type]: inObj,
@@ -111,7 +113,7 @@ updateUserHandler = (user) => {
 }
 
 addUserHandler = (user) => {
-  let postUrl = "http://localhost:7555/addUser"
+  let postUrl = `${Constants.HOST_URL}:${Constants.HOST_URL_PORT}/addUser`
   fetch(postUrl, {
     method: "POST",
     headers: {

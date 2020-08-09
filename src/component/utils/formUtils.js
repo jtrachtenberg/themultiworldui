@@ -1,6 +1,7 @@
 import React from 'react';
 import {capitalizeFirstLetter} from './stringUtils';
 import {downArrowWhite} from './svgDefaults'
+import * as Constants from '../constants'
 
 export const setFormHeader = (title, handler)  => {
     handler = handler || null
@@ -24,8 +25,8 @@ export const handleInputChange = (e) => {
 
 export const updateHandler = (type, obj, handler) => {
     
-    let postUrl = "http://localhost:7555/update"+capitalizeFirstLetter(type)
-    
+    let postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/update`+capitalizeFirstLetter(type)
+
     fetch(postUrl, {
       method: "POST",
       headers: {
@@ -47,7 +48,7 @@ export const updateHandler = (type, obj, handler) => {
 
 export const createHandler = (type, obj, handler) => {
   // creates entity
-  let postUrl = "http://localhost:7555/add"+capitalizeFirstLetter(type)
+  let postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/add`+capitalizeFirstLetter(type)
   
   fetch(postUrl, {
     method: "POST",

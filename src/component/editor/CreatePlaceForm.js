@@ -37,7 +37,7 @@ class CreatePlaceForm extends React.Component {
         place.isRoot = this.state.isRoot
         place.spaceId = this.props.inSpace.spaceId
         let exits = []
-        const cmd = prevPlace.split(" ")[0]
+        const cmd = prevPlace.title.split(" ")[0]
         if (this.state.isExit) {
             exits.push({[cmd]:{placeId:prevPlace.placeId,title:prevPlace.title}})
         }
