@@ -39,7 +39,10 @@ class Main extends React.Component {
       }
     
     formatImage = () => {
-      if (this.props.inPlace && this.props.inPlace.src) {
+      if (Array.isArray(this.props.inPlace.images) && this.props.inPlace.images.length > 0) {
+        return this.props.inPlace.images.map((image) => <span><img alt={image.alt} src={image.src} /></span>)
+      }
+      else if (this.props.inPlace && this.props.inPlace.src) {
         return <p><img alt={this.props.inPlace.alt} src={this.props.inPlace.src} /></p>
       } else {
         return <p></p>
