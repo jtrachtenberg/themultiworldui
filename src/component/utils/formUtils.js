@@ -61,7 +61,7 @@ export const createHandler = (type, obj, handler) => {
   .then(response => {
     const idName = type+"Id"
     obj[idName] = response[0]
-    console.log(obj)
+    obj.failed = false
     handler(obj)
   })
   .catch(err => {

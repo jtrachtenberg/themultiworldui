@@ -74,6 +74,7 @@ class Editor extends React.Component {
       message = `Update to ${place.title} failed.`
     else
       message = `${place.title} updated`
+    console.log(message)
     this.setState({
       place: place
     }, this.props.childUpdateHandler(place,'place',message))

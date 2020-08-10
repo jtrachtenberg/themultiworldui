@@ -1,4 +1,5 @@
 import React from 'react';
+import socketIOClient from "socket.io-client";
 import './App.css';
 import Title from './Title.js'
 import * as userForms from './user/userForms'
@@ -13,6 +14,8 @@ import {Modal} from './utils/Modal'
 import Unsplash from './editor/Unsplash'
 import * as Constants from './constants'
 import {userStateData} from './utils/defaultObjects'
+
+//let socket = require('socket.io-client')(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`);
 
 class App extends React.Component {
 
@@ -31,8 +34,30 @@ constructor(props) {
       place: Place,
       showModal: false,
       modalType: null,
-      modalReturn: null
+      modalReturn: null,
+      response: 0,
+      socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
+}
+
+componentDidMount() {
+  console.log('mount')
+  //Very simply connect to the socket
+  const socket = this.state.socket
+  //Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
+  socket.on("outgoing data", data => this.processResponse(data));
+}
+
+processResponse = (data) => {
+  console.log('processResponse')
+  console.log(data)
+
+  if (data.place) {
+    if (data.place.placeId === this.state.place.placeId)
+      this.setState({
+        place: data.place
+      })
+  }
 }
 
 showModal = () => {
@@ -49,21 +74,23 @@ formatModal = () => {
     return <Unsplash modalClose={this.hideModal} />
   }
 }
+
+noOp = () => {
+  console.log('noop')
+}
+
 childUpdateHandler = (inObj, type, message) => {
+  console.log('childUpdate')
   message = message||null
   console.log(inObj)
+  let alertData = []
   if (message)
-  this.setState({
+    alertData.push({alertMessage: message, alertVis: true, alertSuccess: true, alertId: Math.random().toString()})
+ 
+    this.setState({
     [type]: inObj,
-    alertMessage: message,
-    alertVis: true,
-    alertSuccess: true,
-    alertId: Math.random().toString()
-  })
-  else
-  this.setState({
-    [type]: inObj
-  })
+    ...alertData
+    }, message === null ? () => this.noOp() : () => this.state.socket.emit('incoming data', inObj))
 }
 
 loginHandler = (user) => {
@@ -181,6 +208,7 @@ render() {
         <div className="exits"><Exits inPlace={this.state.place}/></div>
       </div>
       </div>
+      <div id="portal-root"></div>
     </div>
   );
 }

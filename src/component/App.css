@@ -309,3 +309,307 @@ form#Cli {
 .exits ul li {
   margin-bottom: 6px;
 }
+
+#tooltip
+{
+  position: absolute;
+  left: 50px; top: 50px;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.42857143;
+  text-align: left;
+  text-align: start;
+  text-shadow: none;
+  text-transform: none;
+  white-space: normal;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+  font-size: 12px;
+  
+  display: inline-block;
+}
+
+#tooltip.right
+{
+  margin-left: 5px;
+}
+
+#tooltip.left
+{
+  margin-left: -5px;
+}
+
+#tooltip.top
+{
+  margin-top: -5px;
+}
+
+#tooltip.bottom
+{
+  margin-top: 5px;
+}
+
+#tooltip .tooltip-arrow
+{
+  top: 50%;
+  left: 0;
+  margin-top: -5px;
+  border-width: 5px 5px 5px 0;
+  border-right-color: #000;
+}
+
+#tooltip.right .tooltip-arrow
+{
+  top: 50%;
+  left: auto;
+  margin-left: -5px;
+  border-width: 5px 5px 5px 0;
+  border-right-color: #000;
+}
+
+
+
+#tooltip.top .tooltip-arrow
+{
+  top: auto;
+  bottom: -5px;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px 5px 0;
+  border-top-color: #000;
+}
+
+#tooltip.left .tooltip-arrow
+{
+  top: 50%;
+  margin-top: -5px;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #000;
+  right: -5px;
+  left: auto;
+}
+
+#tooltip.bottom .tooltip-arrow
+{
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 0 5px 5px;
+  border-bottom-color: #000;
+}
+
+#tooltip .tooltip-arrow
+{
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-right-color: transparent;
+  border-style: solid;
+}
+
+#tooltip .tooltip-inner
+{
+  max-width: 200px;
+  padding: 3px 8px;
+  color: #fff;
+  text-align: center;
+  background-color: #000;
+  border-radius: 4px;
+}
+
+#tooltip.on
+{
+  display: block;
+}
+
+#tooltip.off
+{
+  display: none;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50px);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.container {
+  padding: 5rem 5%;
+  text-align: center;
+  @media (min-width: 576px) {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+  @media (min-width: 768px) {
+    padding-left: 12.5%;
+    padding-right: 12.5%;
+  }
+  @media (min-width: 992px) {
+    padding-left: 15%;
+    padding-right: 15%;
+  }
+}
+
+.title {
+  margin: 0 0 0.75rem;
+}
+
+.subtitle {
+  margin: 0 0 2.5rem;
+}
+
+.btn {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid transparent;
+  border-color: #6c757d;
+  border-radius: 0.25rem;
+  line-height: 1.5;
+  color: #fff;
+  background: #6c757d;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn:hover {
+  border-color: #545b62;
+  background: #5a6268;
+}
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
+}
+
+.modalDialog {
+  animation: slideIn 0.3s ease-out;
+}
+
+.modalFadeout .modalDialog {animation-name: slideOut;}
+.modal {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s linear;
+}
+
+.modalFadeOut {
+  animation-name: fadeOut;
+}
+
+
+
+.modalContent {
+  margin: 1.75rem auto;
+  width: 90%;
+  max-width: 500px;
+  background: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.modalClose {
+  margin: -1rem -1rem -1rem;
+  padding: 1rem;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  background: inherit;
+  text-shadow: 0 1px 0 #fff;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.modalClose:hover {
+  opacity: 0.75;
+}
+
+.modalBody {
+  padding: 1rem;
+}
+
+.ant-popover {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  list-style: none;
+  -webkit-font-feature-settings: 'tnum';
+  font-feature-settings: 'tnum';
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1030;
+  font-weight: normal;
+  white-space: normal;
+  text-align: left;
+  cursor: auto;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
