@@ -61,8 +61,9 @@ processResponse = (data) => {
   } else if (data.msg) {
     const msg = data.msg.msg
     const name = data.msg.userName
+    const prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : `${name} says:`
     this.setState({
-      inMsg: `${name} says: ${msg}`
+      inMsg: `${prepend} ${msg}`
     })
   }
 }
@@ -95,6 +96,8 @@ childUpdateHandler = (inObj, type, message) => {
     console.log(`place:${inObj.placeId}`)
     this.state.socket.off(`place:${this.state.place.placeId}`)
     this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
+    this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
+    this.state.socket.emit('incoming data', {msg: `left.`, exit:true, msgPlaceId: this.state.place.placeId, userName: this.state.user.userName})
   }
   let alertData = []
   if (message)
@@ -208,7 +211,7 @@ render() {
       <div className="leftNav edgeCol">
         <ul>
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
-        <li><userForms.CreateUserForm inUser={this.state.user} nameHandler={this.addUserHandler}/></li>
+        <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><Editor inUser={this.state.user} userHandler={this.updateUserHandler} childUpdateHandler={this.childUpdateHandler} inSpace={this.state.space} inPlace={this.state.place} modalReturn={this.state.modalReturn} modalClose={this.modalClose} /></li>
         </ul>

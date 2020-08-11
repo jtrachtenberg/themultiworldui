@@ -1,6 +1,5 @@
 import React from 'react';
-import {setFormHeader} from '../utils/formUtils'
-import {handleInputChange} from '../utils/formUtils'
+import {setFormHeader, handleInputChange, createHandler} from '../utils/formUtils'
 import {userStateData} from '../utils/defaultObjects'
 class CreateUserForm extends React.Component {
     constructor(props) {
@@ -30,7 +29,7 @@ class CreateUserForm extends React.Component {
         this.user.password = this.state.password
         const stateData = userStateData
         this.user.stateData = stateData
-        this.props.nameHandler(this.user)
+        createHandler("user", this.user, this.props.updateUserHandler)
         e.preventDefault();
     }
 
