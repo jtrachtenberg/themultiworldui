@@ -1,3 +1,5 @@
+// inObj = props, inCmd = array of input words
+// This will take the current place and react to poi and exits
 const look = async (inObj, inCmd) => {
     inObj = inObj || null
     inCmd = inCmd || null
@@ -6,12 +8,13 @@ const look = async (inObj, inCmd) => {
     if (inObj === null)
         retVal = await new Promise((resolve, reject) => () => setResponse(resolve,"You see nothing."))
 
-    if (typeof(inObj['placeId']) !== 'undefined') {
-        const exits = inObj.exits
-        const poi = inObj.poi
+    const place = inObj.inPlace
+    if (typeof(place['placeId']) !== 'undefined') {
+        const exits = place.exits
+        const poi = place.poi
 
         if (inCmd === null || inCmd.length === 1) {
-            retVal = await new Promise((resolve, reject) => setResponse(resolve, inObj.description))
+            retVal = await new Promise((resolve, reject) => setResponse(resolve, place.description))
         }
         else {
         const target = inCmd[1]

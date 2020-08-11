@@ -46,6 +46,20 @@ class Cli extends React.Component {
                 place: this.props.place
             },this.loadCommands())
         }
+        if (prevProps.inMsg !== this.props.inMsg) {
+            let result
+            if (this.state.results.length === 0)
+            result = this.props.inMsg
+            else
+            result = 
+`${this.state.results}
+${this.props.inMsg}`
+            this.setState({
+                results: result,
+            },() => {
+                this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+            })
+        }
     }
 
     handleChange = (e) => {
@@ -74,7 +88,7 @@ class Cli extends React.Component {
         if (typeof(executeCommand) !== 'undefined') {
         const action = executeCommand[cmdString]
         if (typeof(action) === 'function') {//Global command
-        let getResult = await action(this.props.inPlace, inputParts).then(result => result)
+        let getResult = await action(this.props, inputParts).then(result => result)
         let result
 
         if (this.state.results.length === 0)

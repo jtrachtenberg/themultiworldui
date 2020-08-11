@@ -35,7 +35,7 @@ constructor(props) {
       showModal: false,
       modalType: null,
       modalReturn: null,
-      response: 0,
+      inMsg: "",
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -45,7 +45,8 @@ componentDidMount() {
   //Very simply connect to the socket
   const socket = this.state.socket
   //Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
-  socket.on("outgoing data", data => this.processResponse(data));
+  socket.on("outgoing data", data => this.processResponse(data))
+  socket.on(`place:${this.state.placeId}`, data => this.processResponse(data))
 }
 
 processResponse = (data) => {
@@ -57,6 +58,12 @@ processResponse = (data) => {
       this.setState({
         place: data.place
       })
+  } else if (data.msg) {
+    const msg = data.msg.msg
+    const name = data.msg.userName
+    this.setState({
+      inMsg: `${name} says: ${msg}`
+    })
   }
 }
 
@@ -83,6 +90,12 @@ childUpdateHandler = (inObj, type, message) => {
   console.log('childUpdate')
   message = message||null
   console.log(inObj)
+  if (type === 'place') {
+    console.log(`place:${this.state.place.placeId}`)
+    console.log(`place:${inObj.placeId}`)
+    this.state.socket.off(`place:${this.state.place.placeId}`)
+    this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
+  }
   let alertData = []
   if (message)
     alertData.push({alertMessage: message, alertVis: true, alertSuccess: true, alertId: Math.random().toString()})
@@ -202,7 +215,7 @@ render() {
       </div>
       <div className="main midCol">
         <div className="viewPort" ><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childUpdateHandler} /></div>
-        <div className="CliInput"><Cli inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} /></div>
+        <div className="CliInput"><Cli inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} socket={this.state.socket}/></div>
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits inPlace={this.state.place}/></div>
