@@ -16,7 +16,7 @@ class Exits extends React.Component {
         return this.props.spaces.map((value,i) => <option key={i} value={value.spaceId}>{value.title}</option>)
     }
     formatExits = () => {
-        if (typeof(this.props.inPlace) === 'undefined' || this.props.inPlace.exits === null) return <div></div>
+        if (typeof(this.props.inPlace) === 'undefined' || this.props.inPlace.exits === null || !Array.isArray(this.props.inPlace.exits)) return <div></div>
         const exits = this.props.inPlace.exits
         let exitsArray=[]
 
