@@ -92,8 +92,13 @@ childUpdateHandler = (inObj, type, message) => {
   message = message||null
   console.log(inObj)
   if (type === 'place') {
-    console.log(`place:${this.state.place.placeId}`)
-    console.log(`place:${inObj.placeId}`)
+
+    const images = Array.isArray(inObj.images) ? inObj.images : []
+    if (inObj.modalReturn && inObj.modalReturn.src) 
+      images.push ({alt: inObj.modalReturn.alt,src: inObj.modalReturn.src})
+    
+    inObj.images = images
+
     this.state.socket.off(`place:${this.state.place.placeId}`)
     this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
     this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
