@@ -105,7 +105,7 @@ class UpdatePlaceForm extends React.Component {
         place.exits = this.props.inPlace.exits
 
         if (this.state.addExit !== null) {
-            const tmpArray = place.exits||[]
+            const tmpArray = Array.isArray(place.exits) ? place.exits : []
             const placeId = this.state.addExit
             console.log(placeId)
             const exit = this.state.places.find((element) => {
