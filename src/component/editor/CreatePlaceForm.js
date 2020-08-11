@@ -12,7 +12,7 @@ class CreatePlaceForm extends React.Component {
             place: props.inPlace, 
             title: props.inPlace.title,
             description: props.inPlace.description,
-            isRoot: props.inPlace.isRoot,
+            isRoot: false,
             isExit: false,
             cmd: ""
         }
