@@ -88,22 +88,21 @@ ${this.props.inMsg}`
         if (typeof(executeCommand) !== 'undefined') {
         const action = executeCommand[cmdString]
         if (typeof(action) === 'function') {//Global command
-        let getResult = await action(this.props, inputParts).then(result => result)
-        let result
-
-        if (this.state.results.length === 0)
-            result = getResult
-        else
-        result = 
+            action(this.props, inputParts).then(result => {
+                if (this.state.results.length > 0)
+                result = 
 `${this.state.results}
-${getResult}`
-        this.setState({
-            results: result,
-            currentInput: "",
-            loadCommands: true
-        },() => {
-            this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
-        })
+${result}`
+                this.setState({
+                    results: result,
+                    currentInput: "",
+                    loadCommands: true
+                },() => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                })
+            }).catch(failed => {
+                console.log(failed)
+            })        
         } else if (typeof(action) === 'object') {//exit
             const newPlaceId = action.placeId
             const newUser = this.props.inUser
