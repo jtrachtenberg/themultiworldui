@@ -104,7 +104,7 @@ childUpdateHandler = (inObj, type, message) => {
     this.state.socket.emit('incoming data', {msg: `left.`, exit:true, msgPlaceId: this.state.place.placeId, userName: this.state.user.userName})
     this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
   }
-  let stateData = {[type]: inObj}
+  let stateData = {[type]: inObj, modalReturn: null}
 
   if (message) {
     stateData.alertMessage=message

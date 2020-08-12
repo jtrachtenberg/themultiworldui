@@ -49,7 +49,7 @@ class Main extends React.Component {
       this.setState({
         showToolTip: true,
         coords: coords,
-        toolTipText: e.currentTarget.alt,
+        toolTipText: el.getAttribute(`description`),
         toolTipId: e.currentTarget.id
       })
     }
@@ -74,19 +74,32 @@ class Main extends React.Component {
     
     formatImage = () => {
       if (Array.isArray(this.props.inPlace.images) && this.props.inPlace.images.length > 0) {
-        return this.props.inPlace.images.map((image,i) => <span className="imageContainer" key={i}><img id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} src={image.src} /></span>)
+        return this.props.inPlace.images.map((image,i) => <span className="imageContainer" key={i}><img id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
       }
       else if (this.props.inPlace && this.props.inPlace.src) {
         
-        return <p><img onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={this.props.inPlace.alt} src={this.props.inPlace.src} /></p>
+        return <span><img onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={this.props.inPlace.alt} description={this.props.inPlace.alt} src={this.props.inPlace.src} /></span>
       } else {
-        return <p></p>
+        return <span></span>
       }
+    }
+
+    formatDescription = (place) => {
+      if (!this.props.inPlace.poi) return place.description
+      const poi = this.props.inPlace.poi
+      const words = place.description.split(" ")
+
+    return words.map((word,i) => {
+      const keyword = poi.find(poi => word === poi.word)
+      if (typeof(keyword) !== 'undefined')
+        return <span key={i}><span id={`${word}${i}`} description={keyword.description} className="keyword" onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut}>{word}</span><span>&nbsp;</span></span>
+        else return <span key={i}>{word} </span>
+      })
     }
 
     formatPlace = () => {
         const place = typeof(this.props.inPlace) === 'undefined' ? Place : this.props.inPlace
-      return <div><h3>{place.title}</h3><p>{place.description}</p>{this.formatImage()}</div>
+      return <div><h3>{place.title}</h3><p>{this.formatDescription(place)}</p><p>{this.formatImage()}</p></div>
     }
     render() {
         return (

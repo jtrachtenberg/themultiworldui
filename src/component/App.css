@@ -203,6 +203,11 @@ input[type=email]:not(:placeholder-shown):invalid {
   margin: 6px;
 }
 
+.leftNav .saveButton {
+  width: auto;
+  background-color: white;
+}
+
 button[name="send"] {
   position: relative;
   top: 6px;
@@ -671,6 +676,7 @@ form#Cli {
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   .ant-popover {
     /* IE10+ */
+    margin: 0;
   }
   .ant-popover-inner {
     -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -815,4 +821,10 @@ form#Cli {
 }
 .ant-popover-placement-leftBottom > .ant-popover-content > .ant-popover-arrow {
   bottom: 12px;
+}
+
+.keyword {
+  display: inline;
+  font-style: italic;
+  text-decoration: #777 underline;
 }

@@ -176,6 +176,7 @@ class UpdatePlaceForm extends React.Component {
             <form className={this.state.vis ? "n" : "invis"} onSubmit={this.handleSubmit}>
                 <section>
                     <span>Add Image <ImageSearchIcon onClick={this.handleModalClick}/></span>
+                    {this.props.modalReturn && <div><img alt={this.props.modalReturn.alt} src={this.props.modalReturn.src} width="75"/></div>}
                 </section>
                 <section>
             <label>Title
@@ -207,7 +208,9 @@ class UpdatePlaceForm extends React.Component {
             <section>
                 {this.formatPoi()}
             </section>
+            <section className="saveButton">
             <button onClick={this.handleSubmit} disabled={this.state.disabled}>{this.state.disabled ? 'Updating' : 'Save'}</button>
+            </section>
             </form>
             </div>
             </div>
