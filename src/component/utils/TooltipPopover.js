@@ -28,7 +28,6 @@ const TooltipPopover = ({ children, coords }) => {
         <div className="ant-popover-arrow" />
         <div className="ant-popover-inner" role="tooltip">
           <div>
-            <div className="ant-popover-title">Title</div>
             <div className="ant-popover-inner-content">{children}</div>
           </div>
         </div>

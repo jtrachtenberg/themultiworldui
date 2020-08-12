@@ -36,8 +36,7 @@ class Main extends React.Component {
     }
     handleOnMouseOut = (e) => {
       console.log('mouseout')
-      //this.setState({showToolTip: false})
-      //this.toolTip.current.hide();
+      this.setState({showToolTip: false})
     }
 
     handleOnMouseOver= (e) => {
@@ -75,7 +74,7 @@ class Main extends React.Component {
     
     formatImage = () => {
       if (Array.isArray(this.props.inPlace.images) && this.props.inPlace.images.length > 0) {
-        return this.props.inPlace.images.map((image,i) => <span key={i}><img id={`tooltip${i}`} title={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} src={image.src} /></span>)
+        return this.props.inPlace.images.map((image,i) => <span className="imageContainer" key={i}><img id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} src={image.src} /></span>)
       }
       else if (this.props.inPlace && this.props.inPlace.src) {
         
@@ -99,7 +98,7 @@ class Main extends React.Component {
                   coords={this.state.coords} 
                 >
                   <div>
-                    Awesome content that is never cut off by its parent container!
+                    {this.state.toolTipText}
                   </div>
                 </TooltipPopover>
               </Portal>

@@ -75,9 +75,10 @@ class Editor extends React.Component {
     else
       message = `${place.title} updated`
     console.log(message)
-    this.setState({
+    this.props.childUpdateHandler(place,'place',message)
+    /*this.setState({
       place: place
-    }, this.props.childUpdateHandler(place,'place',message))
+    }, )*/
   }
 
   spaceHandler = (space) => {
