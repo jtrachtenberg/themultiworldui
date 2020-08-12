@@ -101,8 +101,8 @@ childUpdateHandler = (inObj, type, message) => {
 
     this.state.socket.off(`place:${this.state.place.placeId}`)
     this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
-    this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
     this.state.socket.emit('incoming data', {msg: `left.`, exit:true, msgPlaceId: this.state.place.placeId, userName: this.state.user.userName})
+    this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
   }
   let stateData = {[type]: inObj}
 
@@ -112,7 +112,6 @@ childUpdateHandler = (inObj, type, message) => {
     stateData.alertSucces=true
     stateData.alertId=Math.random().toString()
   }
-    //alertData.push({alertMessage: message, alertVis: true, alertSuccess: true, alertId: Math.random().toString()})
 
     this.setState({
     ...stateData
