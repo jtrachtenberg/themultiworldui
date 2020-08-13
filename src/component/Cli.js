@@ -43,7 +43,8 @@ class Cli extends React.Component {
                 placeId: this.props.inPlace.placeId,
                 place: this.props.place
             },this.loadCommands())
-        }
+        } else this.loadCommands()
+        
         if (prevProps.inMsg !== this.props.inMsg) {
             let result
             if (this.state.results.length === 0)
