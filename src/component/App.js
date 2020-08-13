@@ -89,8 +89,8 @@ childUpdateHandler = (inObj, type, message) => {
   if (type === 'place') {
 
     const images = Array.isArray(inObj.images) ? inObj.images : []
-    if (inObj.modalReturn && inObj.modalReturn.src) 
-      images.push ({alt: inObj.modalReturn.alt,src: inObj.modalReturn.src})
+    if (this.state.modalReturn && this.state.modalReturn.src) 
+      images.push ({alt: this.state.modalReturn.alt,src: this.state.modalReturn.src})
     
     inObj.images = images
     inObj.updated = true
