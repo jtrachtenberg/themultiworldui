@@ -89,10 +89,32 @@ ${this.props.inMsg}`
         const action = executeCommand[cmdString]
         if (typeof(action) === 'function') {//Global command
             action(this.props, inputParts).then(result => {
-                if (this.state.results.length > 0)
+                if (typeof(result) === 'object') {
+                    if (result.type === 'place') {
+                        const newUser = this.props.inUser
+                        newUser.stateData.currentRoom = result.placeId
+                        newUser.stateData.currentSpace = result.spaceId
+                        const resultStr = this.state.results.length === 0 ?
+                        `Traveling to the world of ${inputParts[1]}` :                      
+`${this.state.results}
+Traveling to the world of ${inputParts[1]}`
+                        console.log(resultStr)
+                        this.setState({
+                            results: resultStr,
+                            currentInput: "",
+                            loadCommands: true
+                        },() => {
+                            this.props.updateUserHandler(newUser)
+                            this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                        })
+                    }
+                }
+                else {
+                if (this.state.results.length > 0) //string
                 result = 
 `${this.state.results}
 ${result}`
+                console.log(result)
                 this.setState({
                     results: result,
                     currentInput: "",
@@ -100,6 +122,7 @@ ${result}`
                 },() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 })
+            }
             }).catch(failed => {
                 console.log(failed)
             })        

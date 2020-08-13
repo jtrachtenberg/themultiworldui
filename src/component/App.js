@@ -20,10 +20,12 @@ import {userStateData} from './utils/defaultObjects'
 class App extends React.Component {
 
 constructor(props) {
+  console.log(`Props: ${props}`)
     super(props)
     //check if user exists in local storage, else use default state
     var user = JSON.parse(localStorage.getItem('user'))
     if (user === null || typeof(user) === "undefined" ) user = User
+    console.log(`User: ${user}`)
     this.state = {
       user: user, 
       alertMessage: "", 
