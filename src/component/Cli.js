@@ -78,10 +78,11 @@ ${this.props.inMsg}`
         this.state.availableCommands.forEach((cmd)=> {
             Object.keys(cmd).forEach((key) => {
                 cmds.push(`${key}`)
+                cmds.push(`${key.charAt(0).toUpperCase() + key.slice(1)}`)
             })
         })
  
-        const regexp = new RegExp(`^${cmds.join('|')}|help$`)
+        const regexp = new RegExp(`^${cmds.join('|')}|help|Help$`)
         rulesets.push({
             'type':'validate',
             'invert': true,
@@ -98,7 +99,7 @@ ${this.props.inMsg}`
         const input = this.state.currentInput
         const inputParts = input.split(" ")
         let cmdString = inputParts[0]
-        if (cmdString === 'help') {
+        if (cmdString === 'help' || cmdString === 'Help') {
             const cmds = [];
             availableCommands.forEach((cmd)=> {
                 Object.keys(cmd).forEach((key) => {

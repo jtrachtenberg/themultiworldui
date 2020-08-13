@@ -251,6 +251,19 @@ form section span {
   background-color: rgba(232,234,237,.08)
 }
 
+.rightNav {
+  display: inherit;
+}
+
+@media screen and (max-width: 768px) {
+  .flex-grid {
+    display: block;
+  }
+  .exits {
+    position: relative !important;
+  }
+}
+
 span.attribution {
   display: grid;
   font-size: .5em;
