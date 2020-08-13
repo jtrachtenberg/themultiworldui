@@ -87,9 +87,9 @@ class Main extends React.Component {
       if (!this.props.inPlace.poi) return place.description
       const poi = this.props.inPlace.poi
       const words = place.description.split(" ")
-
+      const regex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
     return words.map((word,i) => {
-      const keyword = poi.find(poi => word === poi.word)
+      const keyword = poi.find(poi => word.replace(regex,'') === poi.word)
       if (typeof(keyword) !== 'undefined')
         return <span key={i}><span id={`${word}${i}`} description={keyword.description} className="keyword" onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut}>{word}</span><span>&nbsp;</span></span>
         else return <span key={i}>{word} </span>
