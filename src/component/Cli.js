@@ -63,7 +63,14 @@ ${this.props.inMsg}`
     }
 
     handleChange = (e) => {
-        this.setState(handleInputChange(e))
+        const rulesets = []
+        rulesets.push({
+            'type':'transform',
+            'search':`'`,
+            'pos':0,
+            'replace':'say '
+        })
+        this.setState(handleInputChange(e,rulesets))
     }
 
     handleCommand = async (e) => {

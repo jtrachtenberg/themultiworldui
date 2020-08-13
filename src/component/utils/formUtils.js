@@ -15,9 +15,23 @@ export const loadObject = (inObj, outObj) => {
     return Object.assign(outObj, inObj)
 }
 
-export const handleInputChange = (e) => {
+export const handleInputChange = (e,ruleSets) => {
+
+    ruleSets = ruleSets||null
     const {checked, name, value, type} = e.target
-    const valueToUpdate = type === 'checkbox' ? checked : value
+    let valueToUpdate = type === 'checkbox' ? checked : value
+
+    if (ruleSets) {
+      ruleSets.forEach(ruleSet => {
+        if (ruleSet.type === 'transform') {
+
+          if (typeof(ruleSet.pos) === 'number' && (Number(valueToUpdate.length) === Number(ruleSet.pos)+1)) {
+            valueToUpdate=valueToUpdate.replace(ruleSet.search,ruleSet.replace)
+          }
+        }
+      })
+    }
+
     return {
         [name]: valueToUpdate
     }
