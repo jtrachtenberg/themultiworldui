@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import {setFormHeader} from '../utils/formUtils'
 import {userLogin} from './UserLogin'
 import {User} from '../utils/defaultObjects'
@@ -7,7 +7,8 @@ import {handleInputChange} from '../utils/formUtils'
 class LoginUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {disabled: false, hidden: true, user: this.props.inUser, userName: props.inUser.userName,email: props.inUser.email,password: ''}
+        this.state = {passwordValid: false, emailValid: false, buttonText: 'Login', disabled: true, hidden: true, user: this.props.inUser, userName: props.inUser.userName,email: props.inUser.email,password: ''}
+        this.buttonRef = createRef()
     }
 
     componentDidUpdate() {
@@ -19,7 +20,9 @@ class LoginUserForm extends React.Component {
                 userName: this.props.inUser.userName,
                 email: this.props.inUser.email,
                 password: '',
-                disabled: false
+                disabled: true,
+                buttonText: 'Login'
+
             })
         else if (typeof(inUser.password) !== 'undefined' && inUser.password.length > 0) {
             delete inUser.password
@@ -30,7 +33,31 @@ class LoginUserForm extends React.Component {
     }
 
     handleChange = (e) => {
-        this.setState(handleInputChange(e))
+        const rulesets = []
+
+        if (e.target.name === 'email') {
+            const pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+            rulesets.push({
+                'type':'validate',
+                'regexp': pattern,
+                'state': 'emailValid',
+                'invert': false
+            })
+        }
+        if (e.target.name === 'password') {
+            const pattern = new RegExp(/^.{3,}$/)//minimum 3 characters for now
+            rulesets.push({
+                'type':'validate',
+                'regexp': pattern,
+                'state': 'passwordValid',
+                'invert': false
+            })
+        }
+        this.setState(handleInputChange(e,rulesets),() => {
+            this.setState({
+                'disabled': !(this.state.passwordValid&&this.state.emailValid)
+            })
+        })
     }
 
     handleSubmit = (e) => {
@@ -71,7 +98,7 @@ class LoginUserForm extends React.Component {
                 <label htmlFor="password">password:</label>
                 <input id="password" name="password" type={this.state.hidden ? "password" : "text"} required value={this.state.password} onChange={this.handleChange} />
             </section>
-            <button onClick={this.handleSubmit} disabled={this.state.disabled}>{this.state.disabled ? 'Authorizing' : 'Login'}</button>
+            <button ref={this.buttonRef} onClick={this.handleSubmit} disabled={this.state.disabled}>{this.state.buttonText}</button>
             </form>
             </div>
             )

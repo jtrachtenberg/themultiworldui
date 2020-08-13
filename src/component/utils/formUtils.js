@@ -20,20 +20,27 @@ export const handleInputChange = (e,ruleSets) => {
     ruleSets = ruleSets||null
     const {checked, name, value, type} = e.target
     let valueToUpdate = type === 'checkbox' ? checked : value
-
+    const ruleReturns = {}
     if (ruleSets) {
       ruleSets.forEach(ruleSet => {
-        if (ruleSet.type === 'transform') {
-
+        if (ruleSet.type === 'transform') {//alias
           if (typeof(ruleSet.pos) === 'number' && (Number(valueToUpdate.length) === Number(ruleSet.pos)+1)) {
             valueToUpdate=valueToUpdate.replace(ruleSet.search,ruleSet.replace)
+          } else {
+            valueToUpdate=valueToUpdate.replace(ruleSet.search,ruleSet.replace)
           }
+        } else if (ruleSet.type === 'validate') {//validate
+          const currentVal = ruleSet.invert ? !ruleReturns[ruleSet.state]||true : ruleReturns[ruleSet.state]||true
+          const ruleVal = ruleSet.invert ? !(ruleSet.regexp.test(valueToUpdate)&&currentVal) : (ruleSet.regexp.test(valueToUpdate)&&currentVal)
+          ruleReturns[ruleSet.state]=ruleVal
+          console.log(ruleReturns)
         }
       })
     }
 
     return {
-        [name]: valueToUpdate
+        [name]: valueToUpdate,
+        ...ruleReturns
     }
 }
 
