@@ -46,6 +46,10 @@ class CreatePlaceForm extends React.Component {
         }
         place.exits = exits
 
+        place.poi = null
+        place.images = null
+        place.alt = null
+        place.src = null
         createHandler("place", place, this.props.placeHandler)
         this.setState({
             title: "",
