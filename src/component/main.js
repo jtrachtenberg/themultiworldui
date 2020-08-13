@@ -32,10 +32,9 @@ class Main extends React.Component {
     }
 
     modalReturn = (retObj) => {
-      this.setState({showToolTip: false}, console.log(this.state.showToolTip))
+      this.setState({showToolTip: false})
     }
     handleOnMouseOut = (e) => {
-      console.log('mouseout')
       this.setState({showToolTip: false})
     }
 

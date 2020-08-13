@@ -7,7 +7,7 @@ import * as Constants from './constants'
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
+        this.state = {disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
@@ -38,8 +38,6 @@ class Cli extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log(prevProps.inPlace)
-        console.log(this.props.inPlace)
         if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
             this.setState({
                 placeId: this.props.inPlace.placeId,
@@ -70,15 +68,51 @@ ${this.props.inMsg}`
             'pos':0,
             'replace':'say '
         })
+        const cmds = [];
+        this.state.availableCommands.forEach((cmd)=> {
+            Object.keys(cmd).forEach((key) => {
+                cmds.push(`${key}`)
+            })
+        })
+ 
+        const regexp = new RegExp(`^${cmds.join('|')}|help$`)
+        rulesets.push({
+            'type':'validate',
+            'invert': true,
+            'regexp': regexp,
+            'state':'disabled'
+        })
         this.setState(handleInputChange(e,rulesets))
     }
 
     handleCommand = async (e) => {
+
         e.preventDefault()
+        const availableCommands = this.state.availableCommands
         const input = this.state.currentInput
         const inputParts = input.split(" ")
         let cmdString = inputParts[0]
-        const availableCommands = this.state.availableCommands
+        if (cmdString === 'help') {
+            const cmds = [];
+            availableCommands.forEach((cmd)=> {
+                Object.keys(cmd).forEach((key) => {
+                    cmds.push(`${key}`)
+                })
+            })
+            const cmdString = cmds.join(",")
+            const resultStr = this.state.results.length === 0 ?
+                `Available commands: ${cmdString}` :                      
+`${this.state.results}
+Available commands: ${cmdString}`
+            this.setState({
+                results: resultStr,
+                currentInput: "",
+                loadCommands: true
+            },() => {
+                this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+            })
+            return 
+        }
 
         const executeCommand = availableCommands.find((cmd) => {
             let cmdCheck
@@ -105,7 +139,6 @@ ${this.props.inMsg}`
                         `Traveling to the world of ${inputParts[1]}` :                      
 `${this.state.results}
 Traveling to the world of ${inputParts[1]}`
-                        console.log(resultStr)
                         this.setState({
                             results: resultStr,
                             currentInput: "",
@@ -121,7 +154,6 @@ Traveling to the world of ${inputParts[1]}`
                 result = 
 `${this.state.results}
 ${result}`
-                console.log(result)
                 this.setState({
                     results: result,
                     currentInput: "",
@@ -166,7 +198,7 @@ Nothing to do here.`
                     <section>
                     <span>
                         <input type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
-                    <button name="send" onClick={this.handleCommand}>
+                    <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}>
                     {downArrowBlack}
                     </button>
                     </span>

@@ -38,7 +38,7 @@ class UpdateUserForm extends React.Component {
     }
 
     handleModalData = () => {
-        console.log(this.state.modalReturn)
+        //console.log(this.state.modalReturn)
     }
 
     handleHeaderClick = (e) => {

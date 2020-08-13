@@ -7,7 +7,7 @@ import {handleInputChange} from '../utils/formUtils'
 class LoginUserForm extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {passwordValid: false, emailValid: false, buttonText: 'Login', disabled: true, hidden: true, user: this.props.inUser, userName: props.inUser.userName,email: props.inUser.email,password: ''}
+        this.state = {passwordValid: false, emailValid: false, buttonText: 'Login', disabled: this.props.inUser.userId < 1 ? true : false, hidden: true, user: this.props.inUser, userName: props.inUser.userName,email: props.inUser.email,password: ''}
         this.buttonRef = createRef()
     }
 
@@ -85,7 +85,7 @@ class LoginUserForm extends React.Component {
     }
     render() {
         let form;
-        if (this.state.user.userId < 1) {
+        if ( this.props.inUser.userId < 1) {
             form = (
             <div className="fillSpace">
             <div>{setFormHeader("Login")}</div>

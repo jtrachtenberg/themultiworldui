@@ -11,7 +11,6 @@ class LoadSpacesForm extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log(this.props.spaces)
         if (this.props.inUser.userId > 0 && (Array.isArray(this.props.spaces)) && this.props.spaces.length > 0 && !this.state.loaded) {
             this.setState({
                 loaded: true

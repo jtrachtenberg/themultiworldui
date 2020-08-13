@@ -25,8 +25,6 @@ class Unsplash extends React.Component {
     handleImageClick = (e) => {
         const target = e.target
         this.triggerEndpoint(target.id)
-        console.log(target.longdesc)
-        console.log(target.id)
         const retObj = {
             src: e.target.src,
             id: e.target.id,

@@ -33,7 +33,6 @@ export const handleInputChange = (e,ruleSets) => {
           const currentVal = ruleSet.invert ? !ruleReturns[ruleSet.state]||true : ruleReturns[ruleSet.state]||true
           const ruleVal = ruleSet.invert ? !(ruleSet.regexp.test(valueToUpdate)&&currentVal) : (ruleSet.regexp.test(valueToUpdate)&&currentVal)
           ruleReturns[ruleSet.state]=ruleVal
-          console.log(ruleReturns)
         }
       })
     }

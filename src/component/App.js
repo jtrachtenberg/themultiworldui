@@ -20,12 +20,10 @@ import {userStateData} from './utils/defaultObjects'
 class App extends React.Component {
 
 constructor(props) {
-  console.log(`Props: ${props}`)
     super(props)
     //check if user exists in local storage, else use default state
     var user = JSON.parse(localStorage.getItem('user'))
     if (user === null || typeof(user) === "undefined" ) user = User
-    console.log(`User: ${user}`)
     this.state = {
       user: user, 
       alertMessage: "", 
@@ -43,7 +41,6 @@ constructor(props) {
 }
 
 componentDidMount() {
-  console.log('mount')
   //Very simply connect to the socket
   const socket = this.state.socket
   //Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
@@ -52,8 +49,6 @@ componentDidMount() {
 }
 
 processResponse = (data) => {
-  console.log('processResponse')
-  console.log(data)
 
   if (data.place) {
     if (data.place.placeId === this.state.place.placeId)
@@ -86,13 +81,11 @@ formatModal = () => {
 }
 
 noOp = () => {
-  console.log('noop')
+
 }
 
 childUpdateHandler = (inObj, type, message) => {
-  console.log('childUpdate')
   message = message||null
-  console.log(inObj)
   if (type === 'place') {
 
     const images = Array.isArray(inObj.images) ? inObj.images : []

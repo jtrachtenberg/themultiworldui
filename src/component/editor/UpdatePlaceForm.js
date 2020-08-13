@@ -96,8 +96,6 @@ class UpdatePlaceForm extends React.Component {
             disabled: true
         })
         const place = this.state.place
-        console.log(place)
-        console.log(this.state.place)
         place.title = this.state.title
         place.description = this.state.description
         place.isRoot = this.state.isRoot
@@ -107,11 +105,11 @@ class UpdatePlaceForm extends React.Component {
         if (this.state.addExit !== null) {
             const tmpArray = Array.isArray(place.exits) ? place.exits : []
             const placeId = this.state.addExit
-            console.log(placeId)
+
             const exit = this.state.places.find((element) => {
                 return Number(element.placeId) === Number(placeId)
             })
-            console.log(exit)
+
             const title = exit.title
             const cmd = this.state.direction||title.split(" ")[0]
             tmpArray.push({[cmd]:{title:title,placeId:placeId}})
