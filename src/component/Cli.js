@@ -38,13 +38,18 @@ class Cli extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
+        console.log(prevProps.inPlace.exits)
+        console.log(this.props.inPlace.exits)
         if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
             this.setState({
                 placeId: this.props.inPlace.placeId,
                 place: this.props.place
             },this.loadCommands())
-        } else this.loadCommands()
-        
+        } else if (this.props.inPlace.updated) {
+            this.props.inPlace.updated = false
+            this.loadCommands()
+        }
+
         if (prevProps.inMsg !== this.props.inMsg) {
             let result
             if (this.state.results.length === 0)

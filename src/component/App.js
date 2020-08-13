@@ -93,6 +93,7 @@ childUpdateHandler = (inObj, type, message) => {
       images.push ({alt: inObj.modalReturn.alt,src: inObj.modalReturn.src})
     
     inObj.images = images
+    inObj.updated = true
 
     this.state.socket.off(`place:${this.state.place.placeId}`)
     this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
