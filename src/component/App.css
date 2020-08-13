@@ -160,6 +160,10 @@ input[type=email]:not(:placeholder-shown):invalid {
   background-color: #252529;
   color: #fff;
   font-family: 'Open Sans', sans-serif;
+  display: inherit;
+}
+@media screen and (max-width: 768px) {
+  .leftNav {display: none;}
 }
 
 .leftNav ul {
