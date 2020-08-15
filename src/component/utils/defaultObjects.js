@@ -28,5 +28,8 @@ export const Place = {
     description: "",
     exits: null,
     poi: null,
-    objects: null
+    objects: null,
+    images: null,
+    src: null,
+    alt: null
 }
