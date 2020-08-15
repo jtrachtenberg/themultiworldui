@@ -34,6 +34,8 @@ class Editor extends React.Component {
   }
 
   loadSpace = (inSpaceId) => {
+    console.log(inSpaceId)
+    console.log(this.state.spaces)
     const newSpace = this.state.spaces.find( ({ spaceId }) => spaceId === inSpaceId )
     this.setState({
       space: newSpace
@@ -96,8 +98,8 @@ class Editor extends React.Component {
   render() {
       return (
           <div>
-              <editorForms.LoadSpacesForm inUser={this.props.inUser} inSpace={this.state.space} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
-              <editorForms.CreateSpaceForm userId={this.props.inUser.userId} spaceHandler={this.spaceHandler}/>
+              <editorForms.LoadSpacesForm userId={this.props.inUser.userId} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
+              <editorForms.CreateSpaceForm userId={this.props.inUser.userId} inSpaceId={this.props.inSpace.spaceId} spaceHandler={this.spaceHandler}/>
               <editorForms.CreatePlaceForm inPlace={this.props.inPlace} spaceId={this.props.inSpace.spaceId} inUser={this.props.inUser} placeHandler={this.placeHandler} />
               <editorForms.UpdatePlaceForm inUser={this.props.inUser} inSpace={this.state.space} inPlace={this.state.place} placeHandler={this.placeHandler} modalHandler={this.modalHandler} modalClose={this.props.modalClose} modalReturn={this.props.modalReturn}/>
           </div>

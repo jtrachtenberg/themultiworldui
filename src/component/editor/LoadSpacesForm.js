@@ -1,6 +1,9 @@
 import React from 'react';
 import {setFormHeader, toggleIsVis} from '../utils/formUtils'
-
+/*****
+ * 
+ * DEPRECATED: Use LoadSpacesFormHook
+ */
 class LoadSpacesForm extends React.Component {
     constructor(props) {
         super(props)
