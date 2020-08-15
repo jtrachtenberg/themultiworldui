@@ -82,6 +82,7 @@ export const UpdatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
         }
 
         if (modalReturn) place.modalReturn = modalReturn
+        if (poi) place.poi = poi
         updateHandler("place", place, placeHandler)
         setDisabled(false)
         setModalReturn({})

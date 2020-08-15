@@ -56,7 +56,7 @@ export const updateHandler = (type, obj, handler) => {
     })
     .then(response => response.json())
     .then(response => {
-        if (obj.modalReturn) delete obj.modalReturn
+        //if (obj.modalReturn) delete obj.modalReturn
         obj.failed = false
         handler(obj)
     })
