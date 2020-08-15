@@ -1,7 +1,9 @@
 import React from 'react';
 import {setFormHeader, handleInputChange, toggleIsVis, createHandler} from '../utils/formUtils'
 import * as Constants from '../constants'
-
+/*********
+ * DEPRECATED: Use CreateSpaceFormHook
+ */
 class CreateSpaceForm extends React.Component {
     constructor(props) {
         super(props)
