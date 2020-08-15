@@ -1,6 +1,8 @@
 import React from 'react';
 import {setFormHeader, handleInputChange, toggleIsVis, updateHandler} from '../utils/formUtils'
-
+/***
+ * DEPRECATED: Use UpdateSpaceFormHook
+ */
 class UpdateSpaceForm extends React.Component {
     constructor(props) {
         super(props)
