@@ -97,7 +97,7 @@ class Editor extends React.Component {
       return (
           <div>
               <editorForms.LoadSpacesForm inUser={this.props.inUser} inSpace={this.state.space} spaces={this.state.spaces} loadSpace={this.loadSpace}/>
-              <editorForms.CreateSpaceForm inUser={this.props.inUser} inSpace={this.state.space} spaceHandler={this.spaceHandler}/>
+              <editorForms.CreateSpaceForm userId={this.props.inUser.userId} spaceHandler={this.spaceHandler}/>
               <editorForms.CreatePlaceForm inPlace={this.props.inPlace} spaceId={this.props.inSpace.spaceId} inUser={this.props.inUser} placeHandler={this.placeHandler} />
               <editorForms.UpdatePlaceForm inUser={this.props.inUser} inSpace={this.state.space} inPlace={this.state.place} placeHandler={this.placeHandler} modalHandler={this.modalHandler} modalClose={this.props.modalClose} modalReturn={this.props.modalReturn}/>
           </div>

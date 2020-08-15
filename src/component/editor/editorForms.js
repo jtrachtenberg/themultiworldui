@@ -1,4 +1,4 @@
-import CreateSpaceForm from './CreateSpaceForm'
+import {CreateSpaceFormHook as CreateSpaceForm} from './CreateSpaceFormHook'
 import UpdateSpaceForm from './UpdateSpaceForm'
 import LoadSpacesForm from './LoadSpacesForm'
 import {CreatePlaceFormHook as CreatePlaceForm} from './CreatePlaceFormHook'
