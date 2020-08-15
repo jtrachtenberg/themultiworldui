@@ -6,6 +6,13 @@ export const LoadSpacesFormHook = ({userId, inSpaceId, spaces, loadSpace}) => {
     const [spaceId, setSpaceId] = useState(inSpaceId)
 
     useEffect(() => {
+        if (Array.isArray(spaces) && spaces.length > 0 ) {
+            setSpaceId(spaces[0].spaceId)
+            loadSpace(spaces[0].spaceId)
+        }
+    },[spaces, loadSpace])
+
+    useEffect(() => {
         if (spaceId) loadSpace(spaceId)
     }, [spaceId, inSpaceId, loadSpace]); // Only re-run the effect if spaceId changes
 
