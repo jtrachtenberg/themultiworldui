@@ -192,13 +192,22 @@ input[type=email]:not(:placeholder-shown):invalid {
 }
 
 .leftNav ul li label {
-  display: grid;
+  display: inline;
+  align-content: center;
+}
+
+.leftNav ul li label svg {
+  vertical-align: middle;
 }
 
 .leftNav input {
   width: stretch;
   padding: 6px;
   margin: 6px;
+}
+
+.leftNav select {
+  display: block;
 }
 
 .leftNav button {

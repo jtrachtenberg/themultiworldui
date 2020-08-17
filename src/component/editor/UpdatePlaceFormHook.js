@@ -4,6 +4,7 @@ import {Modal} from '../utils/Modal'
 import Portal from '../utils/Portal'
 import Unsplash from './Unsplash'
 import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
+import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {fetchData} from '../utils/fetchData'
 import {SpaceSelect} from './SpaceSelect'
 
@@ -96,7 +97,11 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const formatPoi = () => {
         if (Array.isArray(poi))
         return poi.map((value,i) => {
-        return <section key={i}><label>Keyword {value.word}</label>
+        return <section key={i}><label>Keyword {value.word}&nbsp;<DeleteIcon onClick={(e) => editPoi(() => {
+            const poiCopy = [...poi]
+            poiCopy.splice(i,1)
+            editPoi(poiCopy)
+            })} /></label>
         <input id={i} name={value.word} type="text" value={poi.find(word => word.word === value.word).description} 
         onChange={(e) => {
             const {id, value} = e.target
