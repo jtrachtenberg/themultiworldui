@@ -4,10 +4,12 @@ import {Modal} from '../utils/Modal'
 import Portal from '../utils/Portal'
 import Unsplash from './Unsplash'
 import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
-import * as Constants from '../constants'
+import {fetchData} from '../utils/fetchData'
+import {SpaceSelect} from './SpaceSelect'
 
-export const UpdatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) => {
+export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
+    const [spaceId, setSpaceId] = useState(inPlace.spaceId)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [isRoot, toggleIsRoot] = useState(false)
@@ -18,34 +20,35 @@ export const UpdatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
     const [places, setPlaces] = useState([])
     const [exitSelect, setExitSelect] = useState(-1)
     const [poi, editPoi] = useState([])
-   
+
+    useEffect(() => {
+        if (Array.isArray(spaces) && spaces.length > 0)
+            setSpaceId(spaces[0].spaceId)
+    },[spaces])
+
     useEffect(() => {
         const loadPlaces = () => {
-            const postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loadPlaces`
-            const postData = {spaceId: spaceId}
-        
-            fetch(postUrl, {
-                method: "POST",
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(postData)
-            }).then(response => response.json())
-            .then (response => {  
-                setPlaces(response)
-            })
+            fetchData('loadPlaces', {spaceId: spaceId})
+            .then(response => setPlaces(response))
+            .catch(e => console.log(e))
         }
-        if (spaceId > 0 ) loadPlaces(spaceId)
+        if (spaceId > 0 ) loadPlaces()
     },[spaceId])
 
     useEffect(() => {
-        setTitle(inPlace.title)
-        setDescription(inPlace.description)
+        const loadPlaces = (inSpaceId) => {
+            fetchData('loadPlaces', {spaceId: inSpaceId})
+            .then(response => setPlaces(response))
+            .catch(e => console.log(e))
+        }
+        if (typeof(inPlace.title) !== 'undefined') setTitle(inPlace.title)
+        if (typeof(inPlace.description) !== 'undefined') setDescription(inPlace.description)
         typeof(inPlace.isRoot) === 'number' ? toggleIsRoot(inPlace.isRoot) : toggleIsRoot(false)
         editPoi(inPlace.poi)
-    },[inPlace])
-
-    
+        if (Array.isArray(spaces) && spaces.length > 0)
+            setSpaceId(inPlace.spaceId)
+            loadPlaces(inPlace.spaceId)
+    },[inPlace, spaces])
 
     const hideModal = (e) => {
         e = e||{}
@@ -86,14 +89,13 @@ export const UpdatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
         updateHandler("place", place, placeHandler)
         setDisabled(false)
         setModalReturn({})
+        setDirection("")
 
     }
 
     const formatPoi = () => {
-        console.log(poi)
         if (Array.isArray(poi))
         return poi.map((value,i) => {
-            console.log(value)
         return <section key={i}><label>Keyword {value.word}</label>
         <input id={i} name={value.word} type="text" value={poi.find(word => word.word === value.word).description} 
         onChange={(e) => {
@@ -102,7 +104,6 @@ export const UpdatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
             editPoi(prevState => {
               //oldPoi = prevState.find(word => word.word === value)
               prevState[id].description = value
-              console.log(prevState)
               return [...prevState]
             })//[...prevState,{[id]:newValue}])
         }} />
@@ -110,7 +111,6 @@ export const UpdatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
         </section>
         }
         ) 
-        else console.log('not an array?')
     }
 
     const formatPlaces = () => {
@@ -118,7 +118,7 @@ export const UpdatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
         return places.map((value,i) => Number(value.placeId) === Number(inPlace.placeId) ? "" : <option key={i} value={value.placeId}>{value.title}</option>)
     }
 
-    if (inUser.userId && inPlace && inPlace.placeId)
+    if (userId && inPlace && inPlace.placeId)
             return (
                 <div>
                 <div>{setFormHeader("Update Place", () => toggleIsVis(!isVis))}</div>
@@ -130,11 +130,12 @@ export const UpdatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
                 </section>
                 <section>
                 <label>Title
-                    <input name="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    <input name="title" type="text" value={title||""} onChange={(e) => setTitle(e.target.value)} />
                 </label>
                 <label>Description:
                     <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-                </label>              
+                </label>
+                <SpaceSelect userId={userId} inSpaceId={inPlace.spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)}/>              
                 <label>
                 Is Root?:
                 <input

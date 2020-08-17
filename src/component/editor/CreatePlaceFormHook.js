@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { setFormHeader, createHandler } from '../utils/formUtils';
 import { Place } from '../utils/defaultObjects';
+import { SpaceSelect } from './SpaceSelect'
 
-export const CreatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) => {
+export const CreatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
+    const [spaceId, setSpaceId] = useState(inPlace.spaceId)
     const [isRoot, toggleIsRoot] = useState(false)
     const [isExit, toggleIsExit] = useState(false)
     const [cmd, setCmd] = useState("")
 
+    useEffect(() => {
+        setSpaceId(inPlace.spaceId)
+    }, [inPlace])
+    
     const handleSubmit = (e) => {
         const place = Object.assign(Place)
         e.preventDefault();
@@ -34,7 +40,7 @@ export const CreatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
         setCmd("")
     }
 
-    if (inUser.userId)
+    if (userId)
             return (
                 <div>
                 <div>{setFormHeader("Create Place", () => toggleIsVis(!isVis))}</div>
@@ -45,7 +51,8 @@ export const CreatePlaceFormHook = ({inUser, inPlace, spaceId, placeHandler}) =>
                 </label>
                 <label>Description:
                     <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-                </label>              
+                </label>
+                <SpaceSelect userId={userId} inSpaceId={inPlace.spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)}/>              
                 <label>
                 Is Root?:
                 <input

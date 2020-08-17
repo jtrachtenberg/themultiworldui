@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { setFormHeader } from '../utils/formUtils';
 
-export const LoadSpacesFormHook = ({userId, inSpaceId, spaces, setCurrentSpace}) => {
-    const [isVis, toggleIsVis] = useState(true)
+export const SpaceSelect = ({userId, inSpaceId, spaces, setCurrentSpace}) => {
     const [spaceId, setSpaceId] = useState(inSpaceId)
 
     useEffect(() => {
@@ -20,13 +19,11 @@ export const LoadSpacesFormHook = ({userId, inSpaceId, spaces, setCurrentSpace})
     if (userId && Array.isArray(spaces))
         return (
             <div>
-                <div>{setFormHeader("Select a space",() => toggleIsVis(!isVis))}</div>
-                <form className={isVis ? "n" : "invis"}>
-                    <select onChange={(e) => setSpaceId(Number(e.target.value))}>
+                <div>{setFormHeader("Select a space")}</div>
+                    <select value={spaceId} onChange={(e) => setSpaceId(Number(e.target.value))}>
                         <option value="" disabled>Select a Space</option>
                         {formatSpaces()}
                     </select>
-                </form>
             </div>
         )
     else if (userId)

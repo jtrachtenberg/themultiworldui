@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { setFormHeader, updateHandler } from '../utils/formUtils';
+import {SpaceSelect} from './SpaceSelect'
 
-export const UpdateSpaceFormHook = ({userId, inSpace, spaceHandler}) => {
+export const UpdateSpaceFormHook = ({userId, spaces, spaceHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [isRoot, toggleIsRoot] = useState(true)
+    const [currentSpace, setCurrentSpace] = useState({})
 
     useEffect(() => {
-        setTitle(inSpace.title)
-        setDescription(inSpace.description)
-        typeof(inSpace.isRoot) === 'number' ? toggleIsRoot(inSpace.isRoot) : toggleIsRoot(false)
-    },[inSpace])
+        if (Array.isArray(spaces) && spaces.length > 0)
+            setCurrentSpace(spaces[0])
+    },[spaces])
+
+    useEffect(() => {
+        console.log(currentSpace)
+        if (typeof(currentSpace.title) !== 'undefined') setTitle(currentSpace.title)
+        if (typeof(currentSpace.description) !== 'undefined')setDescription(currentSpace.description)
+        typeof(currentSpace.isRoot) === 'number' ? toggleIsRoot(currentSpace.isRoot) : toggleIsRoot(false)
+    },[currentSpace])
 
     const handleSubmit = (e) => {
-        var subSpace = Object.assign(inSpace)
+        var subSpace = Object.assign(currentSpace)
         
         subSpace.title = title
         subSpace.description = description
@@ -24,17 +32,20 @@ export const UpdateSpaceFormHook = ({userId, inSpace, spaceHandler}) => {
         e.preventDefault();
     }
 
-    if (userId && inSpace && inSpace.spaceId)
+    if (userId && currentSpace && currentSpace.spaceId)
         return (
             <div>
             <div>{setFormHeader("Update Space", () => toggleIsVis(!isVis))}</div>
             <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
+            <SpaceSelect userId={userId} inSpaceId={currentSpace.spaceId} spaces={spaces} defaultSpaceId={currentSpace.spaceId} setCurrentSpace={inSpaceId => setCurrentSpace(() => {
+                    return spaces.find( ({ spaceId }) => spaceId === inSpaceId )
+            })}/>  
             <label>Title
                 <input name="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             </label>
             <label>Description:
                 <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-            </label>              
+            </label>            
             <label>
             Is Root?:
             <input

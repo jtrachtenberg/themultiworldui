@@ -4,7 +4,7 @@ import './App.css';
 import Title from './Title.js'
 import * as userForms from './user/userForms'
 import Alert from './Alert.js'
-import Editor from './Editor.js'
+import {EditorHook} from './EditorHook.js'
 import Main from './main'
 import Cli from './Cli'
 import Exits from './Exits'
@@ -22,10 +22,9 @@ class App extends React.Component {
 constructor(props) {
     super(props)
     //check if user exists in local storage, else use default state
-    var user = JSON.parse(localStorage.getItem('user'))
-    if (user === null || typeof(user) === "undefined" ) user = User
+
     this.state = {
-      user: user, 
+      user: {}, 
       alertMessage: "", 
       alertVis: false, 
       alertSuccess: true, 
@@ -41,11 +40,16 @@ constructor(props) {
 }
 
 componentDidMount() {
-  //Very simply connect to the socket
-  const socket = this.state.socket
-  //Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
-  socket.on("outgoing data", data => this.processResponse(data))
-  socket.on(`place:${this.state.placeId}`, data => this.processResponse(data))
+  var user = JSON.parse(localStorage.getItem('user'))
+  if (user === null || typeof(user) === "undefined" ) user = User
+  this.setState({user: user},() => {
+    //Very simply connect to the socket
+    const socket = this.state.socket
+    //Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
+    socket.on("outgoing data", data => this.processResponse(data))
+    socket.on(`place:${this.state.placeId}`, data => this.processResponse(data))
+  })
+
 }
 
 processResponse = (data) => {
@@ -84,7 +88,52 @@ noOp = () => {
 
 }
 
+childHookUpdateHandler  = (inObj, type) => {
+  let stateData = {}
+  const message = typeof(inObj.failed) === 'undefined' ? null : inObj.failed ? `Update to ${inObj.title} failed.` : `${inObj.title} updated`
+  delete inObj.failed
+
+  if (Object.keys(inObj).length === 0 && inObj.constructor === Object) return
+  if (type === 'place') {
+
+    const images = Array.isArray(inObj.images) ? inObj.images : []
+    if (inObj.modalReturn && inObj.modalReturn.src) {
+      images.push ({alt: inObj.modalReturn.alt,src: inObj.modalReturn.src})
+      delete inObj.modalReturn
+    }
+    
+    inObj.images = images
+    inObj.updated = true
+
+    const user = this.state.user
+    if (inObj.placeId) {
+      user.stateData.currentRoom = inObj.placeId
+      user.stateData.currentSpace = inObj.spaceId
+      this.updateUserHandler(user)
+    }
+
+    this.state.socket.off(`place:${this.state.place.placeId}`)
+    this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
+    this.state.socket.emit('incoming data', {msg: `left.`, exit:true, msgPlaceId: this.state.place.placeId, userName: this.state.user.userName})
+    this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
+  }
+  stateData[type] = inObj
+  stateData.modalReturn = null
+
+  if (message) {
+    stateData.alertMessage=message
+    stateData.alertVis=true
+    stateData.alertSucces=true
+    stateData.alertId=Math.random().toString()
+  }
+
+    this.setState({
+    ...stateData
+    }, message === null ? () => {} : () => this.state.socket.emit('incoming data', inObj))
+}
+
 childUpdateHandler = (inObj, type, message) => {
+  console.log('childUpdateHandler')
   message = message||null
   if (type === 'place') {
 
@@ -220,7 +269,7 @@ render() {
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><Editor inUser={this.state.user} userHandler={this.updateUserHandler} childUpdateHandler={this.childUpdateHandler} inSpace={this.state.space} inPlace={this.state.place} modalReturn={this.state.modalReturn} modalClose={this.modalClose} /></li>
+        <li><EditorHook inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">
