@@ -5,6 +5,10 @@ import Portal from '../utils/Portal'
 import Unsplash from './Unsplash'
 import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
 import {ReactComponent as DeleteIcon} from '../delete.svg';
+import {ReactComponent as CreateIcon} from '../create.svg';
+import {ReactComponent as AddIcon} from '../addkeyword.svg';
+
+
 import {fetchData} from '../utils/fetchData'
 import {SpaceSelect} from './SpaceSelect'
 
@@ -21,6 +25,8 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const [places, setPlaces] = useState([])
     const [exitSelect, setExitSelect] = useState(-1)
     const [poi, editPoi] = useState([])
+    const [showNewPoi, toggleNewPoi] = useState(false)
+    const [newKeyword, setNewKeyword] = useState("")
 
     useEffect(() => {
         if (Array.isArray(spaces) && spaces.length > 0)
@@ -97,11 +103,11 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const formatPoi = () => {
         if (Array.isArray(poi))
         return poi.map((value,i) => {
-        return <section key={i}><label>Keyword {value.word}&nbsp;<DeleteIcon onClick={(e) => editPoi(() => {
+        return <section key={i}><label><DeleteIcon onClick={(e) => editPoi(() => {
             const poiCopy = [...poi]
             poiCopy.splice(i,1)
             editPoi(poiCopy)
-            })} /></label>
+            })} />Keyword: {value.word}</label>
         <input id={i} name={value.word} type="text" value={poi.find(word => word.word === value.word).description} 
         onChange={(e) => {
             const {id, value} = e.target
@@ -161,6 +167,21 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                  <input name="direction" value={direction} type="text" onChange={(e) => setDirection(e.target.value)} />
                 </section>
                 <section>
+                <div>
+                    <h3>Points of Interest<span className="clickable" onClick={() => toggleNewPoi(true)} ><AddIcon /></span></h3> 
+                </div>
+                {showNewPoi && (
+                    <div>
+                        <label>Keyword:</label>
+                        <input name="newKeyword" value={newKeyword} onChange={(e) => setNewKeyword(e.target.value)} />
+                        <button className="clickable" onClick={() => {
+                            toggleNewPoi(false)
+                            const tmpPoi = [...poi]
+                            tmpPoi.push({word:newKeyword, description:'You see nothing special.'})
+                            editPoi(tmpPoi)
+                        }}><CreateIcon /></button>
+                    </div>
+                )}
                     {formatPoi()}
                 </section>
                 <section className="saveButton">
