@@ -26,7 +26,7 @@
 }
 
 .display-block {
-  display: block;
+  display: block !important;
 }
 
 .display-none {
@@ -206,7 +206,7 @@ input[type=email]:not(:placeholder-shown):invalid {
   margin: 6px;
 }
 
-.leftNav select {
+.leftNav ul li form select {
   display: block;
 }
 

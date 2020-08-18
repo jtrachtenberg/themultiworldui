@@ -10,8 +10,6 @@ import Cli from './Cli'
 import Exits from './Exits'
 import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
-import {Modal} from './utils/Modal'
-import Unsplash from './editor/Unsplash'
 import * as Constants from './constants'
 import {userStateData} from './utils/defaultObjects'
 
@@ -31,9 +29,6 @@ constructor(props) {
       alertId: 1, 
       space: Space, 
       place: Place,
-      showModal: false,
-      modalType: null,
-      modalReturn: null,
       inMsg: "",
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
@@ -69,21 +64,6 @@ processResponse = (data) => {
   }
 }
 
-showModal = () => {
-  this.setState({ showModal: true });
-};
-
-hideModal = (e) => {
-  e = e||{}
-  this.setState({ showModal: false, modalReturn: e });
-};
-
-formatModal = () => {
-  if (this.state.modalType === 'Unsplash') {
-    return <Unsplash modalClose={this.hideModal} />
-  }
-}
-
 noOp = () => {
 
 }
@@ -97,10 +77,6 @@ childHookUpdateHandler  = (inObj, type) => {
   if (type === 'place') {
 
     const images = Array.isArray(inObj.images) ? inObj.images : []
-    if (inObj.modalReturn && inObj.modalReturn.src) {
-      images.push ({alt: inObj.modalReturn.alt,src: inObj.modalReturn.src})
-      delete inObj.modalReturn
-    }
     
     inObj.images = images
     inObj.updated = true
@@ -118,7 +94,6 @@ childHookUpdateHandler  = (inObj, type) => {
     this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
   }
   stateData[type] = inObj
-  stateData.modalReturn = null
 
   if (message) {
     stateData.alertMessage=message
@@ -256,9 +231,6 @@ addUserHandler = (user) => {
 render() {
   return (
     <div className="App">
-        <Modal handleClose={this.hideModal} show={this.state.showModal} >
-          {this.formatModal()}
-        </Modal>
         <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>
       <div className="Header">
       <Title inUser={this.state.user} />

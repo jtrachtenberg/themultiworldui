@@ -25,6 +25,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const [places, setPlaces] = useState([])
     const [exitSelect, setExitSelect] = useState(-1)
     const [poi, editPoi] = useState([])
+    const [images, editImages] = useState([])
     const [showNewPoi, toggleNewPoi] = useState(false)
     const [newKeyword, setNewKeyword] = useState("")
 
@@ -52,6 +53,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         if (typeof(inPlace.description) !== 'undefined') setDescription(inPlace.description)
         typeof(inPlace.isRoot) === 'number' ? toggleIsRoot(inPlace.isRoot) : toggleIsRoot(false)
         editPoi(inPlace.poi)
+        editImages(inPlace.images)
         if (Array.isArray(spaces) && spaces.length > 0)
             setSpaceId(inPlace.spaceId)
             loadPlaces(inPlace.spaceId)
@@ -91,12 +93,18 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
             place.exits.push({[cmd]:{title:title,placeId:exitSelect}})
         }
 
-        if (modalReturn) place.modalReturn = modalReturn
-        if (poi) place.poi = poi
+        if (Array.isArray(poi) && poi.length > 0) place.poi = poi
+        else place.poi = []
+        if (Array.isArray(images) && images.length > 0) place.images = images
+        else place.images = []
+
+        if (modalReturn && typeof(modalReturn.src) === 'string') place.images.push({alt: modalReturn.alt, src: modalReturn.src, id: modalReturn.id, apilink: modalReturn.apilink})
         updateHandler("place", place, placeHandler)
         setDisabled(false)
         setModalReturn({})
         setDirection("")
+        editPoi(place.poi)
+        editImages(place.images)
 
     }
 
@@ -129,6 +137,16 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         return places.map((value,i) => Number(value.placeId) === Number(inPlace.placeId) ? "" : <option key={i} value={value.placeId}>{value.title}</option>)
     }
 
+    const formatImages = () => {
+        if (Array.isArray(images) && images.length > 0)
+        return images.map((value,i) => <span key={i} className="imageContainer"><img loading="lazy" alt={value.alt} src={value.src} width="75"/><span className="iconInset"><DeleteIcon onClick={(e) => editImages(() => {
+            const imagesCopy = [...images]
+            imagesCopy.splice(i,1)
+            editImages(imagesCopy)
+            })} /></span></span>)
+        else return <div>No Images</div>
+    }
+
     if (userId && inPlace && inPlace.placeId)
             return (
                 <div>
@@ -136,6 +154,9 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 
                 <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
                 <section>
+                    <div className="display-block">
+                    {formatImages()}
+                    </div>
                     <span>Add Image <ImageSearchIcon onClick={() => toggleShowModal(true)}/></span>
                     {modalReturn && <div><img alt={modalReturn.alt} src={modalReturn.src} width="75"/></div>}
                 </section>

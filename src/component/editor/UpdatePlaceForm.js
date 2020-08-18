@@ -3,6 +3,9 @@ import {setFormHeader, handleInputChange, updateHandler, toggleIsVis} from '../u
 import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
 import * as Constants from '../constants'
 
+/**
+ * DEPRECATED: Use UpdatePlaceFormHook
+ */
 class UpdatePlaceForm extends React.Component {
     constructor(props) {
         super(props)
