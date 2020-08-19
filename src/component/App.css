@@ -854,3 +854,16 @@ form#Cli {
   font-style: italic;
   text-decoration: #777 underline;
 }
+
+.iconInset {
+  position: relative;
+  right: 24px;
+}
+
+.iconInset svg {
+  opacity: 0.5;
+}
+
+.iconInset svg:hover {
+  opacity: 1.0
+}

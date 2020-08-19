@@ -26,7 +26,7 @@ export const handleInputChange = (e,ruleSets) => {
         if (ruleSet.type === 'transform') {//alias
           if (typeof(ruleSet.pos) === 'number' && (Number(valueToUpdate.length) === Number(ruleSet.pos)+1)) {
             valueToUpdate=valueToUpdate.replace(ruleSet.search,ruleSet.replace)
-          } else {
+          } else if (typeof(ruleSet.pos) !== 'number') {
             valueToUpdate=valueToUpdate.replace(ruleSet.search,ruleSet.replace)
           }
         } else if (ruleSet.type === 'validate') {//validate

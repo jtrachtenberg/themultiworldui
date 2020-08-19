@@ -23,6 +23,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const [modalReturn, setModalReturn] = useState({})
     const [disabled, setDisabled] = useState(false)
     const [places, setPlaces] = useState([])
+    const [exits, setExits] = useState([])
     const [exitSelect, setExitSelect] = useState(-1)
     const [poi, editPoi] = useState([])
     const [images, editImages] = useState([])
@@ -54,6 +55,21 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         typeof(inPlace.isRoot) === 'number' ? toggleIsRoot(inPlace.isRoot) : toggleIsRoot(false)
         editPoi(inPlace.poi)
         editImages(inPlace.images)
+        if (Array.isArray(inPlace.exits) && inPlace.exits.length>0) {
+        let exitsArray = []
+        inPlace.exits.forEach(exit => {
+            for (const [key,value] of Object.entries(exit)) {
+               const exitObj = {
+                   name: key,
+                   title: value.title,
+                   placeId: value.placeId
+               }
+               exitsArray.push(exitObj)
+            }
+           })
+
+        setExits(exitsArray)
+        }
         if (Array.isArray(spaces) && spaces.length > 0)
             setSpaceId(inPlace.spaceId)
             loadPlaces(inPlace.spaceId)
@@ -82,6 +98,11 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         place.isRoot = isRoot
         place.spaceId = spaceId
 
+        let currentExits = []
+        exits.forEach((value,i) => {
+            currentExits.push({[value.name]:{title:value.title,placeId:value.placeId}})
+        })
+
         if (exitSelect > 0) {
             const exit = places.find((element) => {
                 return Number(element.placeId) === Number(exitSelect)
@@ -90,9 +111,10 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
             const title = exit.title
             const cmd = direction||title.split(" ")[0]
 
-            place.exits.push({[cmd]:{title:title,placeId:exitSelect}})
+            currentExits.push({[cmd]:{title:title,placeId:exitSelect}})
         }
 
+        place.exits = currentExits
         if (Array.isArray(poi) && poi.length > 0) place.poi = poi
         else place.poi = []
         if (Array.isArray(images) && images.length > 0) place.images = images
@@ -105,6 +127,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         setDirection("")
         editPoi(place.poi)
         editImages(place.images)
+        setExits(place.exits)
 
     }
 
@@ -121,10 +144,11 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
             const {id, value} = e.target
             
             editPoi(prevState => {
-              //oldPoi = prevState.find(word => word.word === value)
               prevState[id].description = value
               return [...prevState]
-            })//[...prevState,{[id]:newValue}])
+            })
+            if (value.length === 0) setDisabled(true)
+            else setDisabled(false)
         }} />
             
         </section>
@@ -137,6 +161,43 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         return places.map((value,i) => Number(value.placeId) === Number(inPlace.placeId) ? "" : <option key={i} value={value.placeId}>{value.title}</option>)
     }
 
+    const formatExits = () => {
+        if (Array.isArray(exits) && exits.length > 0) {
+
+        return exits.map((value,i) => {
+            console.log()
+            return <section key={i}><label><DeleteIcon onClick={(e) => setExits(() => {
+                const exitsCopy = [...exits]
+                exitsCopy.splice(i,1)
+                setExits(exitsCopy)
+                })} />Exit: {value.name}<input id={i} name={value.name} type="text" value={exits.find(exit => exit.placeId === value.placeId).name||""} 
+                onChange={(e) => {
+                    const {id, value} = e.target
+                    
+                    setExits(prevState => {
+                      prevState[id].name = value
+                      return [...prevState]
+                    })
+                    if (value.length === 0) setDisabled(true)
+                    else setDisabled(false)
+                }} /></label>
+                <div className="display-block">
+                    <input id={i} name="title" type="text" value={exits.find(exit => exit.placeId === value.placeId).title||""}  onChange={(e) => {
+                    const {id, value} = e.target
+                    
+                    setExits(prevState => {
+                      prevState[id].title = value
+                      return [...prevState]
+                    })
+                }} />
+                </div>
+            
+                
+            </section>
+            }
+            )
+        } else return <div></div>
+    }
     const formatImages = () => {
         if (Array.isArray(images) && images.length > 0)
         return images.map((value,i) => <span key={i} className="imageContainer"><img loading="lazy" alt={value.alt} src={value.src} width="75"/><span className="iconInset"><DeleteIcon onClick={(e) => editImages(() => {
@@ -178,6 +239,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                     onChange={(e) => toggleIsRoot(!isRoot)} />
                 </label>
                 </section>
+                {formatExits()}
                 <section>
                 <label>Add an Exit?</label>
                 <select name="addExit" defaultValue="-1" onChange={(e) => setExitSelect(Number(e.nativeEvent.target.value))} >
