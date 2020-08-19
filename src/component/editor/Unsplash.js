@@ -1,6 +1,10 @@
 import React from 'react'
 import {setFormHeader, toggleIsVis, handleInputChange} from '../utils/formUtils'
 import * as Constants from '../constants'
+import {ReactComponent as LeftIcon} from '../circledarrowleft.svg';
+import {ReactComponent as RightIcon} from '../circledarrowright.svg';
+
+
 
 //const CLIENT_ID = "T96xrE-u_EqE-WdvwR47aNL0QWd_CNAsZQKr6OJ0yF4"
 
@@ -9,9 +13,13 @@ class Unsplash extends React.Component {
         super(props)
         this.state = {
             search: "", 
+            prevSearch: "",
             page: 1,
-            perpage: 10,
-            results: []
+            perpage: 5,
+            results: {},
+            totalpages: 1,
+            leftDisabled: true,
+            rightDisabled: false
         }
     }
 
@@ -70,30 +78,74 @@ class Unsplash extends React.Component {
         .then (response => {
           console.log(response)
           this.setState({
-            results: response
+            results: response,
+            totalpages: response.total_pages,
+            prevSearch: this.state.search
           })
         })
       }
 
     handleChange = (e) => {
+      
         this.setState(handleInputChange(e))
     }
 
     handleHeaderClick = (e) => {
+     
         this.setState(toggleIsVis(this.state))
     }
 
+    leftClickHandler = (e) => {
+      const page = this.state.page-1
+      let disabled = this.state.leftDisabled
+      if (page === 1) disabled = true
+      else disabled = false
+      this.setState({
+        page: page,
+        leftDisabled: disabled
+      },() => this.loadResults())
+    }
+
+    rightClickHandler = (e) => {
+      const page = this.state.page+1
+      let disabled = this.state.rightDisabled
+      if (page === this.state.totalpages) disabled = true
+      else disabled = false
+      this.setState({
+        page: page,
+        leftDisabled: disabled
+      },() => this.loadResults())
+    }
+
     clickHandler = (e) => {
+      e.preventDefault()
+      if (this.state.search === this.state.prevSearch)
         this.loadResults()
+      else {
+        this.setState({
+          page: 1,
+          leftDisabled: true
+        }, () => this.loadResults())
+      }
     }
 
     render() {
         return (
             <div>
                 <div>{setFormHeader("Choose an Image",this.handleHeaderClick)}</div>
-                <div className="imageList">{this.formatResults()}</div>
+                <div className="imageList">
+                  {(Array.isArray(this.state.results.results) && (this.state.results.results.length > 0)) &&
+                  <span className="iconLeft"><button disabled={this.state.leftDisabled} onClick={this.leftClickHandler}><LeftIcon /></button></span>
+                  }
+                  {this.formatResults()}
+                  {(Array.isArray(this.state.results.results) && (this.state.results.results.length > 0)) &&
+                  <span className="iconRight"><button disabled={this.state.rightDisabled} onClick={this.rightClickHandler}><RightIcon /></button></span>
+                  }
+                </div>
+                <form id="unsplash">
                 <div><input name="search" id="search" value={this.state.search} onChange={this.handleChange} /></div>
                 <button name="search" id="search" value="search" onClick={this.clickHandler}>Search</button>
+                </form>
             </div>
         )
     }
