@@ -108,7 +108,6 @@ childHookUpdateHandler  = (inObj, type) => {
 }
 
 childUpdateHandler = (inObj, type, message) => {
-  console.log('childUpdateHandler')
   message = message||null
   if (type === 'place') {
 

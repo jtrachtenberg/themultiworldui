@@ -103,7 +103,7 @@ class Main extends React.Component {
             <div>
             <div>{this.formatPlace()}</div>
             {this.state.showToolTip && (
-              <Portal>
+              <Portal id="toolTip">
                 <TooltipPopover
                   coords={this.state.coords} 
                 >

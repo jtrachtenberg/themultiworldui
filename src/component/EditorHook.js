@@ -38,12 +38,12 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
         if (!spaces) return
         if (Array.isArray(spaces) && spaces.length === 0) return
         setCurrentSpace(spaces[0])
-        //fetchData('loadSpace', postData).then(response=> setCurrentSpace(inSpace.spaceId ? inSpace.spaceId : response[0].spaceId))
     }, [spaces])
 
     if (inUser && inUser.userId > 0)
         return (
             <div>
+                <editorForms.ObjectCreatorForm userId={inUser.userId} spaces={spaces} />
                 <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => updateHandler(newSpace, 'space')} />
                 <editorForms.UpdateSpaceForm userId={inUser.userId} spaces={spaces} spaceHandler={newSpace => {
                     updateHandler(newSpace, 'space')

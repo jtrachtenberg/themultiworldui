@@ -13,7 +13,6 @@ export const fetchData = async (cmd, postData) => {
         body: JSON.stringify(postData)
         }).then(response => response.json())
         .then (response => {
-            console.log(response)
             return resolve(response)
         })
         .catch(e => {

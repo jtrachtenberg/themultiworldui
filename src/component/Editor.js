@@ -2,7 +2,9 @@ import React from 'react';
 import './App.css';
 import * as editorForms from './editor/editorForms'
 import * as Constants from './constants'
-
+/**
+ * Deprecated: Use EditorHook
+ */
 class Editor extends React.Component {
 
   constructor(props) {

@@ -52,7 +52,6 @@ class Unsplash extends React.Component {
     triggerEndpoint = (id) => {
         const postUrl = `${Constants.HOST_URL}:${Constants.UNSPLASH_PORT}/unsplash/endpointtrigger`
         const postData = { id: id}
-        console.log(postData)
         fetch(postUrl, {
           method: "POST",
           headers: {

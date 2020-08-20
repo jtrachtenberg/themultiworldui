@@ -57,7 +57,6 @@ export const updateHandler = (type, obj, handler) => {
     .then(response => response.json())
     .then(response => {
         obj.failed = false
-        console.log(obj)
         handler(obj)
     })
     .catch(err => {

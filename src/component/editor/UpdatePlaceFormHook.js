@@ -79,7 +79,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         e = e||{}
         toggleShowModal(false)
         setModalReturn(e)
-        console.log(e)
     };
     
 
@@ -113,7 +112,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
 
             currentExits.push({[cmd]:{title:title,placeId:exitSelect}})
         }
-
         place.exits = currentExits
         if (Array.isArray(poi) && poi.length > 0) place.poi = poi
         else place.poi = []
@@ -127,8 +125,20 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         setDirection("")
         editPoi(place.poi)
         editImages(place.images)
-        setExits(place.exits)
+        let exitsArray = []
+        place.exits.forEach(exit => {
+            for (const [key,value] of Object.entries(exit)) {
+               const exitObj = {
+                   name: key,
+                   title: value.title,
+                   placeId: value.placeId
+               }
+               exitsArray.push(exitObj)
+            }
+           })
 
+        setExits(exitsArray)
+        setExitSelect(-1)
     }
 
     const formatPoi = () => {
@@ -165,7 +175,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         if (Array.isArray(exits) && exits.length > 0) {
 
         return exits.map((value,i) => {
-            console.log()
             return <section key={i}><label><DeleteIcon onClick={(e) => setExits(() => {
                 const exitsCopy = [...exits]
                 exitsCopy.splice(i,1)
@@ -242,7 +251,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 {formatExits()}
                 <section>
                 <label>Add an Exit?</label>
-                <select name="addExit" defaultValue="-1" onChange={(e) => setExitSelect(Number(e.nativeEvent.target.value))} >
+                <select name="addExit" value={exitSelect} onChange={(e) => setExitSelect(Number(e.nativeEvent.target.value))} >
                      <option value="-1" disabled>Select a Place to exit</option>
                      {formatPlaces()}
                  </select>
@@ -272,7 +281,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 </section>
                 </form>
                 {showModal && (
-                    <Portal>
+                    <Portal id="imageModal">
                         <Modal handleClose={hideModal} show={showModal}
                         >
                         <Unsplash modalClose={hideModal}/>

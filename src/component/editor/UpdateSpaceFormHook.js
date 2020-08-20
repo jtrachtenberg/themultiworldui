@@ -15,7 +15,6 @@ export const UpdateSpaceFormHook = ({userId, spaces, spaceHandler}) => {
     },[spaces])
 
     useEffect(() => {
-        console.log(currentSpace)
         if (typeof(currentSpace.title) !== 'undefined') setTitle(currentSpace.title)
         if (typeof(currentSpace.description) !== 'undefined')setDescription(currentSpace.description)
         typeof(currentSpace.isRoot) === 'number' ? toggleIsRoot(currentSpace.isRoot) : toggleIsRoot(false)
