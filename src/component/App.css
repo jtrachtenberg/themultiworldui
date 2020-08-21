@@ -172,10 +172,6 @@ input[type=email]:not(:placeholder-shown):invalid {
   padding: 0px 12px;
 }
 
-.leftNav ul div {
-  display: inline-block;
-}
-
 .leftNav ul .fillSpace {
   width: stretch;
 }
