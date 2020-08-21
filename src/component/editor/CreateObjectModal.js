@@ -1,7 +1,7 @@
 import React from 'react';
 import {ReactComponent as AddIcon} from '../create.svg';
 
-export const CreateObjectModal = ({setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, commands, editCommands, currentAction, setCurrentAction}) => {
+export const CreateObjectModal = ({setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, commands, editCommands, currentAction, setCurrentAction, actions, commandId, incrementId}) => {
 
     return (
         <form id="ObjectCreatorForm">
@@ -18,8 +18,13 @@ export const CreateObjectModal = ({setFormHeader, title, setTitle, description, 
             <div>{setFormHeader("Actions")}</div>
             <div>
                 <label>Add Action <AddIcon onClick = {() => {
-                        const commandsCopy = [...commands]
-                        commandsCopy.push(currentAction)
+                        const newAction = actions[currentAction]
+                        newAction.id=commandId
+                        incrementId(commandId+1)
+                        let commandsCopy = []
+                        if (Array.isArray(commands) && commands.length > 0)
+                            commandsCopy = [...commands]
+                        commandsCopy.push(actions[currentAction])
                         editCommands(commandsCopy)
                     }
                 }/></label>

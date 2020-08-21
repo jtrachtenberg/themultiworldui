@@ -10,11 +10,29 @@ function usePrevious(value) {
     return ref.current;
 }
 
-export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
+export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler}) => {
     const [spaces, loadSpaces] = useState([])
     const [editSpace, setCurrentSpace] = useState({})
+    const [isFetching, toggleIsFetching] = useState(false)
     const prevUserId = usePrevious(inUser.userId)
     const prevSpaceId = usePrevious(inSpace.spaceId)
+
+    useEffect(() => {
+        console.log(forceUpdate)
+        console.log(inUser.userId)
+        console.log(isFetching)
+        if (forceUpdate && inUser.userId > 0 && spaces.length === 0 && !isFetching) {
+            toggleIsFetching(true)
+            console.log('fetching')
+            const postData = { userId: inUser.userId}
+            
+                fetchData('loadSpaces', postData).then(response => {
+                    loadSpaces(response)
+                    toggleIsFetching(false)
+                    })
+                    .catch(e=>console.log(e))
+        }
+    },[forceUpdate, inUser.userId, spaces.length, isFetching])
 
     useEffect(() => {
         if (!editSpace || (!Object.keys(editSpace).length === 0 && editSpace.constructor === Object)) return //empty
@@ -28,11 +46,18 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
 
     useEffect(() => {
         const postData = { userId: inUser.userId}
-
-        if (inUser.userId && (inUser.userId !== prevUserId)) {
-            fetchData('loadSpaces', postData).then(response => loadSpaces(response)).catch(e=>console.log(e))
+        console.log(prevUserId)
+        console.log(inUser.userId)
+        if (!isFetching && inUser.userId > 0 && (inUser.userId !== prevUserId)) {
+            toggleIsFetching(true)
+            console.log('inuser fetching')
+            fetchData('loadSpaces', postData).then(response => {
+                    loadSpaces(response)
+                    toggleIsFetching(false)
+                })
+                .catch(e=>console.log(e))
         }
-    },[inUser, prevUserId])
+    },[inUser, prevUserId, isFetching])
 
     useEffect(() => {
         if (!spaces) return

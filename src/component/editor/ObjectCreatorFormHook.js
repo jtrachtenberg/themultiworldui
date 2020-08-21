@@ -23,8 +23,9 @@ export const ObjectCreatorFormHook = ({userId, placeHandler}) => {
     const [description, setDescription] = useState("")
     const [triggers, editTriggers] = useState([])
     const [actions, editActions] = useState([])
-    const [currentAction, setCurrentAction] = useState("")
+    const [currentAction, setCurrentAction] = useState(0)
     const [isRoot, toggleIsRoot] = useState(true)
+    const [commandId, incrementId] = useState(1)
 
     useEffect(() => {
         console.log('userId')
@@ -33,7 +34,6 @@ export const ObjectCreatorFormHook = ({userId, placeHandler}) => {
             inCommands.push({command: key, value: value})
         }
         editActions(inCommands)
-        setCurrentAction(inCommands[0])
     },[userId])
 
     useEffect(() => {
@@ -81,7 +81,7 @@ export const ObjectCreatorFormHook = ({userId, placeHandler}) => {
         {showModal && (
             <Portal id="objectModal">
                 <Modal handleClose={hideModal} show={showModal}>
-                    <CreateObjectModal setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} commands={commands} editCommands={editCommands} currentAction={currentAction} setCurrentAction={setCurrentAction}/>
+                    <CreateObjectModal setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} commands={commands} editCommands={editCommands} currentAction={currentAction} setCurrentAction={setCurrentAction} actions={actions} commandId={commandId} incrementId={incrementId}/>
                 </Modal>
                 </Portal>       
         )}  

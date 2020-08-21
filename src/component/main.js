@@ -4,6 +4,7 @@ import * as Constants from './constants'
 //import {Tooltip} from './utils/Tooltip'
 import TooltipPopover from './utils/TooltipPopover'
 import Portal from './utils/Portal'
+import {fetchData} from './utils/fetchData'
 
 class Main extends React.Component {
     constructor(props) {
@@ -14,19 +15,17 @@ class Main extends React.Component {
           coords: null,
           toolTipText: "",
           toolTipId: "",
+          fetching: false
         }
         this.toolTip = React.createRef()
         this.toolTipText = ""
     }  
 
-    componentDidMount() {
-          this.loadPlace()
-      }
-
     componentDidUpdate() {
       let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
       const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
-      if (Number(oldRoom) !== Number(currentRoom)) {
+      console.log(`oldRoom: ${oldRoom} : currentRoot: ${currentRoom}`)
+      if (!this.state.fetching && Number(oldRoom) !== Number(currentRoom)) {
         this.loadPlace()
       }
     }
@@ -51,20 +50,14 @@ class Main extends React.Component {
     }
 
     loadPlace = () => {
-        const postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loadPlace`
+      console.log('loadPlace')
         const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
         const tmpPlace = {placeId: currentRoom}
- 
-        fetch(postUrl, {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(tmpPlace)
-        })
-        .then(response => response.json())
-        .then(response => {
-          this.props.childUpdateHandler(response[0],'place')
+        this.setState({fetching: true},() => {
+          fetchData('loadPlace',tmpPlace).then(response => {
+              this.setState({fetching: false})
+              this.props.childUpdateHandler(response[0],'place')
+          })
         })
       }
     

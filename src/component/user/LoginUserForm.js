@@ -75,12 +75,21 @@ class LoginUserForm extends React.Component {
         this.setState({
             disabled: false
         })
+        if (typeof(this.props.close) === 'function') {
+            this.props.close(loginUser)
+        }
         e.preventDefault();
     }
 
     userLogout = (e) => {
         e.preventDefault();
-        const blankUser = User
+        const blankUser = Object.assign(User)
+        blankUser.userId=0
+        blankUser.description=""
+        blankUser.email=""
+        blankUser.stateData={}
+        blankUser.isRoot=0
+        blankUser.userName=""
         this.props.loginHandler(blankUser)
     }
     render() {

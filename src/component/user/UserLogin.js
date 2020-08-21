@@ -1,20 +1,13 @@
 import {loadObject} from '../utils/formUtils'
 import {userStateData} from '../utils/defaultObjects'
-import * as Constants from '../constants'
+import {fetchData} from '../utils/fetchData'
 
 export const userLogin = (user, handler) => {
-    let postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loginUser`
+    let postUrl = `loginUser`
     if (user.userId === -1)
-        postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/addUser`
+        postUrl = `addUser`
 
-    fetch(postUrl, {
-    method: "POST",
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user)
-    })
-    .then(response => response.json())
+    fetchData(postUrl, user)
     .then(response => {
         const finalResponse = user.userId === -1 ? response[0] : response
         loadObject(finalResponse, user)

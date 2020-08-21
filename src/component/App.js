@@ -12,8 +12,9 @@ import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
 import * as Constants from './constants'
 import {userStateData} from './utils/defaultObjects'
-
-//let socket = require('socket.io-client')(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`);
+import {Modal} from './utils/Modal'
+import Portal from './utils/Portal'
+import {fetchData} from './utils/fetchData'
 
 class App extends React.Component {
 
@@ -30,21 +31,37 @@ constructor(props) {
       space: Space, 
       place: Place,
       inMsg: "",
+      showModal: false,
+      modalReturn: {},
+      forceUpdate: false,
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
 
 componentDidMount() {
   var user = JSON.parse(localStorage.getItem('user'))
-  if (user === null || typeof(user) === "undefined" ) user = User
+  let needLogin = false
+  console.log(user)
+  if (user === null || typeof(user) === "undefined" || user.userId === 0) {
+    user = User
+    needLogin = true
+    console.log('set true')
+  }
   this.setState({user: user},() => {
     //Very simply connect to the socket
     const socket = this.state.socket
     //Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
     socket.on("outgoing data", data => this.processResponse(data))
     socket.on(`place:${this.state.placeId}`, data => this.processResponse(data))
+    if (needLogin) this.setState({showModal: true})
   })
 
+}
+
+componentDidUpdate() {
+  if (this.state.space.title.length === 0 && !this.state.forceUpdate)
+    this.setState({forceUpdate: true})
+  else if (this.state.space.title.length > 0 && this.state.forceUpdate) this.setState({forceUpdate: false})
 }
 
 processResponse = (data) => {
@@ -62,6 +79,12 @@ processResponse = (data) => {
       inMsg: `${prepend} ${msg}`
     })
   }
+}
+
+
+
+hideModal = () => {
+  this.setState({showModal: false})
 }
 
 noOp = () => {
@@ -142,12 +165,14 @@ childUpdateHandler = (inObj, type, message) => {
 loginHandler = (user) => {
   let message = user.userId > 0 ? `User ${user.userName} Logged in` : `Login failed`
   let success = user.userId > 0 ? true: false
+
   this.setState({
     user: user,
     alertMessage: message,
     alertVis: true,
     alertSuccess: success,
-    alertId: Math.random().toString()
+    alertId: Math.random().toString(),
+    showModal: !success
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
   })
@@ -186,17 +211,10 @@ updateUserHandler = (user) => {
   })
 }
 
-addUserHandler = (user) => {
-  let postUrl = `${Constants.HOST_URL}:${Constants.HOST_URL_PORT}/addUser`
-  fetch(postUrl, {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user)
-  })
-  .then(response => response.json())
-  .then(response => {
+addUserHandler = (user,doLogin) => {
+  doLogin = doLogin||false
+  fetchData('addUser',user).then(response => {
+    user.userId = response[0]
     const message = `User ${user.userName} Created`
     if (user.description === null) user.description = ''
     if (typeof(user.password) !== 'undefined') delete user.password 
@@ -204,30 +222,44 @@ addUserHandler = (user) => {
       const stateData = userStateData
       user.stateData = stateData
     }
-    localStorage.setItem('user', JSON.stringify(user));
-    this.setState({
-      user: user,
+    const stateData = {
       alertMessage: message,
       alertVis: true,
       alertSuccess: true,
       alertId: Math.random().toString()
+    }
+    if (doLogin) {
+      localStorage.setItem('user', JSON.stringify(user));
+      stateData.user = user
+    }
+
+    this.setState({
+      ...stateData
     })
   })
   .catch(err => {
     console.log(err);
-    const passUser = {userName:'',email:'',userId:0,description:'',isRoot:0}
-    localStorage.setItem('user', JSON.stringify(passUser));
-    this.setState({
-      user: passUser,
+    const stateData = {
       alertMessage: "Login Failed",
       alertVis: true,
       alertSuccess: false,
       alertId: Math.random().toString()
+    }
+    if (doLogin) {
+      const passUser = Object.assign(User)
+      localStorage.setItem('user', JSON.stringify(passUser));
+      stateData.user = passUser
+    }
+
+    this.setState({
+      ...stateData
     })
   }); 
 }
 
 render() {
+  let doModal = this.state.showModal
+  console.log(doModal)
   return (
     <div className="App">
         <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>
@@ -240,7 +272,7 @@ render() {
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><EditorHook inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
+        <li><EditorHook forceUpdate={this.state.forceUpdate} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">
@@ -251,7 +283,16 @@ render() {
         <div className="exits"><Exits inPlace={this.state.place}/></div>
       </div>
       </div>
+
       <div id="portal-root"></div>
+      {( doModal && 
+                    <Portal id="imageModal">
+                        <Modal handleClose={this.hideModal} show={this.state.showModal}
+                        >
+                        <userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler} close={this.hideModal}/>
+                        </Modal>
+                    </Portal>
+                )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import * as Constants from '../constants'
+import {fetchData} from '../utils/fetchData'
 
 // inObj = props, inCmd = array of input words
 const travel = async (inObj, inCmd) => {
@@ -10,18 +10,10 @@ const travel = async (inObj, inCmd) => {
         let userName = inCmd[1]
         if (userName[0] === '@') userName = userName.substr(1)
 
-        let postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/loadDefaultPlace`
         const postData = {
             userName: userName
         }
-        await fetch(postUrl, {
-            method: "POST",
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postData)
-        })
-        .then(response => response.json())
+        await fetchData('loadDefaultPlace', postData)
         .then(response => {
             const retObj = response[0]
             retObj.type = 'place'
