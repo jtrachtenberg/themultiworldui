@@ -16,7 +16,7 @@ import {CreateObjectModal} from './CreateObjectModal'
 */
 
 export const ObjectCreatorFormHook = ({userId, placeHandler}) => {
-    const [commands, editCommands] = useState([])
+    const [actionStack, editActionStack] = useState([])
     const [showModal, toggleShowModal] = useState(false)
     const [title, setTitle] = useState("")
     const [modalReturn, setModalReturn] = useState({})
@@ -26,9 +26,9 @@ export const ObjectCreatorFormHook = ({userId, placeHandler}) => {
     const [currentAction, setCurrentAction] = useState(0)
     const [isRoot, toggleIsRoot] = useState(true)
     const [commandId, incrementId] = useState(1)
+    const [currentActionNumber, setCurrentActionNumber] = useState(-1)
 
     useEffect(() => {
-        console.log('userId')
         let inCommands = []
         for (const [key, value] of Object.entries(Actions)) {
             inCommands.push({command: key, value: value})
@@ -36,10 +36,15 @@ export const ObjectCreatorFormHook = ({userId, placeHandler}) => {
         editActions(inCommands)
     },[userId])
 
-    useEffect(() => {
-        console.log('commands')
-        console.log(commands)
-    }, [commands])
+    const handleActionChange = (name,value,actionNumber)  => {
+        const tmpActions = (Array.isArray(actionStack) && actionStack.length > 0) ? [...actionStack] : []
+
+        const inAction = tmpActions[actionNumber] 
+        inAction[name]=value
+        tmpActions[actionNumber] = inAction
+
+        editActionStack(tmpActions)
+    }
 
     const hideModal = (e) => {
         setModalReturn(e)
@@ -47,24 +52,24 @@ export const ObjectCreatorFormHook = ({userId, placeHandler}) => {
     };
 
     const formatActions = () => {
-        if (Array.isArray(commands) && commands.length === 0)
+        if (Array.isArray(actionStack) && actionStack.length === 0)
             return <div></div>
         
-        return commands.map((command,i) => {
+        return actionStack.map((command,i) => {
             console.log(command)
             const NewAction = actions.find((value) => value.command === command.command).value
             
-            return <div key={i}><NewAction /></div>
+            return <div key={i}><NewAction userId={userId} handleActionChange={handleActionChange} actionNumber={i} setCurrentActionNumber={setCurrentActionNumber} actionStack={actionStack} /></div>
         })
 
-        /*return Object.entries(commands).map((value,i) => {
+        /*return Object.entries(actionStack).map((value,i) => {
             console.log(value)
             console.log(i)
             const cmd = value[0]
             console.log(currentAction.Command)
-            return <div><commands.Command /></div>
+            return <div><actionStack.Command /></div>
         })*/
-        /*return objectMap(commands, Command => {
+        /*return objectMap(actionStack, Command => {
             console.log(Command)
             return <div><[Command] /></div>
         })*/
@@ -81,7 +86,7 @@ export const ObjectCreatorFormHook = ({userId, placeHandler}) => {
         {showModal && (
             <Portal id="objectModal">
                 <Modal handleClose={hideModal} show={showModal}>
-                    <CreateObjectModal setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} commands={commands} editCommands={editCommands} currentAction={currentAction} setCurrentAction={setCurrentAction} actions={actions} commandId={commandId} incrementId={incrementId}/>
+                    <CreateObjectModal setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} actionStack={actionStack} editActionStack={editActionStack} currentAction={currentAction} setCurrentAction={setCurrentAction} currentActionNumber={currentActionNumber} actions={actions} commandId={commandId} incrementId={incrementId}/>
                 </Modal>
                 </Portal>       
         )}  

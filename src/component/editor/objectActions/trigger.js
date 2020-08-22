@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export const Trigger = ({userId, placeHandler}) => {
+export const Trigger = ({userId, handleActionChange, actionNumber}) => {
     const [commandAction , setCommand] = useState("")
     const [result, setResult] = useState("")
     const addActionHandler = () => {
