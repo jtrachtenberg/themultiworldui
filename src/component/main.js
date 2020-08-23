@@ -24,7 +24,6 @@ class Main extends React.Component {
     componentDidUpdate() {
       let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
       const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
-      console.log(`oldRoom: ${oldRoom} : currentRoot: ${currentRoom}`)
       if (!this.state.fetching && Number(oldRoom) !== Number(currentRoom)) {
         this.loadPlace()
       }

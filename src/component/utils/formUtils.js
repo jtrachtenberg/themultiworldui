@@ -46,7 +46,6 @@ export const handleInputChange = (e,ruleSets) => {
 export const updateHandler = (type, obj, handler) => {
     
     let postUrl = `update`+capitalizeFirstLetter(type)
-
     fetchData(postUrl, obj)
     .then(response => {
         obj.failed = false
@@ -62,8 +61,8 @@ export const updateHandler = (type, obj, handler) => {
 export const createHandler = (type, obj, handler) => {
   // creates entity
   let postUrl = `add`+capitalizeFirstLetter(type)
-  
-  fetch(postUrl, obj)
+  console.log(postUrl)
+  fetchData(postUrl, obj)
   .then(response => {
     const idName = type+"Id"
     obj[idName] = response[0]

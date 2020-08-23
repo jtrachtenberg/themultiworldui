@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export const Command = ({userId, handleActionChange, actionNumber, setCurrentActionNumber, actionStack}) => {
     const [commandAction , setCommand] = useState("")
-    const [result, setResult] = useState("")
+    //const [result, setResult] = useState("")
 
     const updateParent = (e) => {
         const {name, value} = e.target
@@ -19,7 +19,9 @@ export const Command = ({userId, handleActionChange, actionNumber, setCurrentAct
             <label>Command Result?</label>
                 <input name="commandResult" value={actionStack[actionNumber].commandResult||""} type="text" onChange={(e) => {
                     updateParent(e)
-                    setResult(e.target.value)}} onClick={(e) => setCurrentActionNumber(actionNumber)}/>
+                    //setResult(e.target.value)
+                    }} onClick={(e) => setCurrentActionNumber(actionNumber)}
+                    onFocus={(e) => setCurrentActionNumber(actionNumber)}/>
         </section>
         )
     }

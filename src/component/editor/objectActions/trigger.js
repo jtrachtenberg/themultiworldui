@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 export const Trigger = ({userId, handleActionChange, actionNumber}) => {
     const [commandAction , setCommand] = useState("")

@@ -3,6 +3,7 @@ import * as Constants from '../constants'
 
 export const fetchData = async (cmd, postData) => {
     const postUrl = `${Constants.HOST_URL}:${Constants.EXPRESS_PORT}/${cmd}`
+    console.log(postUrl)
     let retVal = await new Promise((resolve, reject) => {
         fetch(postUrl, {
         method: "POST",

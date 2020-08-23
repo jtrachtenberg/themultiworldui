@@ -65,10 +65,13 @@ export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler
         setCurrentSpace(spaces[0])
     }, [spaces])
 
+    const objectHandler = (response) => {
+        console.log(response)
+    }
     if (inUser && inUser.userId > 0)
         return (
             <div>
-                <editorForms.ObjectCreatorForm userId={inUser.userId} spaces={spaces} />
+                <editorForms.ObjectCreatorForm userId={inUser.userId} objectHandler={objectHandler} spaces={spaces} />
                 <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => updateHandler(newSpace, 'space')} />
                 <editorForms.UpdateSpaceForm userId={inUser.userId} spaces={spaces} spaceHandler={newSpace => {
                     updateHandler(newSpace, 'space')
