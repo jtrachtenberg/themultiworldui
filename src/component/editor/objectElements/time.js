@@ -37,32 +37,19 @@ export const Time = ({show, currentActionNumber, actionStack, editActionStack, e
     const [dateFormat, setDateFormat] = useState(0)
     const elementSymbol = "<time>"
 
-    const looseJsonParse = (obj) => {
+    /*const looseJsonParse = (obj) => {
         // eslint-disable-next-line
         return Function('"use strict";return (' + obj + ')')();
-    }
-    /*useEffect(() => {
-        if (actionStack.length > 0 && currentActionNumber !== -1) {
-            if (actionStack[currentActionNumber].elementList === elementList) return
-            console.log(actionStack)
-            console.log(currentActionNumber)
-            const tmpStack = [...actionStack]
-            const tmpAction = tmpStack[currentActionNumber]
-            console.log(tmpAction)
-            tmpAction.elementList=elementList
-            tmpStack[currentActionNumber]=tmpAction
-            editActionStack(tmpStack)
-        }
-    },[actionStack,editActionStack,currentActionNumber,elementList])*/
+    }*/
 
     useEffect(() => {
         if (!elementList.find((el,i) => el.element === "Time")) {
             const tmpList = Array.isArray(elementList) && elementList.length > 0 ? [...elementList] : []
-            console.log(tmpList)
+         
             tmpList.push({element:"Time",elementSymbol:elementSymbol, elementResult: "new Date()", elementFormat: timeFormats[dateFormat]})
-            const tmpString = "new Date()"
-            let tmpObj = looseJsonParse(tmpString)
-            console.log(tmpObj)
+            //const tmpString = "new Date()"
+            //let tmpObj = looseJsonParse(tmpString)
+            //console.log(tmpObj)
 
             editElementList(tmpList)
             setDateTime(formatTime(dateFormat))
@@ -74,7 +61,7 @@ export const Time = ({show, currentActionNumber, actionStack, editActionStack, e
         let finalValue
         if (name === 'elementFormat') finalValue = timeFormats[value]
         else finalValue=value
-        console.log(finalValue)
+     
         handleElementChange(name,finalValue,elementNumber)
     }
 

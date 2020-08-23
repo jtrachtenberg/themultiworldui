@@ -26,10 +26,10 @@ export const Place = {
     spaceId: 0,
     title: "",
     description: "",
-    exits: null,
-    poi: null,
-    objects: null,
-    images: null,
+    exits: [],
+    poi: [],
+    objects: [],
+    images: [],
     src: null,
     alt: null
 }

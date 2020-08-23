@@ -54,7 +54,7 @@ export const ObjectCreatorFormHook = ({userId, objectHandler}) => {
             return <div></div>
         
         return actionStack.map((command,i) => {
-            console.log(command)
+           
             const NewAction = actions.find((value) => value.command === command.command).value
             
             return <div key={i}><NewAction userId={userId} handleActionChange={handleActionChange} actionNumber={i} setCurrentActionNumber={setCurrentActionNumber} actionStack={actionStack} /></div>

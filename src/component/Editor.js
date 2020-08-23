@@ -36,8 +36,7 @@ class Editor extends React.Component {
   }
 
   loadSpace = (inSpaceId) => {
-    console.log(inSpaceId)
-    console.log(this.state.spaces)
+
     const newSpace = this.state.spaces.find( ({ spaceId }) => spaceId === inSpaceId )
     this.setState({
       space: newSpace

@@ -75,7 +75,7 @@ class Unsplash extends React.Component {
           body: JSON.stringify(postData)
         }).then(response => response.json())
         .then (response => {
-          console.log(response)
+       
           this.setState({
             results: response,
             totalpages: response.total_pages,

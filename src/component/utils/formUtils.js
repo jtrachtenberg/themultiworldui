@@ -61,7 +61,7 @@ export const updateHandler = (type, obj, handler) => {
 export const createHandler = (type, obj, handler) => {
   // creates entity
   let postUrl = `add`+capitalizeFirstLetter(type)
-  console.log(postUrl)
+
   fetchData(postUrl, obj)
   .then(response => {
     const idName = type+"Id"

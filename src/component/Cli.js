@@ -31,6 +31,21 @@ class Cli extends React.Component {
         })
         }
 
+        if (Array.isArray(this.props.inPlace.objects) && this.props.inPlace.objects.length > 0)
+            this.props.inPlace.objects.forEach(object => {
+                const actionStack = JSON.parse(object.actionStack.replace(/\\/g, ""))
+                actionStack.forEach(action => {
+                    if (action.command === "Command")
+                        if (!Array.isArray(action.elementList)) {//Simple string response
+                            const retFunction = () => {
+                                const retVal = new Promise((resolve) => resolve(action.commandResult))
+                                return retVal
+                            }
+                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
+                        }
+                })
+            })
+
         this.setState({
             availableCommands: commands,
             loadCommands: false
@@ -102,7 +117,8 @@ ${this.props.inMsg}`
             const cmds = [];
             availableCommands.forEach((cmd)=> {
                 Object.keys(cmd).forEach((key) => {
-                    cmds.push(`${key}`)
+                    if (key !== 'isBroadcast' && key !== 'objTitle')
+                        cmds.push(`${key}`)
                 })
             })
             const cmdString = cmds.join(",")
@@ -133,9 +149,11 @@ Available commands: ${cmdString}`
                 return cmdCheck === cmdString
         })
         if (typeof(executeCommand) !== 'undefined') {
+        console.log(executeCommand)
         const action = executeCommand[cmdString]
         if (typeof(action) === 'function') {//Global command
             action(this.props, inputParts).then(result => {
+                const origResult = result
                 if (typeof(result) === 'object') {
                     if (result.type === 'place') {
                         const newUser = this.props.inUser
@@ -166,6 +184,12 @@ ${result}`
                     loadCommands: true
                 },() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                    if (executeCommand.isBroadcast) {
+                        console.log('broadcast')
+                        const message = `${this.props.inUser.userName} uses ${executeCommand.objTitle}: ${origResult}`
+                        this.props.socket.emit('incoming data', {msg: message, msgPlaceId: this.props.inPlace.placeId, userName: ""})
+
+                    }
                 })
             }
             }).catch(failed => {

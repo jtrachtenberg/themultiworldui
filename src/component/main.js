@@ -49,7 +49,7 @@ class Main extends React.Component {
     }
 
     loadPlace = () => {
-      console.log('loadPlace')
+
         const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
         const tmpPlace = {placeId: currentRoom}
         this.setState({fetching: true},() => {
@@ -70,6 +70,15 @@ class Main extends React.Component {
       } else {
         return <span></span>
       }
+    }
+
+    formatObjects = () => {
+      const place = this.props.inPlace
+      const vowelRegex = '^[aieouAIEOU].*'
+      if (Array.isArray(place.objects) && place.objects.length > 0)
+        return place.objects.map((object,i) => <div key={i}><p>You see {object.title.split(" ")[0] === "A" ? "" : object.title.split(" ")[0] === "An" ? "" : object.title.match(vowelRegex) ? 'an' : 'a'} {object.title} here.</p></div>)
+      else
+        return <div></div>
     }
 
     formatDescription = (place) => {
@@ -94,6 +103,7 @@ class Main extends React.Component {
         return (
             <div>
             <div>{this.formatPlace()}</div>
+            <div>{this.formatObjects()}</div>
             {this.state.showToolTip && (
               <Portal id="toolTip">
                 <TooltipPopover

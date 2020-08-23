@@ -18,12 +18,9 @@ export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler
     const prevSpaceId = usePrevious(inSpace.spaceId)
 
     useEffect(() => {
-        console.log(forceUpdate)
-        console.log(inUser.userId)
-        console.log(isFetching)
+
         if (forceUpdate && inUser.userId > 0 && spaces.length === 0 && !isFetching) {
             toggleIsFetching(true)
-            console.log('fetching')
             const postData = { userId: inUser.userId}
             
                 fetchData('loadSpaces', postData).then(response => {
@@ -46,11 +43,10 @@ export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler
 
     useEffect(() => {
         const postData = { userId: inUser.userId}
-        console.log(prevUserId)
-        console.log(inUser.userId)
+
         if (!isFetching && inUser.userId > 0 && (inUser.userId !== prevUserId)) {
             toggleIsFetching(true)
-            console.log('inuser fetching')
+       
             fetchData('loadSpaces', postData).then(response => {
                     loadSpaces(response)
                     toggleIsFetching(false)
@@ -66,12 +62,15 @@ export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler
     }, [spaces])
 
     const objectHandler = (response) => {
-        console.log(response)
+        //console.log(response)
     }
     if (inUser && inUser.userId > 0)
         return (
             <div>
                 <editorForms.ObjectCreatorForm userId={inUser.userId} objectHandler={objectHandler} spaces={spaces} />
+                <editorForms.ObjectsPaletteHook userId={inUser.userId} inPlace={inPlace} placeHandler={newPlace => {
+                    updateHandler(newPlace, 'place')
+                }}/>
                 <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => updateHandler(newSpace, 'space')} />
                 <editorForms.UpdateSpaceForm userId={inUser.userId} spaces={spaces} spaceHandler={newSpace => {
                     updateHandler(newSpace, 'space')

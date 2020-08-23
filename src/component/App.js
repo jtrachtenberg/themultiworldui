@@ -41,11 +41,11 @@ constructor(props) {
 componentDidMount() {
   var user = JSON.parse(localStorage.getItem('user'))
   let needLogin = false
-  console.log(user)
+
   if (user === null || typeof(user) === "undefined" || user.userId === 0) {
     user = User
     needLogin = true
-    console.log('set true')
+
   }
   this.setState({user: user},() => {
     //Very simply connect to the socket
@@ -74,7 +74,11 @@ processResponse = (data) => {
   } else if (data.msg) {
     const msg = data.msg.msg
     const name = data.msg.userName
-    const prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : `${name} says:`
+    let prepend
+    if (name !== "")
+      prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : `${name} says:`
+    else
+      prepend = ""
     this.setState({
       inMsg: `${prepend} ${msg}`
     })
@@ -259,7 +263,6 @@ addUserHandler = (user,doLogin) => {
 
 render() {
   let doModal = this.state.showModal
-  console.log(doModal)
   return (
     <div className="App">
         <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>

@@ -22,8 +22,7 @@ export const CreateObjectModal = ({setFormHeader, title, setTitle, description, 
     const handleElementChange = (name,value,elementNumber) => {
         const newActionStack = [...actionStack]
         const newCommand = newActionStack[currentActionNumber]
-        console.log(newCommand.elementList)
-        console.log(name)
+
         newCommand.elementList[elementNumber][name] = value
         newActionStack[currentActionNumber]=newCommand
         editActionStack(newActionStack)
