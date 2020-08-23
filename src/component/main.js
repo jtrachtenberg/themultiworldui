@@ -75,8 +75,23 @@ class Main extends React.Component {
     formatObjects = () => {
       const place = this.props.inPlace
       const vowelRegex = '^[aieouAIEOU].*'
-      if (Array.isArray(place.objects) && place.objects.length > 0)
-        return place.objects.map((object,i) => <div key={i}><p>You see {object.title.split(" ")[0] === "A" ? "" : object.title.split(" ")[0] === "An" ? "" : object.title.match(vowelRegex) ? 'an' : 'a'} {object.title} here.</p></div>)
+      let retString = ""
+      if (Array.isArray(place.objects) && place.objects.length > 0) {
+        retString = "You see "
+        // eslint-disable-next-line
+        if (place.objects.length === 1) retString += place.objects[0].title.split(" ")[0] === "A" ? "" : place.objects[0].title.split(" ")[0] === "An" ? "" : place.objects[0].title.match(vowelRegex) ? 'an' : 'a' + ` ${place.objects[0].title}`
+        else place.objects.forEach((object,i) => {
+          let tmpString = (i > 0 && place.objects.length > 2) ? ", " : ""
+          tmpString += (i === place.objects.length-1) ? " and " : ""
+
+          tmpString += object.title.split(" ")[0] === "A" ? "" : object.title.split(" ")[0] === "An" ? "" : object.title.match(vowelRegex) ? 'an' : 'a'
+          tmpString += ` ${object.title}`
+          
+          retString += tmpString
+        })
+        return <div>{retString}</div>
+      }
+        //return place.objects.map((object,i) => <div key={i}><p>You see {object.title.split(" ")[0] === "A" ? "" : object.title.split(" ")[0] === "An" ? "" : object.title.match(vowelRegex) ? 'an' : 'a'} {object.title} here.</p></div>)
       else
         return <div></div>
     }

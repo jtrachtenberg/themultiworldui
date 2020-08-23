@@ -15,8 +15,7 @@ const travel = async (inObj, inCmd) => {
         }
         await fetchData('loadDefaultPlace', postData)
         .then(response => {
-            const retObj = response[0]
-            retObj.type = 'place'
+            const retObj = {type:'place',value:response[0],response:`Traveling to the world of ${userName}`}
             retVal = new Promise((resolve, reject) => setResponse(resolve, retObj))
         })
         .catch(err => {

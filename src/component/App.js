@@ -97,6 +97,7 @@ noOp = () => {
 
 childHookUpdateHandler  = (inObj, type) => {
   let stateData = {}
+  console.log(typeof(inObj.failed))
   const message = typeof(inObj.failed) === 'undefined' ? null : inObj.failed ? `Update to ${inObj.title} failed.` : `${inObj.title} updated`
   delete inObj.failed
 
@@ -280,7 +281,7 @@ render() {
       </div>
       <div className="main midCol">
         <div className="viewPort" ><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childUpdateHandler} /></div>
-        <div className="CliInput"><Cli inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} socket={this.state.socket}/></div>
+        <div className="CliInput"><Cli inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits inPlace={this.state.place}/></div>

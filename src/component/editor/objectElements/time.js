@@ -36,7 +36,7 @@ export const Time = ({show, currentActionNumber, actionStack, editActionStack, e
     const [dateTime , setDateTime] = useState("")
     const [dateFormat, setDateFormat] = useState(0)
     const elementSymbol = "<time>"
-
+    const elementType = "replace"
     /*const looseJsonParse = (obj) => {
         // eslint-disable-next-line
         return Function('"use strict";return (' + obj + ')')();
@@ -46,7 +46,11 @@ export const Time = ({show, currentActionNumber, actionStack, editActionStack, e
         if (!elementList.find((el,i) => el.element === "Time")) {
             const tmpList = Array.isArray(elementList) && elementList.length > 0 ? [...elementList] : []
          
-            tmpList.push({element:"Time",elementSymbol:elementSymbol, elementResult: "new Date()", elementFormat: timeFormats[dateFormat]})
+            // eslint-disable-next-line
+            const elementResultObj = {function:{arguments:"elementFormat",body:"const curDate = new Date();const timeParts = elementFormat.split(`:`);let stringDate, stringHour;let isMilitary = true;if (timeParts[0] === 'HH') {stringHour = curDate.getHours() > 9 ? curDate.getHours().toString() : `0`+curDate.getHours();}else if (timeParts[0] === 'hh') {isMilitary = false;const hour = curDate.getHours();stringHour = hour === 0 ? `12` : hour < 13 ? hour.toString() : (hour-12).toString();}stringDate = `${stringHour}:${curDate.getMinutes() < 10 ? '0'+curDate.getMinutes() : curDate.getMinutes()}${timeParts.length === 3 ? curDate.getSeconds() < 10 ? '.0'+curDate.getSeconds() : '.'+curDate.getSeconds() : ''}${isMilitary ? '' : curDate.getHours() > 11 ? 'PM' : 'AM'}`;return stringDate;"}}
+
+            tmpList.push({element:"Time",elementType:elementType,elementSymbol:elementSymbol, elementResult: elementResultObj, elementFormat: timeFormats[dateFormat]})
+            
             //const tmpString = "new Date()"
             //let tmpObj = looseJsonParse(tmpString)
             //console.log(tmpObj)

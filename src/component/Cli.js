@@ -1,5 +1,5 @@
 import React from 'react'
-import {handleInputChange} from './utils/formUtils'
+import {handleInputChange, updateHandler} from './utils/formUtils'
 import {downArrowBlack} from './utils/svgDefaults'
 import * as GlobalCommands from './globalCommands/globalCommands'
 import * as Constants from './constants'
@@ -37,12 +37,33 @@ class Cli extends React.Component {
                 actionStack.forEach(action => {
                     if (action.command === "Command")
                         if (!Array.isArray(action.elementList)) {//Simple string response
-                            const retFunction = () => {
+                            const retFunction = (props, inputParts) => {
                                 const retVal = new Promise((resolve) => resolve(action.commandResult))
                                 return retVal
                             }
                             commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
+                        } else { //elements
+                            const retFunction = (props, inputParts) => {
+                                const retVal = new Promise((resolve) => {
+                                    let result = action.commandResult
+                                    action.elementList.forEach((element,i) =>{
+                                        if (element.elementType === 'replace') {
+                                        // eslint-disable-next-line
+                                        const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
+                                        console.log(replaceFunc)
+                                        const replace = replaceFunc(element.elementFormat)
+                                        console.log(replace)
+    
+                                        result = result.replace(element.elementSymbol, replace)
+                                        }
+                                    })
+                                    resolve(result)
+                                })
+                                return retVal
+                            }
+                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
                         }
+
                 })
             })
 
@@ -157,18 +178,34 @@ Available commands: ${cmdString}`
                 if (typeof(result) === 'object') {
                     if (result.type === 'place') {
                         const newUser = this.props.inUser
-                        newUser.stateData.currentRoom = result.placeId
-                        newUser.stateData.currentSpace = result.spaceId
+                        newUser.stateData.currentRoom = result.value.placeId
+                        newUser.stateData.currentSpace = result.value.spaceId
                         const resultStr = this.state.results.length === 0 ?
-                        `Traveling to the world of ${inputParts[1]}` :                      
+                        result.response :                      
 `${this.state.results}
-Traveling to the world of ${inputParts[1]}`
+${result.response}`
                         this.setState({
                             results: resultStr,
                             currentInput: "",
                             loadCommands: true
                         },() => {
                             this.props.updateUserHandler(newUser)
+                            this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                        })
+                    } else if (result.type === 'objects') {
+                        console.log(result.value)
+                        const place = this.props.inPlace
+                        place.objects = result.value
+                        const resultStr = this.state.results.length === 0 ?
+                        result.response :                      
+`${this.state.results}
+${result.response}`
+                        this.setState({
+                            results: resultStr,
+                            currentInput: "",
+                            loadCommands: true
+                        },() => {
+                            updateHandler("place", place, this.props.childUpdateHandler,true)
                             this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                         })
                     }

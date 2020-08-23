@@ -49,7 +49,7 @@ function checkObjects(objects,target,resolve,reject) {
     if (Array.isArray(objects))
         objects.forEach(object => {
             const titleArray = object.title.split(" ")
-            if (titleArray.find(word => word === target))
+            if (titleArray.find(word => word.toLowerCase() === target.toLowerCase()))
                 return resolve(object.description)
         })
     return resolve(null)

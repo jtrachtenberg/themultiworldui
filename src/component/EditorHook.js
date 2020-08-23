@@ -63,6 +63,7 @@ export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler
 
     const objectHandler = (response) => {
         //console.log(response)
+        //TODO: Trigger object list load
     }
     if (inUser && inUser.userId > 0)
         return (

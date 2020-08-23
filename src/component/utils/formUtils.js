@@ -43,17 +43,18 @@ export const handleInputChange = (e,ruleSets) => {
     }
 }
 
-export const updateHandler = (type, obj, handler) => {
+export const updateHandler = (type, obj, handler, isSilent) => {
+    isSilent=isSilent||false
     
     let postUrl = `update`+capitalizeFirstLetter(type)
     fetchData(postUrl, obj)
     .then(response => {
-        obj.failed = false
+        if (!isSilent) obj.failed = false
         handler(obj)
     })
     .catch(err => {
         console.log(err);
-        obj.failed = true
+        if (!isSilent) obj.failed = true
         handler(obj)
     }); 
   }
