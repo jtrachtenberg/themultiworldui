@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { setFormHeader, updateHandler } from '../utils/formUtils';
 import {Modal} from '../utils/Modal'
 import Portal from '../utils/Portal'
@@ -11,6 +11,14 @@ import {ReactComponent as AddIcon} from '../addkeyword.svg';
 
 import {fetchData} from '../utils/fetchData'
 import {SpaceSelect} from './SpaceSelect'
+
+function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+}
 
 export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
@@ -29,6 +37,8 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const [images, editImages] = useState([])
     const [showNewPoi, toggleNewPoi] = useState(false)
     const [newKeyword, setNewKeyword] = useState("")
+    const [fetching, setFetching] = useState(false)
+    const prevSpaceId = usePrevious(spaceId)
 
     useEffect(() => {
         if (Array.isArray(spaces) && spaces.length > 0)
@@ -36,23 +46,27 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     },[spaces])
 
     useEffect(() => {
-        const loadPlaces = () => {
-            fetchData('loadPlaces', {spaceId: spaceId})
-            .then(response => setPlaces(response))
-            .catch(e => console.log(e))
+        if (spaceId !== prevSpaceId) loadPlaces(spaceId)
+    })
+    
+    const loadPlaces = async (inSpaceId) => {
+        inSpaceId = inSpaceId||spaceId
+        if (!fetching) {
+        setFetching(true)
+        const postData = {spaceId: inSpaceId}
+        await fetchData('loadPlaces', postData)
+        .then(response => {
+            setPlaces(response)
+            setFetching(false)
+        })
+        .catch(e => console.log(e))
         }
-        if (spaceId > 0 ) loadPlaces()
-    },[spaceId])
+    }
 
     useEffect(() => {
-        const loadPlaces = (inSpaceId) => {
-            fetchData('loadPlaces', {spaceId: inSpaceId})
-            .then(response => setPlaces(response))
-            .catch(e => console.log(e))
-        }
         if (typeof(inPlace.title) !== 'undefined') setTitle(inPlace.title)
         if (typeof(inPlace.description) !== 'undefined') setDescription(inPlace.description)
-        typeof(inPlace.isRoot) === 'number' ? toggleIsRoot(inPlace.isRoot) : toggleIsRoot(false)
+        typeof(inPlace.isRoot) === 'number' || typeof(inPlace.isRoot) === 'boolean' ? toggleIsRoot(inPlace.isRoot) : toggleIsRoot(false)
         editPoi(inPlace.poi)
         editImages(inPlace.images)
         if (Array.isArray(inPlace.exits) && inPlace.exits.length>0) {
@@ -72,8 +86,8 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         }
         if (Array.isArray(spaces) && spaces.length > 0)
             setSpaceId(inPlace.spaceId)
-            loadPlaces(inPlace.spaceId)
-    },[inPlace, spaces])
+
+    },[inPlace, spaces, prevSpaceId])
 
     const hideModal = (e) => {
         e = e||{}
@@ -237,7 +251,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 <label>Description:
                     <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
                 </label>
-                <SpaceSelect userId={userId} inSpaceId={inPlace.spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)}/>              
+                <SpaceSelect userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)} loadPlaces={loadPlaces} />              
                 <label>
                 Is Root?:
                 <input

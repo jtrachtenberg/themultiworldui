@@ -12,6 +12,7 @@ const look = async (inObj, inCmd) => {
     if (typeof(place['placeId']) !== 'undefined') {
         const exits = place.exits
         const poi = place.poi
+        const objects = place.objects
 
         if (inCmd === null || inCmd.length === 1) {
             retVal = await new Promise((resolve, reject) => setResponse(resolve, place.description))
@@ -23,7 +24,14 @@ const look = async (inObj, inCmd) => {
         retVal = await new Promise((resolve, reject) => checkPoi(poi,target,resolve, reject))
         if (retVal === null)
             retVal = await new Promise((resolve, reject) => checkExits(exits,target,resolve, reject))
-
+        if (retVal === null)
+            retVal = await new Promise((resolve, reject) => checkObjects(objects,target,resolve,reject))
+        if (retVal === null) {
+            const article = target.slice(-1) === 's' ? 'are' : 'is'
+            const retMsg = `There ${article} no ${target} here.`
+            console.log(retMsg)
+            retVal = await new Promise((resolve, reject) => resolve(retMsg))
+        }
         //retVal = await checkExits(exits,target)  
         
         }catch(e) {
@@ -31,10 +39,20 @@ const look = async (inObj, inCmd) => {
         }
         }
     }
+    console.log(retVal)
     return retVal
 }
 function setResponse(resolve, msg) {
     return resolve(msg)
+}
+function checkObjects(objects,target,resolve,reject) {
+    if (Array.isArray(objects))
+        objects.forEach(object => {
+            const titleArray = object.title.split(" ")
+            if (titleArray.find(word => word.toLowerCase() === target.toLowerCase()))
+                return resolve(object.description)
+        })
+    return resolve(null)
 }
 function checkPoi(poi,target,resolve,reject) {
     if (Array.isArray(poi))
@@ -52,7 +70,6 @@ function checkExits(exits,target,resolve, reject) {
             }
         }
     })
-    const article = target.slice(-1) === 's' ? 'are' : 'is'
-    return resolve(`There ${article} no ${target} here.`)
+    return resolve(null)
 }
 export default look

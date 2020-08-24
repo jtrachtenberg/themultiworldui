@@ -10,29 +10,28 @@ function usePrevious(value) {
     return ref.current;
 }
 
-export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler}) => {
+export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
     const [spaces, loadSpaces] = useState([])
     const [editSpace, setCurrentSpace] = useState({})
-    const [isFetching, toggleIsFetching] = useState(false)
     const prevUserId = usePrevious(inUser.userId)
     const prevSpaceId = usePrevious(inSpace.spaceId)
 
     useEffect(() => {
-        console.log(forceUpdate)
-        console.log(inUser.userId)
-        console.log(isFetching)
-        if (forceUpdate && inUser.userId > 0 && spaces.length === 0 && !isFetching) {
-            toggleIsFetching(true)
-            console.log('fetching')
+        async function doFetch() {
             const postData = { userId: inUser.userId}
+
+            return await fetchData('loadSpaces', postData)
+        }
+        if (inUser.userId > 0 && spaces.length === 0) {
             
-                fetchData('loadSpaces', postData).then(response => {
+                doFetch().then(response => {
+                    if (response.length === 0)
+                        response.push({})
                     loadSpaces(response)
-                    toggleIsFetching(false)
                     })
                     .catch(e=>console.log(e))
         }
-    },[forceUpdate, inUser.userId, spaces.length, isFetching])
+    },[inUser.userId, spaces.length])
 
     useEffect(() => {
         if (!editSpace || (!Object.keys(editSpace).length === 0 && editSpace.constructor === Object)) return //empty
@@ -45,19 +44,21 @@ export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler
     },[editSpace, prevSpaceId, inSpace, updateHandler])
 
     useEffect(() => {
-        const postData = { userId: inUser.userId}
-        console.log(prevUserId)
-        console.log(inUser.userId)
-        if (!isFetching && inUser.userId > 0 && (inUser.userId !== prevUserId)) {
-            toggleIsFetching(true)
-            console.log('inuser fetching')
-            fetchData('loadSpaces', postData).then(response => {
+        async function doFetch() {
+            const postData = { userId: inUser.userId}
+
+            return await fetchData('loadSpaces', postData)
+        }
+        if (inUser.userId > 0 && (inUser.userId !== prevUserId)) {
+       
+            doFetch().then(response => {
+                    if (response.length === 0)
+                        response.push({})
                     loadSpaces(response)
-                    toggleIsFetching(false)
                 })
                 .catch(e=>console.log(e))
         }
-    },[inUser, prevUserId, isFetching])
+    },[inUser, prevUserId])
 
     useEffect(() => {
         if (!spaces) return
@@ -65,10 +66,17 @@ export const EditorHook = ({forceUpdate, inUser, inSpace, inPlace, updateHandler
         setCurrentSpace(spaces[0])
     }, [spaces])
 
+    const objectHandler = (response) => {
+        //console.log(response)
+        //TODO: Trigger object list load
+    }
     if (inUser && inUser.userId > 0)
         return (
             <div>
-                <editorForms.ObjectCreatorForm userId={inUser.userId} spaces={spaces} />
+                <editorForms.ObjectCreatorForm userId={inUser.userId} objectHandler={objectHandler} spaces={spaces} />
+                <editorForms.ObjectsPaletteHook userId={inUser.userId} inPlace={inPlace} placeHandler={newPlace => {
+                    updateHandler(newPlace, 'place')
+                }}/>
                 <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => updateHandler(newSpace, 'space')} />
                 <editorForms.UpdateSpaceForm userId={inUser.userId} spaces={spaces} spaceHandler={newSpace => {
                     updateHandler(newSpace, 'space')

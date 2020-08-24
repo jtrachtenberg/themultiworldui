@@ -33,19 +33,19 @@ constructor(props) {
       inMsg: "",
       showModal: false,
       modalReturn: {},
-      forceUpdate: false,
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
 
 componentDidMount() {
+  console.log("componentDidMount")
   var user = JSON.parse(localStorage.getItem('user'))
   let needLogin = false
-  console.log(user)
+
   if (user === null || typeof(user) === "undefined" || user.userId === 0) {
     user = User
     needLogin = true
-    console.log('set true')
+
   }
   this.setState({user: user},() => {
     //Very simply connect to the socket
@@ -58,11 +58,12 @@ componentDidMount() {
 
 }
 
-componentDidUpdate() {
+/*componentDidUpdate() {
   if (this.state.space.title.length === 0 && !this.state.forceUpdate)
     this.setState({forceUpdate: true})
   else if (this.state.space.title.length > 0 && this.state.forceUpdate) this.setState({forceUpdate: false})
-}
+}*/
+
 
 processResponse = (data) => {
 
@@ -74,7 +75,11 @@ processResponse = (data) => {
   } else if (data.msg) {
     const msg = data.msg.msg
     const name = data.msg.userName
-    const prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : `${name} says:`
+    let prepend
+    if (name !== "")
+      prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : `${name} says:`
+    else
+      prepend = ""
     this.setState({
       inMsg: `${prepend} ${msg}`
     })
@@ -127,7 +132,7 @@ childHookUpdateHandler  = (inObj, type) => {
 
     this.setState({
     ...stateData
-    }, message === null ? () => {} : () => this.state.socket.emit('incoming data', inObj))
+    }, message === null ? () => inObj.update ? this.state.socket.emit('incoming data', inObj) : {} : () => this.state.socket.emit('incoming data', inObj))
 }
 
 childUpdateHandler = (inObj, type, message) => {
@@ -179,6 +184,7 @@ loginHandler = (user) => {
 }
 
 updateUserHandler = (user) => {
+  console.log(user.stateData)
   var message
   var success
   var alertVis
@@ -201,6 +207,7 @@ updateUserHandler = (user) => {
     alertId: Math.random().toString()
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
+    this.state.socket.emit('incoming data', {stateData: this.state.user.stateData, userId: this.state.user.userId})
   })
   else
   this.setState({
@@ -259,7 +266,6 @@ addUserHandler = (user,doLogin) => {
 
 render() {
   let doModal = this.state.showModal
-  console.log(doModal)
   return (
     <div className="App">
         <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>
@@ -272,12 +278,12 @@ render() {
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><EditorHook forceUpdate={this.state.forceUpdate} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
+        <li><EditorHook inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">
         <div className="viewPort" ><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childUpdateHandler} /></div>
-        <div className="CliInput"><Cli inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} socket={this.state.socket}/></div>
+        <div className="CliInput"><Cli inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits inPlace={this.state.place}/></div>

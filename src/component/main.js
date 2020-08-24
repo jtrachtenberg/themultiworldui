@@ -15,7 +15,6 @@ class Main extends React.Component {
           coords: null,
           toolTipText: "",
           toolTipId: "",
-          fetching: false
         }
         this.toolTip = React.createRef()
         this.toolTipText = ""
@@ -24,8 +23,7 @@ class Main extends React.Component {
     componentDidUpdate() {
       let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
       const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
-      console.log(`oldRoom: ${oldRoom} : currentRoot: ${currentRoom}`)
-      if (!this.state.fetching && Number(oldRoom) !== Number(currentRoom)) {
+      if (Number(oldRoom) !== Number(currentRoom)) {
         this.loadPlace()
       }
     }
@@ -49,16 +47,15 @@ class Main extends React.Component {
       })
     }
 
-    loadPlace = () => {
-      console.log('loadPlace')
+    loadPlace = async () => {
+
         const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
         const tmpPlace = {placeId: currentRoom}
-        this.setState({fetching: true},() => {
-          fetchData('loadPlace',tmpPlace).then(response => {
-              this.setState({fetching: false})
-              this.props.childUpdateHandler(response[0],'place')
-          })
+        
+        await fetchData('loadPlace',tmpPlace).then(response => {
+            this.props.childUpdateHandler(response[0],'place')
         })
+        
       }
     
     formatImage = () => {
@@ -71,6 +68,32 @@ class Main extends React.Component {
       } else {
         return <span></span>
       }
+    }
+
+    formatObjects = () => {
+      const place = this.props.inPlace
+      const vowelRegex = '^[aieouAIEOU].*'
+      let retString = ""
+      if (Array.isArray(place.objects) && place.objects.length > 0) {
+        retString = "You see "
+        if (place.objects.length === 1) {
+          retString += place.objects[0].title.split(" ")[0] === "A" ? "" : place.objects[0].title.split(" ")[0] === "An" ? "" : place.objects[0].title.match(vowelRegex) ? 'an' : 'a'
+          retString += ` ${place.objects[0].title}`
+        }
+        else place.objects.forEach((object,i) => {
+          let tmpString = (i > 0 && place.objects.length > 2) ? ", " : ""
+          tmpString += (i === place.objects.length-1) ? " and " : ""
+
+          tmpString += object.title.split(" ")[0] === "A" ? "" : object.title.split(" ")[0] === "An" ? "" : object.title.match(vowelRegex) ? 'an' : 'a'
+          tmpString += ` ${object.title}`
+          
+          retString += tmpString
+        })
+        return <div>{retString}</div>
+      }
+        //return place.objects.map((object,i) => <div key={i}><p>You see {object.title.split(" ")[0] === "A" ? "" : object.title.split(" ")[0] === "An" ? "" : object.title.match(vowelRegex) ? 'an' : 'a'} {object.title} here.</p></div>)
+      else
+        return <div></div>
     }
 
     formatDescription = (place) => {
@@ -95,6 +118,7 @@ class Main extends React.Component {
         return (
             <div>
             <div>{this.formatPlace()}</div>
+            <div>{this.formatObjects()}</div>
             {this.state.showToolTip && (
               <Portal id="toolTip">
                 <TooltipPopover
