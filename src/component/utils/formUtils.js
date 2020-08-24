@@ -43,27 +43,29 @@ export const handleInputChange = (e,ruleSets) => {
     }
 }
 
-export const updateHandler = (type, obj, handler, isSilent) => {
+export const updateHandler = async (type, obj, handler, isSilent) => {
     isSilent=isSilent||false
     
     let postUrl = `update`+capitalizeFirstLetter(type)
-    fetchData(postUrl, obj)
+    await fetchData(postUrl, obj)
     .then(response => {
         if (!isSilent) obj.failed = false
+        else obj.update = true
         handler(obj)
     })
     .catch(err => {
         console.log(err);
         if (!isSilent) obj.failed = true
+        else obj.update = true
         handler(obj)
     }); 
   }
 
-export const createHandler = (type, obj, handler) => {
+export const createHandler = async (type, obj, handler) => {
   // creates entity
   let postUrl = `add`+capitalizeFirstLetter(type)
 
-  fetchData(postUrl, obj)
+  await fetchData(postUrl, obj)
   .then(response => {
     const idName = type+"Id"
     obj[idName] = response[0]

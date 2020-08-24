@@ -6,8 +6,13 @@ import {updateHandler} from '../utils/formUtils'
 export const ObjectsPaletteHook = ({userId, inPlace, placeHandler}) => {
     const [userObjects, editUserObjects] = useState([])
     useEffect(() => {
-        const postData = {userId: userId}
-        fetchData("loadUserObjects", postData)
+        async function doFetch() {
+            const postData = {userId: userId}
+
+            return await fetchData('loadUserObjects', postData)
+        }
+        
+        doFetch()
         .then(response => {
             editUserObjects(response)
            

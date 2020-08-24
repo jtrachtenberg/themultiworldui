@@ -15,7 +15,6 @@ class Main extends React.Component {
           coords: null,
           toolTipText: "",
           toolTipId: "",
-          fetching: false
         }
         this.toolTip = React.createRef()
         this.toolTipText = ""
@@ -24,7 +23,7 @@ class Main extends React.Component {
     componentDidUpdate() {
       let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
       const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
-      if (!this.state.fetching && Number(oldRoom) !== Number(currentRoom)) {
+      if (Number(oldRoom) !== Number(currentRoom)) {
         this.loadPlace()
       }
     }
@@ -48,16 +47,15 @@ class Main extends React.Component {
       })
     }
 
-    loadPlace = () => {
+    loadPlace = async () => {
 
         const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
         const tmpPlace = {placeId: currentRoom}
-        this.setState({fetching: true},() => {
-          fetchData('loadPlace',tmpPlace).then(response => {
-              this.setState({fetching: false})
-              this.props.childUpdateHandler(response[0],'place')
-          })
+        
+        await fetchData('loadPlace',tmpPlace).then(response => {
+            this.props.childUpdateHandler(response[0],'place')
         })
+        
       }
     
     formatImage = () => {
@@ -78,8 +76,10 @@ class Main extends React.Component {
       let retString = ""
       if (Array.isArray(place.objects) && place.objects.length > 0) {
         retString = "You see "
-        // eslint-disable-next-line
-        if (place.objects.length === 1) retString += place.objects[0].title.split(" ")[0] === "A" ? "" : place.objects[0].title.split(" ")[0] === "An" ? "" : place.objects[0].title.match(vowelRegex) ? 'an' : 'a' + ` ${place.objects[0].title}`
+        if (place.objects.length === 1) {
+          retString += place.objects[0].title.split(" ")[0] === "A" ? "" : place.objects[0].title.split(" ")[0] === "An" ? "" : place.objects[0].title.match(vowelRegex) ? 'an' : 'a'
+          retString += ` ${place.objects[0].title}`
+        }
         else place.objects.forEach((object,i) => {
           let tmpString = (i > 0 && place.objects.length > 2) ? ", " : ""
           tmpString += (i === place.objects.length-1) ? " and " : ""

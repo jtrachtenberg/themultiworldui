@@ -33,12 +33,12 @@ constructor(props) {
       inMsg: "",
       showModal: false,
       modalReturn: {},
-      forceUpdate: false,
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
 
 componentDidMount() {
+  console.log("componentDidMount")
   var user = JSON.parse(localStorage.getItem('user'))
   let needLogin = false
 
@@ -58,11 +58,12 @@ componentDidMount() {
 
 }
 
-componentDidUpdate() {
+/*componentDidUpdate() {
   if (this.state.space.title.length === 0 && !this.state.forceUpdate)
     this.setState({forceUpdate: true})
   else if (this.state.space.title.length > 0 && this.state.forceUpdate) this.setState({forceUpdate: false})
-}
+}*/
+
 
 processResponse = (data) => {
 
@@ -97,7 +98,6 @@ noOp = () => {
 
 childHookUpdateHandler  = (inObj, type) => {
   let stateData = {}
-  console.log(typeof(inObj.failed))
   const message = typeof(inObj.failed) === 'undefined' ? null : inObj.failed ? `Update to ${inObj.title} failed.` : `${inObj.title} updated`
   delete inObj.failed
 
@@ -132,7 +132,7 @@ childHookUpdateHandler  = (inObj, type) => {
 
     this.setState({
     ...stateData
-    }, message === null ? () => {} : () => this.state.socket.emit('incoming data', inObj))
+    }, message === null ? () => inObj.update ? this.state.socket.emit('incoming data', inObj) : {} : () => this.state.socket.emit('incoming data', inObj))
 }
 
 childUpdateHandler = (inObj, type, message) => {
@@ -184,6 +184,7 @@ loginHandler = (user) => {
 }
 
 updateUserHandler = (user) => {
+  console.log(user.stateData)
   var message
   var success
   var alertVis
@@ -206,6 +207,7 @@ updateUserHandler = (user) => {
     alertId: Math.random().toString()
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
+    this.state.socket.emit('incoming data', {stateData: this.state.user.stateData, userId: this.state.user.userId})
   })
   else
   this.setState({
@@ -276,7 +278,7 @@ render() {
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
         <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><EditorHook forceUpdate={this.state.forceUpdate} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
+        <li><EditorHook inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">

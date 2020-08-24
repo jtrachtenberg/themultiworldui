@@ -67,6 +67,42 @@ class Cli extends React.Component {
                 })
             })
 
+            if (this.props.inUser.userId > 0 && this.props.inUser.state !== null & typeof(this.props.inUser.stateData) !== 'undefined' && typeof(this.props.inUser.stateData.inventory) !== 'undefined' && Array.isArray(this.props.inUser.stateData.inventory) && this.props.inUser.stateData.inventory.length > 0)
+            this.props.inUser.stateData.inventory.forEach(object => {
+                const actionStack = JSON.parse(object.actionStack.replace(/\\/g, ""))
+                actionStack.forEach(action => {
+                    if (action.command === "Command")
+                        if (!Array.isArray(action.elementList)) {//Simple string response
+                            const retFunction = (props, inputParts) => {
+                                const retVal = new Promise((resolve) => resolve(action.commandResult))
+                                return retVal
+                            }
+                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
+                        } else { //elements
+                            const retFunction = (props, inputParts) => {
+                                const retVal = new Promise((resolve) => {
+                                    let result = action.commandResult
+                                    action.elementList.forEach((element,i) =>{
+                                        if (element.elementType === 'replace') {
+                                        // eslint-disable-next-line
+                                        const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
+                                        console.log(replaceFunc)
+                                        const replace = replaceFunc(element.elementFormat)
+                                        console.log(replace)
+    
+                                        result = result.replace(element.elementSymbol, replace)
+                                        }
+                                    })
+                                    resolve(result)
+                                })
+                                return retVal
+                            }
+                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
+                        }
+
+                })
+            })
+
         this.setState({
             availableCommands: commands,
             loadCommands: false
@@ -170,7 +206,6 @@ Available commands: ${cmdString}`
                 return cmdCheck === cmdString
         })
         if (typeof(executeCommand) !== 'undefined') {
-        console.log(executeCommand)
         const action = executeCommand[cmdString]
         if (typeof(action) === 'function') {//Global command
             action(this.props, inputParts).then(result => {
@@ -194,6 +229,8 @@ ${result.response}`
                         })
                     } else if (result.type === 'objects') {
                         console.log(result.value)
+                        if (typeof(result.outUser) === 'object')
+                            this.props.updateUserHandler(result.outUser)
                         const place = this.props.inPlace
                         place.objects = result.value
                         const resultStr = this.state.results.length === 0 ?
