@@ -11,6 +11,7 @@ class Main extends React.Component {
         super(props)
         this.state = {
           place: this.props.inPlace,
+          images: [],
           showToolTip: false,
           coords: null,
           toolTipText: "",
@@ -23,9 +24,16 @@ class Main extends React.Component {
     componentDidUpdate() {
       let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
       const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
-      if (Number(oldRoom) !== Number(currentRoom)) {
+      if ((Number(oldRoom) !== Number(currentRoom))) {
         this.loadPlace()
       }
+      let images = []
+      if (Array.isArray(this.props.inPlace.images)) images = [...this.props.inPlace.images]
+      if (Array.isArray(this.props.inPlace.objects))
+        this.props.inPlace.objects.forEach((object,i) => Array.isArray(object.images) ? images = [...images,...object.images] : 1)
+
+      if (this.state.images.length !== images.length)
+        this.setState({images:images})
     }
 
     handleOnMouseOut = (e) => {
@@ -47,25 +55,21 @@ class Main extends React.Component {
       })
     }
 
-    loadPlace = async () => {
+    loadPlace = () => {
 
         const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
         const tmpPlace = {placeId: currentRoom}
         
-        await fetchData('loadPlace',tmpPlace).then(response => {
+        fetchData('loadPlace',tmpPlace).then(response => {
             this.props.childUpdateHandler(response[0],'place')
         })
-        
       }
     
     formatImage = () => {
-      if (Array.isArray(this.props.inPlace.images) && this.props.inPlace.images.length > 0) {
-        return this.props.inPlace.images.map((image,i) => <span className="imageContainer" key={i}><img id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
+      if (Array.isArray(this.state.images) && this.state.images.length > 0) {
+        return this.state.images.map((image,i) => <span className="imageContainer" key={i}><img id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
       }
-      else if (this.props.inPlace && this.props.inPlace.src) {
-        
-        return <span><img onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={this.props.inPlace.alt} description={this.props.inPlace.alt} src={this.props.inPlace.src} /></span>
-      } else {
+     else {
         return <span></span>
       }
     }

@@ -33,6 +33,7 @@ constructor(props) {
       inMsg: "",
       showModal: false,
       modalReturn: {},
+      menuToggle: "",
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -64,6 +65,12 @@ componentDidMount() {
   else if (this.state.space.title.length > 0 && this.state.forceUpdate) this.setState({forceUpdate: false})
 }*/
 
+menuToggle = () => {
+  let newState = "menuOut"
+
+  if (this.state.menuToggle === "menuOut") newState="menuIn"
+  this.setState({ menuToggle: newState})
+}
 
 processResponse = (data) => {
 
@@ -133,38 +140,6 @@ childHookUpdateHandler  = (inObj, type) => {
     this.setState({
     ...stateData
     }, message === null ? () => inObj.update ? this.state.socket.emit('incoming data', inObj) : {} : () => this.state.socket.emit('incoming data', inObj))
-}
-
-childUpdateHandler = (inObj, type, message) => {
-  message = message||null
-  if (type === 'place') {
-
-    const images = Array.isArray(inObj.images) ? inObj.images : []
-    if (inObj.modalReturn && inObj.modalReturn.src) {
-      images.push ({alt: inObj.modalReturn.alt,src: inObj.modalReturn.src})
-      delete inObj.modalReturn
-    }
-    
-    inObj.images = images
-    inObj.updated = true
-
-    this.state.socket.off(`place:${this.state.place.placeId}`)
-    this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
-    this.state.socket.emit('incoming data', {msg: `left.`, exit:true, msgPlaceId: this.state.place.placeId, userName: this.state.user.userName})
-    this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
-  }
-  let stateData = {[type]: inObj, modalReturn: null}
-
-  if (message) {
-    stateData.alertMessage=message
-    stateData.alertVis=true
-    stateData.alertSucces=true
-    stateData.alertId=Math.random().toString()
-  }
-
-    this.setState({
-    ...stateData
-    }, message === null ? () => this.noOp() : () => this.state.socket.emit('incoming data', inObj))
 }
 
 loginHandler = (user) => {
@@ -273,17 +248,17 @@ render() {
       <Title inUser={this.state.user} />
       </div>
       <div className="flex-grid">
-      <div className="leftNav edgeCol">
+      <div className={`leftNav edgeCol ${this.state.menuToggle}`}>
         <ul>
-        <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler}/></li>
+        <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler} menuToggle={this.menuToggle} /></li>
         <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><EditorHook inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">
-        <div className="viewPort" ><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childUpdateHandler} /></div>
-        <div className="CliInput"><Cli inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
+        <div className={`viewPort ${this.state.menuToggle}`}><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} /></div>
+        <div className={`CliInput ${this.state.menuToggle}`}><Cli inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits inPlace={this.state.place}/></div>

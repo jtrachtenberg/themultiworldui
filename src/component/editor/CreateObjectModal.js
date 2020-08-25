@@ -1,12 +1,25 @@
-import React, {useState,useEffect} from 'react';
-import {ReactComponent as AddIcon} from '../create.svg';
-
+import React, {useState,useEffect} from 'react'
+import {ReactComponent as AddIcon} from '../create.svg'
+import {ImageSearch} from '../utils/ImageSearch'
 import * as Elements from './objectElements'
 
-export const CreateObjectModal = ({setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit}) => {
+export const CreateObjectModal = ({inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages}) => {
     const [inElements, editInElements] = useState([])
     const [elementList, editElementList] = useState([])
     const [showElements, editShowElements] = useState([])
+    const [modalReturn, setModalReturn] = useState({})
+
+    useEffect(() => {
+        setImageModal(modalReturn)
+    },[modalReturn, setImageModal])
+
+    useEffect(() => {
+        if (typeof(inObject) === 'undefined') return
+        const initVars = () => {
+            editImages(inObject.images)
+        }
+        if (Array.isArray(inObject.images)) initVars()
+    },[inObject, editImages])
 
     useEffect(() => {
         let elements = []
@@ -73,6 +86,7 @@ export const CreateObjectModal = ({setFormHeader, title, setTitle, description, 
             <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
         </label>
         </section>
+        <ImageSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
         <section>
             <div>{setFormHeader("Actions")}</div>
             <div>
@@ -100,7 +114,7 @@ export const CreateObjectModal = ({setFormHeader, title, setTitle, description, 
             <label>Available Elements</label>
             {formatElements()}
         </section>
-        <button name="submit" onClick={handleSubmit}>Create</button>
+        <button name="submit" onClick={handleSubmit}>{buttonText}</button>
         </form>
     )
 }
