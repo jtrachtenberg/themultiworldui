@@ -23,9 +23,9 @@ export const ObjectCreatorFormHook = ({userId, objectHandler}) => {
     //const [triggers, editTriggers] = useState([])
     const [actions, editActions] = useState([])
     const [currentAction, setCurrentAction] = useState(0)
-    //const [isRoot, toggleIsRoot] = useState(true)
     const [commandId, incrementId] = useState(1)
     const [currentActionNumber, setCurrentActionNumber] = useState(-1)
+    const [imageModal, setImageModal] = useState({})
 
     useEffect(() => {
         let inCommands = []
@@ -72,7 +72,8 @@ export const ObjectCreatorFormHook = ({userId, objectHandler}) => {
             title: title,
             description: description,
             isRoot: true,
-            actionStack: actionStack
+            actionStack: actionStack,
+            image: imageModal
         }
         toggleShowModal(false)
         createHandler("object", submitData, objectHandler)
@@ -83,6 +84,7 @@ export const ObjectCreatorFormHook = ({userId, objectHandler}) => {
         setCurrentAction(0)
         incrementId(1)
         setCurrentActionNumber(-1)
+        setImageModal({})
     }
 
     return(
@@ -91,7 +93,7 @@ export const ObjectCreatorFormHook = ({userId, objectHandler}) => {
         {showModal && (
             <Portal id="objectModal">
                 <Modal handleClose={hideModal} show={showModal}>
-                    <CreateObjectModal setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} actionStack={actionStack} editActionStack={editActionStack} currentAction={currentAction} setCurrentAction={setCurrentAction} currentActionNumber={currentActionNumber} actions={actions} commandId={commandId} incrementId={incrementId} handleSubmit={handleSubmit}/>
+                    <CreateObjectModal setImageModal={setImageModal} setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} actionStack={actionStack} editActionStack={editActionStack} currentAction={currentAction} setCurrentAction={setCurrentAction} currentActionNumber={currentActionNumber} actions={actions} commandId={commandId} incrementId={incrementId} handleSubmit={handleSubmit}/>
                 </Modal>
                 </Portal>       
         )}  

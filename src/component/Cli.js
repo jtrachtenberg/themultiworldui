@@ -1,6 +1,6 @@
 import React from 'react'
 import {handleInputChange, updateHandler} from './utils/formUtils'
-import {downArrowBlack} from './utils/svgDefaults'
+import {ReactComponent as SendIcon} from './sendCommand.svg';
 import * as GlobalCommands from './globalCommands/globalCommands'
 import * as Constants from './constants'
 
@@ -303,7 +303,7 @@ Nothing to do here.`
                     <span>
                         <input type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
                     <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}>
-                    {downArrowBlack}
+                    <SendIcon />
                     </button>
                     </span>
                     </section>

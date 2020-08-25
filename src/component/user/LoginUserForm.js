@@ -3,6 +3,7 @@ import {setFormHeader} from '../utils/formUtils'
 import {userLogin} from './UserLogin'
 import {User} from '../utils/defaultObjects'
 import {handleInputChange} from '../utils/formUtils'
+import {ReactComponent as MenuIcon} from '../menu.svg';
 
 class LoginUserForm extends React.Component {
     constructor(props) {
@@ -112,7 +113,9 @@ class LoginUserForm extends React.Component {
             </div>
             )
         } else {
-        form = <button onClick={this.userLogout} disabled={this.state.disabled}>{this.state.disabled ? 'Logging out' : 'Logout'}</button>
+        form = <span><button className="logout" onClick={this.userLogout} disabled={this.state.disabled}>{this.state.disabled ? 'Logging out' : 'Logout'}</button><MenuIcon className="menuIcon" onClick={() => {
+            this.props.menuToggle()
+        }} /></span>
         }
         return (
             <div>

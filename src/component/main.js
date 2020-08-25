@@ -11,6 +11,7 @@ class Main extends React.Component {
         super(props)
         this.state = {
           place: this.props.inPlace,
+          images: [],
           showToolTip: false,
           coords: null,
           toolTipText: "",
@@ -26,6 +27,16 @@ class Main extends React.Component {
       if (Number(oldRoom) !== Number(currentRoom)) {
         this.loadPlace()
       }
+      let images = []
+      if (Array.isArray(this.props.inPlace.images)) images = [...this.props.inPlace.images]
+      if (Array.isArray(this.props.inPlace.objects))
+        this.props.inPlace.objects.forEach((object,i) => Array.isArray(object.images) ? images = [...images,...object.images] : 1)
+
+      console.log('images!!!!')
+      console.log(images)
+      console.log(this.state.images)
+      if (this.state.images.length !== images.length)
+        this.setState({images:images})
     }
 
     handleOnMouseOut = (e) => {
@@ -59,13 +70,10 @@ class Main extends React.Component {
       }
     
     formatImage = () => {
-      if (Array.isArray(this.props.inPlace.images) && this.props.inPlace.images.length > 0) {
-        return this.props.inPlace.images.map((image,i) => <span className="imageContainer" key={i}><img id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
+      if (Array.isArray(this.state.images) && this.state.images.length > 0) {
+        return this.state.images.map((image,i) => <span className="imageContainer" key={i}><img id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
       }
-      else if (this.props.inPlace && this.props.inPlace.src) {
-        
-        return <span><img onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={this.props.inPlace.alt} description={this.props.inPlace.alt} src={this.props.inPlace.src} /></span>
-      } else {
+     else {
         return <span></span>
       }
     }

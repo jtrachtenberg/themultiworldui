@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { setFormHeader, updateHandler } from '../utils/formUtils';
-import {Modal} from '../utils/Modal'
-import Portal from '../utils/Portal'
-import Unsplash from './Unsplash'
-import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
 import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {ReactComponent as CreateIcon} from '../create.svg';
 import {ReactComponent as AddIcon} from '../addkeyword.svg';
+import {ImageSearch} from '../utils/ImageSearch';
 
 
 import {fetchData} from '../utils/fetchData'
@@ -27,7 +24,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const [description, setDescription] = useState("")
     const [isRoot, toggleIsRoot] = useState(false)
     const [direction, setDirection] = useState("")
-    const [showModal, toggleShowModal] = useState(false)
     const [modalReturn, setModalReturn] = useState({})
     const [disabled, setDisabled] = useState(false)
     const [places, setPlaces] = useState([])
@@ -48,7 +44,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     useEffect(() => {
         if (spaceId !== prevSpaceId) loadPlaces(spaceId)
     })
-    
+
     const loadPlaces = async (inSpaceId) => {
         inSpaceId = inSpaceId||spaceId
         if (!fetching) {
@@ -88,13 +84,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
             setSpaceId(inPlace.spaceId)
 
     },[inPlace, spaces, prevSpaceId])
-
-    const hideModal = (e) => {
-        e = e||{}
-        toggleShowModal(false)
-        setModalReturn(e)
-    };
-    
 
     const handleSubmit = (e) => {
         const place = Object.assign(inPlace)
@@ -221,15 +210,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
             )
         } else return <div></div>
     }
-    const formatImages = () => {
-        if (Array.isArray(images) && images.length > 0)
-        return images.map((value,i) => <span key={i} className="imageContainer"><img loading="lazy" alt={value.alt} src={value.src} width="75"/><span className="iconInset"><DeleteIcon onClick={(e) => editImages(() => {
-            const imagesCopy = [...images]
-            imagesCopy.splice(i,1)
-            editImages(imagesCopy)
-            })} /></span></span>)
-        else return <div>No Images</div>
-    }
 
     if (userId && inPlace && inPlace.placeId)
             return (
@@ -237,13 +217,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 <div>{setFormHeader("Update Place", () => toggleIsVis(!isVis))}</div>
                 
                 <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
-                <section>
-                    <div className="display-block">
-                    {formatImages()}
-                    </div>
-                    <span>Add Image <ImageSearchIcon onClick={() => toggleShowModal(true)}/></span>
-                    {modalReturn && <div><img alt={modalReturn.alt} src={modalReturn.src} width="75"/></div>}
-                </section>
+                <ImageSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
                 <section>
                 <label>Title
                     <input name="title" type="text" value={title||""} onChange={(e) => setTitle(e.target.value)} />
@@ -294,14 +268,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 <button onClick={handleSubmit} disabled={disabled}>{disabled ? 'Updating' : 'Save'}</button>
                 </section>
                 </form>
-                {showModal && (
-                    <Portal id="imageModal">
-                        <Modal handleClose={hideModal} show={showModal}
-                        >
-                        <Unsplash modalClose={hideModal}/>
-                        </Modal>
-                    </Portal>
-                )}
                 </div>
             )
     else
