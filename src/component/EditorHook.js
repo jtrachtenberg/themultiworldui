@@ -13,6 +13,7 @@ function usePrevious(value) {
 export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
     const [spaces, loadSpaces] = useState([])
     const [editSpace, setCurrentSpace] = useState({})
+    const [updateTrigger, setUpdateTrigger] = useState(false)
     const prevUserId = usePrevious(inUser.userId)
     const prevSpaceId = usePrevious(inSpace.spaceId)
 
@@ -69,12 +70,13 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
     const objectHandler = (response) => {
         //console.log(response)
         //TODO: Trigger object list load
+        setUpdateTrigger(!updateTrigger)
     }
     if (inUser && inUser.userId > 0)
         return (
             <div>
                 <editorForms.ObjectCreatorForm userId={inUser.userId} objectHandler={objectHandler} spaces={spaces} />
-                <editorForms.ObjectsPaletteHook userId={inUser.userId} inPlace={inPlace} placeHandler={newPlace => {
+                <editorForms.ObjectsPaletteHook updateTrigger={updateTrigger} userId={inUser.userId} inPlace={inPlace} objectHandler={objectHandler} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }}/>
                 <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => updateHandler(newSpace, 'space')} />
