@@ -28,11 +28,13 @@ class Main extends React.Component {
         this.loadPlace()
       }
       let images = []
-      if (Array.isArray(this.props.inPlace.images)) images = [...this.props.inPlace.images]
+      console.log(this.props.inPlace.images)
+      if (Array.isArray(this.props.inPlace.images)) images = Array.from(this.props.inPlace.images)
+      console.log(images)
       if (Array.isArray(this.props.inPlace.objects))
         this.props.inPlace.objects.forEach((object,i) => Array.isArray(object.images) ? images = [...images,...object.images] : 1)
-
-      if (this.state.images.length !== images.length)
+      
+      if (JSON.stringify(this.state.images) !== JSON.stringify(images))
         this.setState({images:images})
     }
 
@@ -116,13 +118,12 @@ class Main extends React.Component {
 
     formatPlace = () => {
         const place = typeof(this.props.inPlace) === 'undefined' ? Place : this.props.inPlace
-      return <div><h3>{place.title}</h3><p>{this.formatDescription(place)}</p><p>{this.formatImage()}</p></div>
+      return <div><h3>{place.title}</h3><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><p>{this.formatImage()}</p></div>
     }
     render() {
         return (
             <div>
             <div>{this.formatPlace()}</div>
-            <div>{this.formatObjects()}</div>
             {this.state.showToolTip && (
               <Portal id="toolTip">
                 <TooltipPopover

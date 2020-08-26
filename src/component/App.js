@@ -8,6 +8,7 @@ import {EditorHook} from './EditorHook.js'
 import Main from './main'
 import Cli from './Cli'
 import Exits from './Exits'
+import {Inventory} from './Inventory'
 import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
 import * as Constants from './constants'
@@ -54,9 +55,17 @@ componentDidMount() {
     //Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
     socket.on("outgoing data", data => this.processResponse(data))
     socket.on(`place:${this.state.placeId}`, data => this.processResponse(data))
+    socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
     if (needLogin) this.setState({showModal: true})
   })
 
+}
+
+componentDidUpdate(prevState) {
+  if (prevState.user && prevState.user.userId !== this.state.user.userId) {
+    this.state.socket.off(`auth:${prevState.user.userId}`)
+    this.state.socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
+  }
 }
 
 /*componentDidUpdate() {
@@ -127,6 +136,7 @@ childHookUpdateHandler  = (inObj, type) => {
     this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
     this.state.socket.emit('incoming data', {msg: `left.`, exit:true, msgPlaceId: this.state.place.placeId, userName: this.state.user.userName})
     this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
+    this.state.socket.emit('incoming data',{type: 'auth',userId: this.state.user.userId, auth:{placeId: this.state.place.placeId}})
   }
   stateData[type] = inObj
 
@@ -262,6 +272,7 @@ render() {
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits inPlace={this.state.place}/></div>
+        <div className="inventory"><Inventory inUser={this.state.user} /></div>
       </div>
       </div>
 

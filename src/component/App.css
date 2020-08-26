@@ -334,7 +334,9 @@ form section span {
 }
 
 .rightNav {
-  display: inherit;
+  display: block;
+  position: fixed;
+  right: 28px;
 }
 
 @media screen and (max-width: 768px) {
@@ -429,17 +431,17 @@ form#Cli {
 }
 
 .exits {
-  position: fixed;
+  position: relative;
 }
 
-.exits ul {
+.exits ul, .inventory ul {
   list-style: none;
   text-align: left;
   width: max-content;
   padding-left: 0px;
 }
 
-.exits ul li {
+.exits ul li, .inventory ul li {
   margin-bottom: 6px;
 }
 
