@@ -80,6 +80,7 @@ export const ObjectUpdateFormHook = ({userId, inObject, objectHandler}) => {
         const submitData = {
             objectId: inObject.objectId,
             title: title,
+            placeId: typeof(inObject.placeId) !== 'undefined' ? inObject.placeId : 0,
             description: description,
             isRoot: true,
             actionStack: actionStack,
