@@ -75,7 +75,7 @@ export const ObjectUpdateFormHook = ({userId, inObject, objectHandler}) => {
     const handleSubmit = (e) => {
         e.preventDefault()
         let finalImages = Array.isArray(images) ? [...images] : []
-        if (!Object.keys(imageModal).length === 0 && imageModal.constructor === Object) finalImages.push(imageModal)
+        if (Object.keys(imageModal).length === 0 && imageModal.constructor === Object) {} else finalImages.push(imageModal)
 
         const submitData = {
             objectId: inObject.objectId,
