@@ -231,9 +231,15 @@ ${result.response}`
                             this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                         })
                     } else if (result.type === 'objects') {
-                        console.log(result.value)
-                        if (typeof(result.outUser) === 'object')
+                        if (typeof(result.outUser) === 'object') {
+                            if (Array.isArray(result.modifiers) && result.modifiers.length > 0) {
+                                result.modifiers.forEach((item) => {
+                                    if (typeof(item.authType) !== 'undefined')//updateAuth
+                                        result.outUser.auth=item
+                                })
+                            }
                             this.props.updateUserHandler(result.outUser)
+                        }
                         const place = this.props.inPlace
                         place.objects = result.value
                         const resultStr = this.state.results.length === 0 ?

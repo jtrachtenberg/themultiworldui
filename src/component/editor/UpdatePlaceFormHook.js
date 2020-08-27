@@ -4,10 +4,10 @@ import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {ReactComponent as CreateIcon} from '../create.svg';
 import {ReactComponent as AddIcon} from '../addkeyword.svg';
 import {ImageSearch} from '../utils/ImageSearch';
+import {PlaceSelector} from './PlaceSelector'
 
 
 import {fetchData} from '../utils/fetchData'
-import {SpaceSelect} from './SpaceSelect'
 
 function usePrevious(value) {
     const ref = useRef();
@@ -169,10 +169,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         ) 
     }
 
-    const formatPlaces = () => {
-        if (Array.isArray(places))
-        return places.map((value,i) => Number(value.placeId) === Number(inPlace.placeId) ? "" : <option key={i} value={value.placeId}>{value.title}</option>)
-    }
+
 
     const formatExits = () => {
         if (Array.isArray(exits) && exits.length > 0) {
@@ -225,7 +222,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 <label>Description:
                     <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
                 </label>
-                <SpaceSelect userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)} loadPlaces={loadPlaces} />              
                 <label>
                 Is Root?:
                 <input
@@ -239,10 +235,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 {formatExits()}
                 <section>
                 <label>Add an Exit?</label>
-                <select name="addExit" value={exitSelect} onChange={(e) => setExitSelect(Number(e.nativeEvent.target.value))} >
-                     <option value="-1" disabled>Select a Place to exit</option>
-                     {formatPlaces()}
-                 </select>
+                <PlaceSelector userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setSpaceId={setSpaceId} loadPlaces={loadPlaces} places={places} name="addExit" value={exitSelect} setPlace={setExitSelect} skipPlaceId={inPlace.placeId}/>
                  <label>Direction for Exit?</label>
                  <input name="direction" value={direction} type="text" onChange={(e) => setDirection(e.target.value)} />
                 </section>

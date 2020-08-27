@@ -49,10 +49,10 @@ componentDidMount() {
     needLogin = true
 
   }
+  console.log(user)
   this.setState({user: user},() => {
     console.log()
-    if ( this.state.user.stateData.currentRoom !== this.state.place.placeId) {
-      //this.loadPlace()
+    if (typeof(this.state.user.stateData) === 'object' && this.state.user.stateData.currentRoom !== this.state.place.placeId) {
       const authData = {placeId: Number(this.state.user.stateData.currentRoom)}
       this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
     }
@@ -206,10 +206,12 @@ loginHandler = (user) => {
 
 updateUserHandler = (user) => {
   console.log('updateUserHandler')
-  console.log(user.stateData)
+  console.log(user)
   var message
   var success
   var alertVis
+  var update = {}
+
   if (typeof(user.failed) === 'undefined') {
     message = ""
     success = true
@@ -221,10 +223,14 @@ updateUserHandler = (user) => {
   }
 
   if (user.stateData.newRoom) {
-
     const authData = {placeId: Number(user.stateData.newRoom)}
     console.log(authData)
     this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
+  }
+
+  if (user.auth) {
+    update.auth = user.auth
+    delete user.auth
   }
 
   if (success)
@@ -236,7 +242,9 @@ updateUserHandler = (user) => {
     alertId: Math.random().toString()
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
-    this.state.socket.emit('incoming data', {stateData: this.state.user.stateData, userId: this.state.user.userId})
+    update.stateData=this.state.user.stateData
+    update.userId=this.state.user.userId
+    this.state.socket.emit('incoming data', update)
   })
   else
   this.setState({

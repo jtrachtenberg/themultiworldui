@@ -28,9 +28,10 @@ const get = async (inObj, inCmd) => {
                 const stateData = inUser.stateData
                 const inventory = (Array.isArray(stateData.inventory) && stateData.inventory.length > 0) ? [...stateData.inventory] : []
                 inventory.push(newObjects.invObj)
+                const modifiers = checkActions(newObjects.invObj)
                 stateData.inventory = inventory
                 inUser.stateData=stateData
-                const retObj = {type:"objects",value: newObjects.objects, outUser: inUser,response: `You got the ${target}.`}
+                const retObj = {type:"objects",value: newObjects.objects, outUser: inUser,modifiers: modifiers,response: `You got the ${target}.`}
                 retVal = await new Promise((resolve, reject) => resolve(retObj))
 
             }
@@ -44,6 +45,28 @@ const get = async (inObj, inCmd) => {
 }
 function setResponse(resolve, msg) {
     return resolve(msg)
+}
+function checkActions(inObj) {
+    const retVal = []
+
+    if (typeof(inObj.actionStack) === 'undefined') return retVal
+    
+    let actionStack = inObj.actionStack
+    if (!Array.isArray(actionStack)) {
+        actionStack = JSON.parse(inObj.actionStack)
+        if (!Array.isArray(actionStack)) return retVal
+    }
+
+    if (actionStack.length === 0) return retVal
+
+    for (let item of actionStack) {
+        console.log(item)
+        if (item.command === 'authkey') {
+            retVal.push({authChange:"add",authType:item.authType,[item.authType]:item[item.authType]})
+        }
+    }
+
+    return retVal
 }
 function checkObjects(objects,target) {
     let retVal = null

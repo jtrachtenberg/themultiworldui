@@ -3,11 +3,12 @@ import {ReactComponent as AddIcon} from '../create.svg'
 import {ImageSearch} from '../utils/ImageSearch'
 import * as Elements from './objectElements'
 
-export const CreateObjectModal = ({inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages}) => {
+export const CreateObjectModal = ({userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
     const [inElements, editInElements] = useState([])
     const [elementList, editElementList] = useState([])
     const [showElements, editShowElements] = useState([])
     const [modalReturn, setModalReturn] = useState({})
+    const [tab, setTab] = useState(0)
 
     useEffect(() => {
         setImageModal(modalReturn)
@@ -74,8 +75,61 @@ export const CreateObjectModal = ({inObject, setImageModal, setFormHeader, title
             </span>
         })
     }
+    const formatPresets = () => {
+        if (Array.isArray(presets) && presets.length === 0)
+            return <div></div>
+        
+        return presets.map((preset,i) => {
+            console.log(preset)
+            const NewAction = preset.value
+            
+            return <div key={i}><NewAction editActionStack={editActionStack} userId={userId} spaces={spaces} handleActionChange={createPreset} actionNumber={i} /></div>
+        })    
+    }
+    const formatPresetsSelect = () => {
+        if (Array.isArray(presets))
+        return presets.map((value,i) => <option key={i} value={i}>{value.command}</option>)
+    }
 
     return (
+        <div>
+            {
+                (typeof(inObject) === 'undefined') && <div>
+                    <div className="tabMenu">
+                        <span onClick={() => setTab(0)} className={`tab ${tab === 0 ? "selected" : ""}`}>Custom Object</span>
+                        <span onClick={() => setTab(1)} className={`tab ${tab === 1 ? "selected" : ""}`}>Object Preset</span>
+                        <span onClick={() => setTab(2)} className={`tab ${tab === 2 ? "selected" : ""}`}>NPC Editor</span>
+                    </div>
+                </div>
+            }
+            {
+                (tab === 1) && <div>
+                    <form id="PresetCreatorForm">
+                        <section>
+                            <label>Select a Preset</label>
+                            <select name="addPreset" value={currentAction} onChange={(e) => setCurrentAction(e.nativeEvent.target.value)} >
+                                <option value="-1" disabled>Select a Preset</option>
+                                {formatPresetsSelect()}
+                            </select>
+                        </section>
+                        <section>
+                        <label>Title
+                            <input name="title" id="title" value={title} onChange={(e) => {
+                                setTitle(e.target.value)}} />
+                        </label>
+                        <label>Description:
+                            <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </label>
+                        </section>
+                        <ImageSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
+                        <section>
+                        {formatPresets()}
+                        </section>
+                        <button name="submit" onClick={handleSubmit}>{buttonText}</button>
+                    </form>
+                </div>
+            }
+            { (tab === 0) && <div>
         <form id="ObjectCreatorForm">
         <section>
         <label>Title
@@ -116,5 +170,7 @@ export const CreateObjectModal = ({inObject, setImageModal, setFormHeader, title
         </section>
         <button name="submit" onClick={handleSubmit}>{buttonText}</button>
         </form>
+        </div>}
+        </div>
     )
 }

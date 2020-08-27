@@ -76,7 +76,7 @@
   position:fixed;
   background: white;
   width: 80%;
-  height: auto;
+  height: 75vh;
   max-height: 80vh;
   top:50%;
   left:50%;
@@ -927,4 +927,29 @@ form#Cli {
   width: 200px;
   height: 200px;
   object-fit: cover;
+}
+
+.tabMenu {
+  width: stretch;
+  height: 62px;
+  background-color: #bbb;
+}
+
+.tabMenu .tab {
+  width: 50%;
+  background-color: #cccccc;
+  border-right: 1px solid black;
+  border-bottom: 1px solid grey;
+  margin-left: 5px;
+  padding: 15px;
+  position: relative;
+  top: 20px;
+}
+
+.tabMenu .tab:hover {
+  background-color: #aaa;
+}
+
+.tabMenu .tab.selected {
+  background-color: #fff;
 }
