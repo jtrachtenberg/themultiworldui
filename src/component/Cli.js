@@ -114,14 +114,15 @@ class Cli extends React.Component {
         if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
             this.setState({
                 placeId: this.props.inPlace.placeId,
-                place: this.props.place
+                place: this.props.place,
+                results: ""
             },this.loadCommands())
         } else if (this.props.inPlace.updated) {
             this.props.inPlace.updated = false
             this.loadCommands()
         }
 
-        if (prevProps.inMsg !== this.props.inMsg) {
+        if (this.props.inMsg !== "" && (prevProps.inMsg !== this.props.inMsg)) {
             let result
             if (this.state.results.length === 0)
             result = this.props.inMsg
@@ -133,6 +134,7 @@ ${this.props.inMsg}`
                 results: result,
             },() => {
                 this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                this.props.messageResetHander()
             })
         }
     }
@@ -212,8 +214,9 @@ Available commands: ${cmdString}`
                 const origResult = result
                 if (typeof(result) === 'object') {
                     if (result.type === 'place') {
+                        console.log(result)
                         const newUser = this.props.inUser
-                        newUser.stateData.currentRoom = result.value.placeId
+                        newUser.stateData.newRoom = result.value.placeId
                         newUser.stateData.currentSpace = result.value.spaceId
                         const resultStr = this.state.results.length === 0 ?
                         result.response :                      
@@ -271,10 +274,9 @@ ${result}`
             })        
         } else if (typeof(action) === 'object') {//exit
             const newPlaceId = action.placeId
-            const newUser = this.props.inUser
-            newUser.stateData.currentRoom = newPlaceId
+            const newUser = Object.assign(this.props.inUser)
+            newUser.stateData.newRoom = newPlaceId
             this.setState({
-                results: "",
                 currentInput: "",
                 loadCommands: true
             },this.props.updateUserHandler(newUser))

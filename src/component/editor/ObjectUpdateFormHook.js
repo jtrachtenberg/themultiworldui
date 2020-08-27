@@ -56,8 +56,7 @@ export const ObjectUpdateFormHook = ({userId, inObject, objectHandler}) => {
             return <div></div>
         
         return actionStack.map((command,i) => {
-            console.log(command)
-            console.log(actionStack)
+
             const NewActionCmd = actions.find((value) => value.command === command.command)
             let NewAction = null
             if (NewActionCmd) NewAction = NewActionCmd.value ? NewActionCmd.value : null
@@ -86,7 +85,6 @@ export const ObjectUpdateFormHook = ({userId, inObject, objectHandler}) => {
             actionStack: actionStack,
             images: finalImages
         }
-        console.log(submitData)
         toggleShowModal(false)
         updateHandler("object", submitData, objectHandler)
         editActionStack([])

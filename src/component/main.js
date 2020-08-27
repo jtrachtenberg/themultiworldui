@@ -1,10 +1,7 @@
 import React from 'react'
 import {Place} from './utils/defaultObjects'
-import * as Constants from './constants'
-//import {Tooltip} from './utils/Tooltip'
 import TooltipPopover from './utils/TooltipPopover'
 import Portal from './utils/Portal'
-import {fetchData} from './utils/fetchData'
 
 class Main extends React.Component {
     constructor(props) {
@@ -22,15 +19,13 @@ class Main extends React.Component {
     }  
 
     componentDidUpdate() {
-      let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
+      /*let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
       const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
       if ((Number(oldRoom) !== Number(currentRoom))) {
         this.loadPlace()
-      }
+      }*/
       let images = []
-      console.log(this.props.inPlace.images)
       if (Array.isArray(this.props.inPlace.images)) images = Array.from(this.props.inPlace.images)
-      console.log(images)
       if (Array.isArray(this.props.inPlace.objects))
         this.props.inPlace.objects.forEach((object,i) => Array.isArray(object.images) ? images = [...images,...object.images] : 1)
       
@@ -56,16 +51,6 @@ class Main extends React.Component {
         toolTipId: e.currentTarget.id
       })
     }
-
-    loadPlace = () => {
-
-        const currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
-        const tmpPlace = {placeId: currentRoom}
-        
-        fetchData('loadPlace',tmpPlace).then(response => {
-            this.props.childUpdateHandler(response[0],'place')
-        })
-      }
     
     formatImage = () => {
       if (Array.isArray(this.state.images) && this.state.images.length > 0) {
