@@ -388,7 +388,7 @@ form#Cli {
 
 .main .viewPort {
   display: flex;
-  width: 60vw;
+  width: 57vw;
   text-align: left;
   height: 67vh;
   padding-left: 10px;
@@ -398,7 +398,7 @@ form#Cli {
 }
 
 .main .viewPort.menuOut {
-  width: 75vw;
+  width: 69vw;
 }
 
 .main .viewPort span.imageContainer {
@@ -411,6 +411,21 @@ form#Cli {
   height: fit-content;
   width: 240px;
   height: 240px;
+  object-fit: contain;
+  filter: drop-shadow(3px 6px 3px #444);
+}
+
+.rightNav span.imageContainer {
+  text-align: center;
+  margin: auto 4px;
+  align-content: center;
+}
+
+.rightNav span.imageContainer img {
+  height: fit-content;
+  vertical-align: middle;
+  width: 75px;
+  height: 75px;
   object-fit: contain;
   filter: drop-shadow(3px 6px 3px #444);
 }
