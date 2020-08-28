@@ -97,7 +97,6 @@ processResponse = (data) => {
         this.loadPlace(Constants.DEFAULT_PLACE)
       } else msg = `${data.isAuth[0].title} is locked.`
     }
-    console.log(msg)
     this.setState({
       inMsg: msg
     })
@@ -323,7 +322,7 @@ render() {
         <div className={`CliInput ${this.state.menuToggle}`}><Cli messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
       </div>
       <div className="rightNav edgeCol">
-        <div className="exits"><Exits inPlace={this.state.place}/></div>
+        <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
         <div className="inventory"><Inventory inUser={this.state.user} /></div>
       </div>
       </div>
