@@ -3,11 +3,10 @@ import { setFormHeader, updateHandler } from '../utils/formUtils';
 import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {ReactComponent as CreateIcon} from '../create.svg';
 import {ReactComponent as AddIcon} from '../addkeyword.svg';
-import {ImageSearch} from '../utils/ImageSearch';
-
+import {MediaSearch} from '../utils/MediaSearch';
+import {PlaceSelector} from './PlaceSelector'
 
 import {fetchData} from '../utils/fetchData'
-import {SpaceSelect} from './SpaceSelect'
 
 function usePrevious(value) {
     const ref = useRef();
@@ -31,6 +30,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const [exitSelect, setExitSelect] = useState(-1)
     const [poi, editPoi] = useState([])
     const [images, editImages] = useState([])
+    const [audio, editAudio] = useState([])
     const [showNewPoi, toggleNewPoi] = useState(false)
     const [newKeyword, setNewKeyword] = useState("")
     const [fetching, setFetching] = useState(false)
@@ -65,6 +65,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         typeof(inPlace.isRoot) === 'number' || typeof(inPlace.isRoot) === 'boolean' ? toggleIsRoot(inPlace.isRoot) : toggleIsRoot(false)
         editPoi(inPlace.poi)
         editImages(inPlace.images)
+        editAudio(inPlace.audio)
         if (Array.isArray(inPlace.exits) && inPlace.exits.length>0) {
         let exitsArray = []
         inPlace.exits.forEach(exit => {
@@ -120,14 +121,19 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         else place.poi = []
         if (Array.isArray(images) && images.length > 0) place.images = images
         else place.images = []
+        if (Array.isArray(audio) && audio.length > 0) place.audio = audio
+        else place.audio = []
 
-        if (modalReturn && typeof(modalReturn.src) === 'string') place.images.push({alt: modalReturn.alt, src: modalReturn.src, id: modalReturn.id, apilink: modalReturn.apilink})
+        if (modalReturn && typeof(modalReturn.alt) === 'string') place.images.push({alt: modalReturn.alt, src: modalReturn.src, id: modalReturn.id, apilink: modalReturn.apilink})
+        if (modalReturn && typeof(modalReturn.externalUrl) === 'string') place.audio.push({name: modalReturn.name, description: modalReturn.description, src: modalReturn.src, externalId: modalReturn.externalId, externalUrl: modalReturn.externalUrl, userName: modalReturn.userName})
+
         updateHandler("place", place, placeHandler)
         setDisabled(false)
         setModalReturn({})
         setDirection("")
         editPoi(place.poi)
         editImages(place.images)
+        editAudio(place.audio)
         let exitsArray = []
         place.exits.forEach(exit => {
             for (const [key,value] of Object.entries(exit)) {
@@ -169,10 +175,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         ) 
     }
 
-    const formatPlaces = () => {
-        if (Array.isArray(places))
-        return places.map((value,i) => Number(value.placeId) === Number(inPlace.placeId) ? "" : <option key={i} value={value.placeId}>{value.title}</option>)
-    }
+
 
     const formatExits = () => {
         if (Array.isArray(exits) && exits.length > 0) {
@@ -217,7 +220,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 <div>{setFormHeader("Update Place", () => toggleIsVis(!isVis))}</div>
                 
                 <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
-                <ImageSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
+                <MediaSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} audio={audio} editAudio={editAudio} handleAudio={setModalReturn} />
                 <section>
                 <label>Title
                     <input name="title" type="text" value={title||""} onChange={(e) => setTitle(e.target.value)} />
@@ -225,7 +228,6 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 <label>Description:
                     <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
                 </label>
-                <SpaceSelect userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)} loadPlaces={loadPlaces} />              
                 <label>
                 Is Root?:
                 <input
@@ -239,10 +241,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 {formatExits()}
                 <section>
                 <label>Add an Exit?</label>
-                <select name="addExit" value={exitSelect} onChange={(e) => setExitSelect(Number(e.nativeEvent.target.value))} >
-                     <option value="-1" disabled>Select a Place to exit</option>
-                     {formatPlaces()}
-                 </select>
+                <PlaceSelector userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setSpaceId={setSpaceId} loadPlaces={loadPlaces} places={places} name="addExit" value={exitSelect} setPlace={setExitSelect} skipPlaceId={inPlace.placeId}/>
                  <label>Direction for Exit?</label>
                  <input name="direction" value={direction} type="text" onChange={(e) => setDirection(e.target.value)} />
                 </section>

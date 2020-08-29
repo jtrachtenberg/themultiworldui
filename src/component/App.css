@@ -76,7 +76,7 @@
   position:fixed;
   background: white;
   width: 80%;
-  height: auto;
+  height: 75vh;
   max-height: 80vh;
   top:50%;
   left:50%;
@@ -334,7 +334,9 @@ form section span {
 }
 
 .rightNav {
-  display: inherit;
+  display: block;
+  position: fixed;
+  right: 28px;
 }
 
 @media screen and (max-width: 768px) {
@@ -386,7 +388,7 @@ form#Cli {
 
 .main .viewPort {
   display: flex;
-  width: 60vw;
+  width: 57vw;
   text-align: left;
   height: 67vh;
   padding-left: 10px;
@@ -396,7 +398,7 @@ form#Cli {
 }
 
 .main .viewPort.menuOut {
-  width: 75vw;
+  width: 69vw;
 }
 
 .main .viewPort span.imageContainer {
@@ -409,6 +411,21 @@ form#Cli {
   height: fit-content;
   width: 240px;
   height: 240px;
+  object-fit: contain;
+  filter: drop-shadow(3px 6px 3px #444);
+}
+
+.rightNav span.imageContainer {
+  text-align: center;
+  margin: auto 4px;
+  align-content: center;
+}
+
+.rightNav span.imageContainer img {
+  height: fit-content;
+  vertical-align: middle;
+  width: 75px;
+  height: 75px;
   object-fit: contain;
   filter: drop-shadow(3px 6px 3px #444);
 }
@@ -429,17 +446,17 @@ form#Cli {
 }
 
 .exits {
-  position: fixed;
+  position: relative;
 }
 
-.exits ul {
+.exits ul, .inventory ul {
   list-style: none;
   text-align: left;
   width: max-content;
   padding-left: 0px;
 }
 
-.exits ul li {
+.exits ul li, .inventory ul li {
   margin-bottom: 6px;
 }
 
@@ -897,9 +914,15 @@ form#Cli {
   text-decoration: #777 underline;
 }
 
-.iconInset {
+.imageContainer .iconInset {
   position: relative;
   right: 24px;
+}
+
+.audioContainer .iconInset {
+  position: relative;
+  left: 200px;
+  top: -22px;
 }
 
 .iconInset svg {
@@ -925,4 +948,56 @@ form#Cli {
   width: 200px;
   height: 200px;
   object-fit: cover;
+}
+
+.tabMenu {
+  width: stretch;
+  height: 62px;
+  background-color: #bbb;
+}
+
+.tabMenu .tab {
+  width: 50%;
+  background-color: #cccccc;
+  border-right: 1px solid black;
+  border-bottom: 1px solid grey;
+  margin-left: 5px;
+  padding: 15px;
+  position: relative;
+  top: 20px;
+}
+
+.tabMenu .tab:hover {
+  background-color: #aaa;
+}
+
+.tabMenu .tab.selected {
+  background-color: #fff;
+}
+
+ul.audioList {
+  width: min-content;
+  max-width: 400px;
+  display: inline-grid;
+  list-style: none;
+  position: relative;
+  top: -70px;
+  left: -16px;
+  overflow: scroll;
+  height: 50vh;
+}
+
+li.searchAudio {
+  text-align: left;
+  margin-top: 5px;
+}
+
+#audioModal .modalCloseButton {
+  position: relative;
+  top: -70px;
+}
+
+#freesound {
+  position: relative;
+  top: -70px;
 }

@@ -8,6 +8,7 @@ import {EditorHook} from './EditorHook.js'
 import Main from './main'
 import Cli from './Cli'
 import Exits from './Exits'
+import {Inventory} from './Inventory'
 import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
 import * as Constants from './constants'
@@ -48,22 +49,30 @@ componentDidMount() {
     needLogin = true
 
   }
+  console.log(user)
   this.setState({user: user},() => {
+    console.log()
+    if (typeof(this.state.user.stateData) === 'object' && this.state.user.stateData.currentRoom !== this.state.place.placeId) {
+      const authData = {placeId: Number(this.state.user.stateData.currentRoom)}
+      this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
+    }
     //Very simply connect to the socket
     const socket = this.state.socket
     //Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
     socket.on("outgoing data", data => this.processResponse(data))
-    socket.on(`place:${this.state.placeId}`, data => this.processResponse(data))
+    socket.on(`place:${this.state.place.placeId}`, data => this.processResponse(data))
+    socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
     if (needLogin) this.setState({showModal: true})
   })
 
 }
 
-/*componentDidUpdate() {
-  if (this.state.space.title.length === 0 && !this.state.forceUpdate)
-    this.setState({forceUpdate: true})
-  else if (this.state.space.title.length > 0 && this.state.forceUpdate) this.setState({forceUpdate: false})
-}*/
+componentDidUpdate(prevState) {
+  if (prevState.user && prevState.user.userId !== this.state.user.userId) {
+    this.state.socket.off(`auth:${prevState.user.userId}`)
+    this.state.socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
+  }
+}
 
 menuToggle = () => {
   let newState = "menuOut"
@@ -74,7 +83,26 @@ menuToggle = () => {
 
 processResponse = (data) => {
 
-  if (data.place) {
+  if (data.type && data.type === 'auth') {
+    console.log(data)
+    let msg = ""
+    const isAuth = data.isAuth[0]
+    console.log(isAuth)
+    if (isAuth.isAuth) {
+      if (isAuth.placeId)
+        this.loadPlace(isAuth.placeId)
+    } else {
+      if (this.state.user.stateData.currentRoom === isAuth.placeId) {
+        msg = `${data.isAuth[0].title} is locked.  Please [travel] to a new location.`
+        this.loadPlace(Constants.DEFAULT_PLACE)
+      } else msg = `${data.isAuth[0].title} is locked.`
+    }
+    this.setState({
+      inMsg: msg
+    })
+    
+  }
+  else if (data.place) {
     if (data.place.placeId === this.state.place.placeId)
       this.setState({
         place: data.place
@@ -102,8 +130,24 @@ hideModal = () => {
 noOp = () => {
 
 }
+loadPlace = (inPlaceId) => {
+
+  inPlaceId = inPlaceId||(this.state.user.userId > 0 ? this.state.user.stateData.currentRoom : Constants.DEFAULT_PLACE)
+  //const currentRoom = (this.state.user.userId > 0 ? this.state.user.stateData.currentRoom : Constants.DEFAULT_PLACE)
+  const tmpPlace = {placeId: inPlaceId}
+  
+  fetchData('loadPlace',tmpPlace).then(response => {
+      this.childHookUpdateHandler(response[0],'place')
+  })
+}
+
+messageResetHander = () => {
+  this.setState({inMsg: ""})
+}
 
 childHookUpdateHandler  = (inObj, type) => {
+  console.log(type)
+  console.log(inObj)
   let stateData = {}
   const message = typeof(inObj.failed) === 'undefined' ? null : inObj.failed ? `Update to ${inObj.title} failed.` : `${inObj.title} updated`
   delete inObj.failed
@@ -120,6 +164,7 @@ childHookUpdateHandler  = (inObj, type) => {
     if (inObj.placeId) {
       user.stateData.currentRoom = inObj.placeId
       user.stateData.currentSpace = inObj.spaceId
+      delete user.stateData.newRoom
       this.updateUserHandler(user)
     }
 
@@ -159,10 +204,13 @@ loginHandler = (user) => {
 }
 
 updateUserHandler = (user) => {
-  console.log(user.stateData)
+  console.log('updateUserHandler')
+  console.log(user)
   var message
   var success
   var alertVis
+  var update = {}
+
   if (typeof(user.failed) === 'undefined') {
     message = ""
     success = true
@@ -171,6 +219,17 @@ updateUserHandler = (user) => {
     message = user.failed ? `Update failed` : `User ${user.userName} Updated`
     success = user.failed ? false : true
     if (typeof(user.failed) !== 'undefined') delete user.failed
+  }
+
+  if (user.stateData.newRoom) {
+    const authData = {placeId: Number(user.stateData.newRoom)}
+    console.log(authData)
+    this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
+  }
+
+  if (user.auth) {
+    update.auth = user.auth
+    delete user.auth
   }
 
   if (success)
@@ -182,7 +241,9 @@ updateUserHandler = (user) => {
     alertId: Math.random().toString()
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
-    this.state.socket.emit('incoming data', {stateData: this.state.user.stateData, userId: this.state.user.userId})
+    update.stateData=this.state.user.stateData
+    update.userId=this.state.user.userId
+    this.state.socket.emit('incoming data', update)
   })
   else
   this.setState({
@@ -258,10 +319,11 @@ render() {
       </div>
       <div className="main midCol">
         <div className={`viewPort ${this.state.menuToggle}`}><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} /></div>
-        <div className={`CliInput ${this.state.menuToggle}`}><Cli inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
+        <div className={`CliInput ${this.state.menuToggle}`}><Cli messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
       </div>
       <div className="rightNav edgeCol">
-        <div className="exits"><Exits inPlace={this.state.place}/></div>
+        <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
+        <div className="inventory"><Inventory inUser={this.state.user} /></div>
       </div>
       </div>
 

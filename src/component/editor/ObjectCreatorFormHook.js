@@ -5,6 +5,7 @@ import {ReactComponent as CreateIcon} from '../createobject.svg';
 import {Modal} from '../utils/Modal'
 import Portal from '../utils/Portal'
 import * as Actions from './objectActions'
+import * as Presets from './presetObjects'
 import {CreateObjectModal} from './CreateObjectModal'
 
 /*const objectMap = (obj, fn) =>
@@ -15,13 +16,14 @@ import {CreateObjectModal} from './CreateObjectModal'
   )
 */
 
-export const ObjectCreatorFormHook = ({userId, objectHandler}) => {
+export const ObjectCreatorFormHook = ({userId, objectHandler, spaces}) => {
     const [actionStack, editActionStack] = useState([])
     const [showModal, toggleShowModal] = useState(false)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     //const [triggers, editTriggers] = useState([])
     const [actions, editActions] = useState([])
+    const [presets, editPresets] = useState([])
     const [currentAction, setCurrentAction] = useState(0)
     const [commandId, incrementId] = useState(1)
     const [currentActionNumber, setCurrentActionNumber] = useState(-1)
@@ -34,6 +36,12 @@ export const ObjectCreatorFormHook = ({userId, objectHandler}) => {
             inCommands.push({command: key, value: value})
         }
         editActions(inCommands)
+
+        let inPresets = []
+        for (const [key, value] of Object.entries(Presets)) {
+            inPresets.push({command: key, value: value})
+        }
+        editPresets(inPresets)
     },[userId])
 
     const handleActionChange = (name,value,actionNumber)  => {
@@ -91,13 +99,33 @@ export const ObjectCreatorFormHook = ({userId, objectHandler}) => {
         setImageModal({})
     }
 
+    useEffect(() => {
+        console.log(actionStack)
+    },[actionStack])
+
+    const createPreset = async (name,value,actionNumber)  => {
+        //createPreset
+        const tmpActions = (Array.isArray(actionStack) && actionStack.length > 0) ? [...actionStack] : []
+
+        if ( typeof(tmpActions[actionNumber]) === 'undefined') tmpActions[actionNumber] = {}
+        const inAction = Object.assign(tmpActions[actionNumber])
+
+        inAction[name]=value
+
+        tmpActions[actionNumber] = inAction
+
+
+        await editActionStack(tmpActions)
+
+    }
+
     return(
     <div>
         <div>{setFormHeader("Object Creator")}<span><CreateIcon onClick={() => toggleShowModal(true)}/></span></div>
         {showModal && (
             <Portal id="objectModal">
                 <Modal handleClose={hideModal} show={showModal}>
-                    <CreateObjectModal setImageModal={setImageModal} setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} actionStack={actionStack} editActionStack={editActionStack} currentAction={currentAction} setCurrentAction={setCurrentAction} currentActionNumber={currentActionNumber} actions={actions} commandId={commandId} incrementId={incrementId} handleSubmit={handleSubmit} buttonText="Create" images={images} editImages={editImages} />
+                    <CreateObjectModal userId={userId} createPreset={createPreset} presets={presets} setImageModal={setImageModal} setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} actionStack={actionStack} editActionStack={editActionStack} currentAction={currentAction} setCurrentAction={setCurrentAction} currentActionNumber={currentActionNumber} actions={actions} commandId={commandId} incrementId={incrementId} handleSubmit={handleSubmit} buttonText="Create" images={images} editImages={editImages} spaces={spaces} />
                 </Modal>
                 </Portal>       
         )}  
