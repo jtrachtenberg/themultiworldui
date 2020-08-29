@@ -116,7 +116,7 @@ class Main extends React.Component {
 
     formatPlace = () => {
         const place = typeof(this.props.inPlace) === 'undefined' ? Place : this.props.inPlace
-    return <div><h3>{place.title}</h3><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><p>{this.formatImage()}</p><p>{this.formatAudio()}</p></div>
+    return <div><h3>{place.title}</h3><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><span>{this.formatImage()}</span><span>{this.formatAudio()}</span></div>
     }
     render() {
         return (

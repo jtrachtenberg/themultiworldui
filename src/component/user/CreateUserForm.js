@@ -34,7 +34,7 @@ class CreateUserForm extends React.Component {
     }
 
     render() {
-        if (this.state.user.userId < 1)
+        if (this.state.user.userId < 1 || this.state.user.isRoot)
         return (<div>
             <div>{setFormHeader("Create User")}</div>
             <form onSubmit={this.handleSubmit}>

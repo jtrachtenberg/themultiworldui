@@ -10,7 +10,7 @@ class UpdateUserForm extends React.Component {
             userName: props.inUser.userName,
             email: props.inUser.email,
             userId: props.inUser.userId,
-            description: props.inUser.description,
+            description: props.inUser.description||"",
             isRoot: props.inUser.isRoot,
         }
     }
@@ -61,16 +61,21 @@ class UpdateUserForm extends React.Component {
                 <input name="email" type="email" value={this.state.email} onChange={this.handleChange} />
             </label>
             <label>Description:
-                <textarea name="description" value={this.state.description} onChange={this.handleChange} />
+                <textarea name="description" value={this.state.description||""} onChange={this.handleChange} />
             </label>              
-            <label>
-            Is Root?:
-            <input
-                name="isRoot"
-                type="checkbox"
-                checked={this.state.isRoot}
-                onChange={this.handleChange} />
-            </label>      
+            
+                { this.props.inUser.isRoot && 
+                <div>    
+                    <label>Is Root?:
+                    <input
+                        name="isRoot"
+                        type="checkbox"
+                        checked={this.state.isRoot}
+                        onChange={this.handleChange} />
+                    </label>
+                </div>   
+                }
+   
             <input type="submit" value="Submit" />
             </form></div>
             )
