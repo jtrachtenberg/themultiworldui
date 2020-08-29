@@ -34,6 +34,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const [showNewPoi, toggleNewPoi] = useState(false)
     const [newKeyword, setNewKeyword] = useState("")
     const [fetching, setFetching] = useState(false)
+    const [isPrivate, setIsPrivate] = useState(false)
     const prevSpaceId = usePrevious(spaceId)
 
     useEffect(() => {
@@ -63,6 +64,8 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         if (typeof(inPlace.title) !== 'undefined') setTitle(inPlace.title)
         if (typeof(inPlace.description) !== 'undefined') setDescription(inPlace.description)
         typeof(inPlace.isRoot) === 'number' || typeof(inPlace.isRoot) === 'boolean' ? toggleIsRoot(inPlace.isRoot) : toggleIsRoot(false)
+        typeof(inPlace.authType) === 'number' ? setIsPrivate(inPlace.authType) : setIsPrivate(false)
+
         editPoi(inPlace.poi)
         editImages(inPlace.images)
         editAudio(inPlace.audio)
@@ -99,6 +102,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         place.title = title
         place.description = description
         place.isRoot = isRoot
+        place.authType = isPrivate
         place.spaceId = spaceId
 
         let currentExits = []
@@ -236,6 +240,15 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                     value={isRoot}
                     checked={isRoot}
                     onChange={(e) => toggleIsRoot(!isRoot)} />
+                </label>
+                <label>
+                Is Private?:
+                <input
+                    name="isPrivate"
+                    type="checkbox" 
+                    value={isPrivate}
+                    checked={isPrivate}
+                    onChange={(e) => setIsPrivate(!isPrivate)} />
                 </label>
                 </section>
                 {formatExits()}
