@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {fetchMediaData} from '../utils/fetchData'
 import {setFormHeader} from '../utils/formUtils'
 import {ReactComponent as LeftIcon} from '../circledarrowleft.svg';
@@ -9,18 +9,14 @@ export const Freesound = ({modalClose}) => {
     const [search, setSearch] = useState("")
     const [page, setPage] = useState(1)
     const [results, setResults] = useState({})
+    // eslint-disable-next-line
     const [playResults, setPlayResults] = useState({})
+    // eslint-disable-next-line
     const [count, setCount] = useState(1)
-    const [modalReturn, setModalReutrn] = useState({})
     const [leftDisabled, setLeftDisabled] = useState(true)
     const [rightDisabled, setRightDisabled] = useState(false)
     
     const handleAudioClick = (e, name, description, externalid, externalurl, src, username) => {
-        console.log(name)
-        console.log(externalid)
-        console.log(src)
-        console.log(username)
-        console.log(externalurl)
         const retObj = {
             name: name,
             description: description,
@@ -40,6 +36,7 @@ export const Freesound = ({modalClose}) => {
         }
     }
 
+    // eslint-disable-next-line
     const getPlayData = (id) => {
         const postUrl = `freesound/play`
         const postData = {id: id}

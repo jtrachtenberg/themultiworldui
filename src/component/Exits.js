@@ -46,7 +46,7 @@ class Exits extends React.Component {
          }
         })
 
-    return exitsArray.map((exit,i) => <li className="clickable" key={exit.placeId} onClick={() => this.doExit(exit.placeId)}><span className="imageContainer">{typeof exit.src !== 'undefined' ? <img alt={exit.alt} src={exit.src} /> : <img alt="no image" src={EXIT_NO_IMAGE} />}</span>{exit.name} - {exit.title}</li>)
+    return exitsArray.map((exit,i) => <li className="clickable" key={exit.placeId} onClick={() => this.doExit(exit.placeId)}><span className="imageContainer">{typeof exit.src !== 'undefined' ? <img alt={exit.alt} src={exit.src} /> : <img alt="exit" src={EXIT_NO_IMAGE} />}</span>{exit.name} - {exit.title}</li>)
     }
 
     doExit = (inPlaceId) => {

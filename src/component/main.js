@@ -3,6 +3,7 @@ import {Place} from './utils/defaultObjects'
 import TooltipPopover from './utils/TooltipPopover'
 import Portal from './utils/Portal'
 import ReactPlayer from 'react-player'
+import {isMobile} from 'react-device-detect'
 
 class Main extends React.Component {
     constructor(props) {
@@ -19,6 +20,10 @@ class Main extends React.Component {
         this.toolTip = React.createRef()
         this.toolTipText = ""
     }  
+
+    componentDidMount() {
+      if (isMobile) this.setState({playing:false})
+    }
 
     componentDidUpdate() {
       /*let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
@@ -122,7 +127,7 @@ class Main extends React.Component {
         return (
             <div>
             <div>{this.formatPlace()}</div>
-        {(Array.isArray(this.props.inPlace.audio) && this.props.inPlace.audio.length > 0) && <button onClick={this.handlePlayPause}>{ this.state.playing ? <img src="https://img.icons8.com/android/24/000000/pause.png"/> : <img src="https://img.icons8.com/android/24/000000/play.png"/>}</button> }
+        {(Array.isArray(this.props.inPlace.audio) && this.props.inPlace.audio.length > 0) && <button onClick={this.handlePlayPause}>{ this.state.playing ? <img alt="pause" src="https://img.icons8.com/android/24/000000/pause.png"/> : <img alt="play" src="https://img.icons8.com/android/24/000000/play.png"/>}</button> }
             {this.state.showToolTip && (
               <Portal id="toolTip">
                 <TooltipPopover

@@ -10,6 +10,7 @@
     "lodash": "^4.17.19",
     "react": "^16.13.1",
     "react-cool-portal": "^1.0.17",
+    "react-device-detect": "^1.13.1",
     "react-dom": "^16.13.1",
     "react-player": "^2.6.1",
     "react-scripts": "^3.4.3",
