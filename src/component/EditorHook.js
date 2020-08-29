@@ -86,9 +86,11 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
                 <editorForms.CreatePlaceForm userId={inUser.userId} inPlace={inPlace} spaces={spaces} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }} />
+                { (inPlace.userId === inUser.userId || inUser.isRoot) && 
                 <editorForms.UpdatePlaceForm userId={inUser.userId} spaces={spaces} inPlace={inPlace} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }} />
+                }
             </div>
         )
     else
