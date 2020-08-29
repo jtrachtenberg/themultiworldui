@@ -1,6 +1,6 @@
 import React, {useState,useEffect} from 'react'
 import {ReactComponent as AddIcon} from '../create.svg'
-import {ImageSearch} from '../utils/ImageSearch'
+import {MediaSearch} from '../utils/MediaSearch'
 import * as Elements from './objectElements'
 
 export const CreateObjectModal = ({userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
@@ -121,7 +121,7 @@ export const CreateObjectModal = ({userId, createPreset, presets, inObject, setI
                             <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
                         </label>
                         </section>
-                        <ImageSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
+                        <MediaSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
                         <section>
                         {formatPresets()}
                         </section>
@@ -140,7 +140,7 @@ export const CreateObjectModal = ({userId, createPreset, presets, inObject, setI
             <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
         </label>
         </section>
-        <ImageSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
+        <MediaSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
         <section>
             <div>{setFormHeader("Actions")}</div>
             <div>

@@ -310,9 +310,10 @@ Nothing to do here.`
                     <section>
                     <span>
                         <input type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
-                    <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}>
+                    <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}> 
                     <SendIcon />
                     </button>
+                     
                     </span>
                     </section>
                 </form>

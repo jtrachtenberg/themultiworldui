@@ -914,9 +914,15 @@ form#Cli {
   text-decoration: #777 underline;
 }
 
-.iconInset {
+.imageContainer .iconInset {
   position: relative;
   right: 24px;
+}
+
+.audioContainer .iconInset {
+  position: relative;
+  left: 200px;
+  top: -22px;
 }
 
 .iconInset svg {
@@ -967,4 +973,31 @@ form#Cli {
 
 .tabMenu .tab.selected {
   background-color: #fff;
+}
+
+ul.audioList {
+  width: min-content;
+  max-width: 400px;
+  display: inline-grid;
+  list-style: none;
+  position: relative;
+  top: -70px;
+  left: -16px;
+  overflow: scroll;
+  height: 50vh;
+}
+
+li.searchAudio {
+  text-align: left;
+  margin-top: 5px;
+}
+
+#audioModal .modalCloseButton {
+  position: relative;
+  top: -70px;
+}
+
+#freesound {
+  position: relative;
+  top: -70px;
 }
