@@ -10,7 +10,7 @@ function usePrevious(value) {
     return ref.current;
 }
 
-export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
+export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) => {
     const [spaces, loadSpaces] = useState([])
     const [editSpace, setCurrentSpace] = useState({})
     const [updateTrigger, setUpdateTrigger] = useState(false)
@@ -35,11 +35,17 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
     },[inUser.userId, spaces.length])
 
     useEffect(() => {
+        if (prevSpaceId === 0 && inSpace.spaceId > 0) {
+            setCurrentSpace(inSpace)
+        } else {
         if (!editSpace || (!Object.keys(editSpace).length === 0 && editSpace.constructor === Object)) return //empty
         const shouldUpdate = editSpace.spaceId && (editSpace.spaceId !== prevSpaceId) ? true : (typeof(editSpace.failed) === 'number' || typeof(editSpace.failed) === 'boolean') ? true : false
         if (shouldUpdate) {
             updateHandler(editSpace, 'space')
             setCurrentSpace(Object.create({}))
+        } else {
+            console.log('no update')
+        }
         }
         
     },[editSpace, prevSpaceId, inSpace, updateHandler])
@@ -58,7 +64,7 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
                     loadSpaces(response)
                 })
                 .catch(e=>console.log(e))
-        }
+        } else if (inUser.userId === 0) loadSpaces([])
     },[inUser, prevUserId])
 
     useEffect(() => {
@@ -81,12 +87,13 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
                 }}/>
                 <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => updateHandler(newSpace, 'space')} />
                 <editorForms.UpdateSpaceForm userId={inUser.userId} spaces={spaces} spaceHandler={newSpace => {
+                    console.log(newSpace)
                     updateHandler(newSpace, 'space')
                 }} />
                 <editorForms.CreatePlaceForm userId={inUser.userId} inPlace={inPlace} spaces={spaces} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }} />
-                { (inPlace.userId === inUser.userId || inUser.isRoot) && 
+                { isEdit && 
                 <editorForms.UpdatePlaceForm userId={inUser.userId} spaces={spaces} inPlace={inPlace} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }} />
