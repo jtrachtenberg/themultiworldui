@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { setFormHeader, createHandler } from '../utils/formUtils';
 import { Place } from '../utils/defaultObjects';
 import { SpaceSelect } from './SpaceSelect'
