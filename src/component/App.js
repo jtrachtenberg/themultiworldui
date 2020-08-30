@@ -46,16 +46,16 @@ componentDidMount() {
   let needLogin = false
 
   if (user === null || typeof(user) === "undefined" || user.userId === 0) {
-    user = User
+    user = Object.assign(User)
     needLogin = true
 
   }
   console.log(user)
-  this.setState({user: user},() => {
-    console.log()
+  this.setState({user: user, showModal: needLogin},() => {
+    if (this.state.user.userId === 0) return
     if (typeof(this.state.user.stateData) === 'object' && this.state.user.stateData.currentRoom !== this.state.place.placeId) {
       const authData = {placeId: Number(this.state.user.stateData.currentRoom)}
-      this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
+      this.state.socket.emit('incoming data',{type: 'auth',userId: this.state.user.userId, auth: authData})
     }
     //Very simply connect to the socket
     const socket = this.state.socket
@@ -66,13 +66,6 @@ componentDidMount() {
     if (needLogin) this.setState({showModal: true})
   })
 
-}
-
-componentDidUpdate(prevState) {
-  if (prevState.user && prevState.user.userId !== this.state.user.userId) {
-    this.state.socket.off(`auth:${prevState.user.userId}`)
-    this.state.socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
-  }
 }
 
 menuToggle = () => {
@@ -87,6 +80,7 @@ processResponse = (data) => {
   if (data.type && data.type === 'auth') {
     console.log(data)
     let msg = ""
+    if (!Array.isArray(data.isAuth)) return
     const isAuth = data.isAuth[0]
     console.log(isAuth)
     if (isAuth.isAuth) {
@@ -206,6 +200,12 @@ loginHandler = (user) => {
     showModal: !success
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
+    this.state.socket.on("outgoing data", data => this.processResponse(data))
+    this.state.socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
+
+    const authData = {placeId: Number(this.state.user.stateData.currentRoom)}
+    this.state.socket.emit('incoming data',{type: 'auth',userId: this.state.user.userId, auth: authData})
+
   })
 }
 
@@ -317,7 +317,7 @@ render() {
       <div className="flex-grid">
       <div className={`leftNav edgeCol ${this.state.menuToggle}`}>
         <ul>
-        <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler} menuToggle={this.menuToggle} /></li>
+        <li><userForms.LoginUserForm socket={this.state.socket} inUser={this.state.user} loginHandler={this.loginHandler} menuToggle={this.menuToggle} /></li>
         <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><EditorHook isEdit={this.state.isEdit} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>

@@ -84,6 +84,7 @@ class LoginUserForm extends React.Component {
 
     userLogout = (e) => {
         e.preventDefault();
+        this.props.socket.off(`auth:${this.props.inUser.userId}`)
         const blankUser = Object.assign(User)
         blankUser.userId=0
         blankUser.description=""
