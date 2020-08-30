@@ -108,7 +108,9 @@ class Cli extends React.Component {
             loadCommands: false
         })
     }
-
+    componentDidMount() {
+        this.cliInput.focus()
+    }
     componentDidUpdate(prevProps) {
 
         if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
@@ -309,7 +311,7 @@ Nothing to do here.`
                     </section>
                     <section>
                     <span>
-                        <input type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
+                        <input ref={(input) => { this.cliInput = input; }} type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
                     <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}> 
                     <SendIcon />
                     </button>
