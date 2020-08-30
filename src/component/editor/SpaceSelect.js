@@ -5,6 +5,10 @@ export const SpaceSelect = ({userId, inSpaceId, spaces, setCurrentSpace, loadPla
     const [spaceId, setSpaceId] = useState(inSpaceId)
 
     useEffect(() => {
+        if (Array.isArray(spaces) && spaces.length > 0) setSpaceId(spaces[0].spaceId)
+    },[spaces])
+
+    useEffect(() => {
         if (spaceId) setCurrentSpace(spaceId)
     }, [spaceId, setCurrentSpace]) // Only re-run the effect if spaceId changes
 

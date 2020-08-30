@@ -7,14 +7,10 @@ export const CreatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const [isVis, toggleIsVis] = useState(true)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
-    const [spaceId, setSpaceId] = useState(inPlace.spaceId)
+    const [spaceId, setSpaceId] = useState(0)
     const [isRoot, toggleIsRoot] = useState(false)
     const [isExit, toggleIsExit] = useState(false)
     const [cmd, setCmd] = useState("")
-
-    useEffect(() => {
-        setSpaceId(inPlace.spaceId)
-    }, [inPlace])
     
     const handleSubmit = (e) => {
         const place = Object.assign(Place)
@@ -52,7 +48,7 @@ export const CreatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 <label>Description:
                     <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
                 </label>
-                <SpaceSelect userId={userId} inSpaceId={inPlace.spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)}/>              
+                <SpaceSelect userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={Array.isArray(spaces) && spaces.length > 0 ? spaces[0].spaceId : 0} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)}/>              
                 <label>
                 Is Root?:
                 <input

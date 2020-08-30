@@ -35,6 +35,7 @@ constructor(props) {
       showModal: false,
       modalReturn: {},
       menuToggle: "",
+      isEdit: false,
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -91,6 +92,11 @@ processResponse = (data) => {
     if (isAuth.isAuth) {
       if (isAuth.placeId)
         this.loadPlace(isAuth.placeId)
+      if (isAuth.isEdit) {
+        this.setState({isEdit: true})
+      } else {
+        this.setState({isEdit: false})
+      }
     } else {
       if (this.state.user.stateData.currentRoom === isAuth.placeId) {
         msg = `${data.isAuth[0].title} is locked.  Please [travel] to a new location.`
@@ -174,11 +180,11 @@ childHookUpdateHandler  = (inObj, type) => {
     this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
   }
   stateData[type] = inObj
-
+  console.log(stateData)
   if (message) {
     stateData.alertMessage=message
     stateData.alertVis=true
-    stateData.alertSucces=true
+    stateData.alertSuccess=true
     stateData.alertId=Math.random().toString()
   }
 
@@ -314,7 +320,7 @@ render() {
         <li><userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler} menuToggle={this.menuToggle} /></li>
         <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
         <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><EditorHook inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
+        <li><EditorHook isEdit={this.state.isEdit} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">
