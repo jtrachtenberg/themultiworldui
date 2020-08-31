@@ -18,7 +18,8 @@ const look = async (inObj, inCmd) => {
             retVal = await new Promise((resolve, reject) => setResponse(resolve, place.description))
         }
         else {
-        const target = inCmd[1]
+        let target = inCmd[1]
+        if (target === 'at' && inCmd.length > 2) target = inCmd[2]
         try {
         //Check for valid look targets in the place
         retVal = await new Promise((resolve, reject) => checkPoi(poi,target,resolve, reject))
