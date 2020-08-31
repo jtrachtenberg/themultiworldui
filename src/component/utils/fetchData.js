@@ -17,34 +17,23 @@ const getUserId = (user) => {
   }
 
 export const fetchMediaData = async (cmd, postData) => {
-    const postUrl = `${Constants.HOST_URL}:${Constants.UNSPLASH_PORT}/${cmd}`
-    const headers = {"Content-Type": "application/json"};
+const postUrl = `${Constants.HOST_URL}:${Constants.UNSPLASH_PORT}/${cmd}`
 
-    let token = postData.token
-    let userId = postData.userId
-    if (!token) token = getToken()
-    if (!userId) userId = getUserId()
-
-    if (token) {
-      headers["Authorization"] = `Token ${token}`;
-    }
-    let retVal = await new Promise((resolve, reject) => {
-        fetch(postUrl, {
-        withCredentials: true,
-        credentials: 'include',
-        method: "POST",
-        headers: {
-            headers,
-        },
-        body: JSON.stringify(postData)
-        }).then(response => response.json())
-        .then (response => {
-            return resolve(response)
-        })
-        .catch(e => {
-            return reject(e)
-        })
+let retVal = await new Promise((resolve, reject) => {
+    fetch(postUrl, {
+    method: "POST",
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(postData)
+    }).then(response => response.json())
+    .then (response => {
+        return resolve(response)
     })
+    .catch(e => {
+        return reject(e)
+    })
+})
 
     return retVal
 }
