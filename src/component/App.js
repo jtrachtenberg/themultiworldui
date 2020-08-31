@@ -36,6 +36,7 @@ constructor(props) {
       modalReturn: {},
       menuToggle: "",
       isEdit: false,
+      isAdmin: false,
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -83,14 +84,21 @@ processResponse = (data) => {
     if (!Array.isArray(data.isAuth)) return
     const isAuth = data.isAuth[0]
     console.log(isAuth)
+    const perms = {}
     if (isAuth.isAuth) {
       if (isAuth.placeId)
         this.loadPlace(isAuth.placeId)
       if (isAuth.isEdit) {
-        this.setState({isEdit: true})
+        perms.isEdit=true
       } else {
-        this.setState({isEdit: false})
+        perms.isEdit=false
       }
+      if (isAuth.isAdmin) {
+        perms.isAdmin=true
+      } else {
+        perms.isAdmin=false
+      }
+      this.setState({...perms})
     } else {
       if (this.state.user.stateData.currentRoom === isAuth.placeId) {
         msg = `${data.isAuth[0].title} is locked.  Please [travel] to a new location.`
@@ -262,6 +270,10 @@ updateUserHandler = (user) => {
 
 addUserHandler = (user,doLogin) => {
   doLogin = doLogin||false
+  if (!user.token) {
+    user.token = this.state.user.token
+    user.userId = this.state.user.userId
+  }
   fetchData('addUser',user).then(response => {
     user.userId = response[0]
     const message = `User ${user.userName} Created`
@@ -318,9 +330,9 @@ render() {
       <div className={`leftNav edgeCol ${this.state.menuToggle}`}>
         <ul>
         <li><userForms.LoginUserForm socket={this.state.socket} inUser={this.state.user} loginHandler={this.loginHandler} menuToggle={this.menuToggle} /></li>
-        <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><EditorHook isEdit={this.state.isEdit} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
+        <li><userForms.CreateUserForm isAdmin={this.state.isAdmin} inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
+        <li><userForms.UpdateUserForm isAdmin={this.state.isAdmin} inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
+        <li><EditorHook isAdmin={this.state.isAdmin} isEdit={this.state.isEdit} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">

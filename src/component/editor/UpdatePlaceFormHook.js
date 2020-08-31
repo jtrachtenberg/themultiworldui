@@ -16,7 +16,7 @@ function usePrevious(value) {
     return ref.current;
 }
 
-export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => {
+export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [spaceId, setSpaceId] = useState(inPlace.spaceId)
     const [title, setTitle] = useState("")
@@ -50,7 +50,7 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
         inSpaceId = inSpaceId||spaceId
         if (!fetching) {
         setFetching(true)
-        const postData = {spaceId: inSpaceId}
+        const postData = {spaceId: inSpaceId, userId: userId}
         await fetchData('loadPlaces', postData)
         .then(response => {
             setPlaces(response)

@@ -90,7 +90,6 @@ class LoginUserForm extends React.Component {
         blankUser.description=""
         blankUser.email=""
         blankUser.stateData={}
-        blankUser.isRoot=0
         blankUser.userName=""
         this.props.loginHandler(blankUser)
     }

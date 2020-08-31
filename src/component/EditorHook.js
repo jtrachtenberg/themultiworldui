@@ -19,7 +19,7 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
 
     useEffect(() => {
         async function doFetch() {
-            const postData = { userId: inUser.userId}
+            const postData = { userId: inUser.userId }
 
             return await fetchData('loadSpaces', postData)
         }
@@ -52,7 +52,7 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
 
     useEffect(() => {
         async function doFetch() {
-            const postData = { userId: inUser.userId}
+            const postData = { userId: inUser.userId }
 
             return await fetchData('loadSpaces', postData)
         }

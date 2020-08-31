@@ -30,7 +30,7 @@ export const AuthKey = ({editActionStack, handleActionChange, actionNumber, user
 
         async function loadPlaces (inSpaceId) {
             inSpaceId = inSpaceId||spaceId
-            const postData = {spaceId: inSpaceId}
+            const postData = {spaceId: inSpaceId, userId: userId }
             await fetchData('loadPlaces', postData)
             .then(response => {
                 console.log(response)
