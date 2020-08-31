@@ -154,8 +154,11 @@ messageResetHander = () => {
 }
 
 childHookUpdateHandler  = (inObj, type) => {
+  if (typeof inObj === 'undefined') return
   let stateData = {}
-  const message = typeof(inObj.failed) === 'undefined' ? null : inObj.failed ? `Update to ${inObj.title} failed.` : `${inObj.title} updated`
+  let message
+  if (inObj.create) message = `${inObj.title} created.`
+  else message = typeof(inObj.failed) === 'undefined' ? null : inObj.failed ? `Update to ${inObj.title} failed.` : `${inObj.title} updated`
   delete inObj.failed
 
   if (Object.keys(inObj).length === 0 && inObj.constructor === Object) return
@@ -225,18 +228,28 @@ loginHandler = (user) => {
 
 updateUserHandler = (user) => {
 
-  var message
-  var success
-  var alertVis
   var update = {}
+  const stateData = {alertId: Math.random().toString()}
 
-  if (typeof(user.failed) === 'undefined') {
-    message = ""
-    success = true
-    alertVis = false
+  if (user.auth) {
+    update.auth = user.auth
+    delete user.auth
+  }
+
+  if (user.create) {
+    stateData.message = `User ${user.userName} Created`
+    stateData.success = true
+    stateData.alertVis = true
+  } else if (typeof(user.failed) === 'undefined') {
+    stateData.message = ""
+    stateData.success = true
+    stateData.alertVis = false
+    stateData.user = user
   } else {
-    message = user.failed ? `Update failed` : `User ${user.userName} Updated`
-    success = user.failed ? false : true
+    if (!user.failed) stateData.user=user
+    stateData.message = user.failed ? `Update failed` : `User ${user.userName} Updated`
+    stateData.success = user.failed ? false : true
+    stateData.alertVis = true
     if (typeof(user.failed) !== 'undefined') delete user.failed
   }
 
@@ -245,18 +258,9 @@ updateUserHandler = (user) => {
     this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
   }
 
-  if (user.auth) {
-    update.auth = user.auth
-    delete user.auth
-  }
-
-  if (success)
+  if (stateData.success)
   this.setState({
-    user: user,
-    alertMessage: message,
-    alertVis: alertVis,
-    alertSuccess: success,
-    alertId: Math.random().toString()
+    ...stateData
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
     update.stateData=this.state.user.stateData
@@ -265,10 +269,7 @@ updateUserHandler = (user) => {
   })
   else
   this.setState({
-    alertMessage: message,
-    alertVis: true,
-    alertSuccess: success,
-    alertId: Math.random().toString()
+    ...stateData
   })
 }
 

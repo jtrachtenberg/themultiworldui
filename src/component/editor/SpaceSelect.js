@@ -22,7 +22,7 @@ export const SpaceSelect = ({userId, inSpaceId, spaces, setCurrentSpace, loadPla
                 <div>{setFormHeader("Select a space")}</div>
                     <select value={spaceId} onChange={(e) => {
                         setSpaceId(Number(e.target.value))
-                        loadPlaces(e.target.value)
+                        if (typeof loadPlaces === 'function') loadPlaces(e.target.value)
                         }}>
                         <option value="" disabled>Select a Space</option>
                         {formatSpaces()}
