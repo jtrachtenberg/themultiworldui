@@ -11,6 +11,7 @@ class Exits extends React.Component {
     
     componentDidUpdate(prevUpdate) {
         if (prevUpdate.inPlace && prevUpdate.inPlace.placeId !== this.props.inPlace.placeId) {
+            if (Array.isArray(this.props.inPlace.exits)) {
             const postData = this.props.inPlace.exits.map(exit => {
                  // eslint-disable-next-line
                  for (const [key, value] of Object.entries(exit)) {
@@ -18,8 +19,10 @@ class Exits extends React.Component {
                  }
                  return {}
             })
+            
             console.log(postData)
             fetchData('loadImages',{inObj:postData}).then(response => this.setState({images: response}))
+            }
         }
     }
 
