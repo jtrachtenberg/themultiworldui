@@ -38,12 +38,13 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) =>
     const prevSpaceId = usePrevious(spaceId)
 
     useEffect(() => {
-        if (Array.isArray(spaces) && spaces.length > 0)
+        if (Array.isArray(spaces) && spaces.length > 0) {
             setSpaceId(spaces[0].spaceId)
+        }
     },[spaces])
 
     useEffect(() => {
-        if (spaceId !== prevSpaceId) loadPlaces(spaceId)
+        if (spaceId > 0 && spaceId !== prevSpaceId) loadPlaces(spaceId)
     })
 
     const loadPlaces = async (inSpaceId) => {

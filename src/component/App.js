@@ -154,8 +154,6 @@ messageResetHander = () => {
 }
 
 childHookUpdateHandler  = (inObj, type) => {
-  console.log(type)
-  console.log(inObj)
   let stateData = {}
   const message = typeof(inObj.failed) === 'undefined' ? null : inObj.failed ? `Update to ${inObj.title} failed.` : `${inObj.title} updated`
   delete inObj.failed
@@ -170,10 +168,18 @@ childHookUpdateHandler  = (inObj, type) => {
 
     const user = this.state.user
     if (inObj.placeId) {
-      user.stateData.currentRoom = inObj.placeId
-      user.stateData.currentSpace = inObj.spaceId
-      delete user.stateData.newRoom
-      this.updateUserHandler(user)
+      if (inObj.create) {
+        user.stateData.newRoom = inObj.placeId
+        delete inObj.created
+        user.stateData.currentSpace = inObj.spaceId
+        this.updateUserHandler(user)
+      } else {
+        user.stateData.currentRoom = inObj.placeId
+        user.stateData.currentSpace = inObj.spaceId
+        delete user.stateData.newRoom
+        this.updateUserHandler(user)
+      }
+      
     }
 
     this.state.socket.off(`place:${this.state.place.placeId}`)
@@ -218,8 +224,7 @@ loginHandler = (user) => {
 }
 
 updateUserHandler = (user) => {
-  console.log('updateUserHandler')
-  console.log(user)
+
   var message
   var success
   var alertVis
@@ -237,7 +242,6 @@ updateUserHandler = (user) => {
 
   if (user.stateData.newRoom) {
     const authData = {placeId: Number(user.stateData.newRoom)}
-    console.log(authData)
     this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
   }
 

@@ -70,6 +70,7 @@ export const createHandler = async (type, obj, handler) => {
     const idName = type+"Id"
     obj[idName] = response[0]
     obj.failed = false
+    obj.create = true
     handler(obj)
   })
   .catch(err => {
