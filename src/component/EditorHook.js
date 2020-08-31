@@ -68,8 +68,8 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
     },[inUser, prevUserId])
 
     useEffect(() => {
-        if (!spaces) return
-        if (Array.isArray(spaces) && spaces.length === 0) return
+        if (typeof spaces === 'undefined') loadSpaces([])
+        else if (Array.isArray(spaces) && spaces.length === 0) return
         setCurrentSpace(spaces[0])
     }, [spaces])
 

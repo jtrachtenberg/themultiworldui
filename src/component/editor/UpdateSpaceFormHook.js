@@ -31,7 +31,7 @@ export const UpdateSpaceFormHook = ({userId, spaces, spaceHandler}) => {
         e.preventDefault();
     }
 
-    if (userId && currentSpace && currentSpace.spaceId)
+    if (userId && currentSpace && currentSpace.spaceId && Array.isArray(spaces))
         return (
             <div>
             <div>{setFormHeader("Update Space", () => toggleIsVis(!isVis))}</div>
@@ -60,6 +60,6 @@ export const UpdateSpaceFormHook = ({userId, spaces, spaceHandler}) => {
         )
     else
             return (
-                <div>?!?!?!</div>
+                <div></div>
             )
 }
