@@ -120,7 +120,7 @@ processResponse = (data) => {
     const name = data.msg.userName
     let prepend
     if (name !== "")
-      prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : `${name} says:`
+      prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : data.msg.emote ? `${name}` : `${name} says:`
     else
       prepend = ""
     this.setState({

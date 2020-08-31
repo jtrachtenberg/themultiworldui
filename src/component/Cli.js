@@ -149,6 +149,18 @@ ${this.props.inMsg}`
             'pos':0,
             'replace':'say '
         })
+        rulesets.push({
+            'type':'transform',
+            'search':`/`,
+            'pos':0,
+            'replace':'say '
+        })
+        rulesets.push({
+            'type':'transform',
+            'search':`:`,
+            'pos':0,
+            'replace':'emote '
+        })
         const cmds = [];
         this.state.availableCommands.forEach((cmd)=> {
             Object.keys(cmd).forEach((key) => {
