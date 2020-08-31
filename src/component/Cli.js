@@ -108,7 +108,9 @@ class Cli extends React.Component {
             loadCommands: false
         })
     }
-
+    componentDidMount() {
+        this.cliInput.focus()
+    }
     componentDidUpdate(prevProps) {
 
         if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
@@ -146,6 +148,18 @@ ${this.props.inMsg}`
             'search':`'`,
             'pos':0,
             'replace':'say '
+        })
+        rulesets.push({
+            'type':'transform',
+            'search':`/`,
+            'pos':0,
+            'replace':'say '
+        })
+        rulesets.push({
+            'type':'transform',
+            'search':`:`,
+            'pos':0,
+            'replace':'emote '
         })
         const cmds = [];
         this.state.availableCommands.forEach((cmd)=> {
@@ -309,7 +323,7 @@ Nothing to do here.`
                     </section>
                     <section>
                     <span>
-                        <input type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
+                        <input ref={(input) => { this.cliInput = input; }} type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
                     <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}> 
                     <SendIcon />
                     </button>

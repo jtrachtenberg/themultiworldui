@@ -11,7 +11,8 @@ class UpdateUserForm extends React.Component {
             email: props.inUser.email,
             userId: props.inUser.userId,
             description: props.inUser.description||"",
-            isRoot: props.inUser.isRoot,
+            isAdmin: props.isAdmin,
+            isRoot: false,
         }
     }
 
@@ -23,7 +24,7 @@ class UpdateUserForm extends React.Component {
                 userName: this.props.inUser.userName,
                 email: this.props.inUser.email,
                 description: this.props.inUser.description,
-                isRoot: this.props.inUser.isRoot,
+                isRoot: false,
                 userId: this.props.inUser.userId
             })
     }
@@ -64,7 +65,7 @@ class UpdateUserForm extends React.Component {
                 <textarea name="description" value={this.state.description||""} onChange={this.handleChange} />
             </label>              
             
-                { this.props.inUser.isRoot && 
+                { this.props.isAdmin && 
                 <div>    
                     <label>Is Root?:
                     <input

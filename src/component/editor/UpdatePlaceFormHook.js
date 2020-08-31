@@ -16,7 +16,7 @@ function usePrevious(value) {
     return ref.current;
 }
 
-export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => {
+export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [spaceId, setSpaceId] = useState(inPlace.spaceId)
     const [title, setTitle] = useState("")
@@ -38,19 +38,20 @@ export const UpdatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
     const prevSpaceId = usePrevious(spaceId)
 
     useEffect(() => {
-        if (Array.isArray(spaces) && spaces.length > 0)
+        if (Array.isArray(spaces) && spaces.length > 0) {
             setSpaceId(spaces[0].spaceId)
+        }
     },[spaces])
 
     useEffect(() => {
-        if (spaceId !== prevSpaceId) loadPlaces(spaceId)
+        if (spaceId > 0 && spaceId !== prevSpaceId) loadPlaces(spaceId)
     })
 
     const loadPlaces = async (inSpaceId) => {
         inSpaceId = inSpaceId||spaceId
         if (!fetching) {
         setFetching(true)
-        const postData = {spaceId: inSpaceId}
+        const postData = {spaceId: inSpaceId, userId: userId}
         await fetchData('loadPlaces', postData)
         .then(response => {
             setPlaces(response)

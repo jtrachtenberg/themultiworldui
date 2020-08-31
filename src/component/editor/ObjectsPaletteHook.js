@@ -11,7 +11,7 @@ export const ObjectsPaletteHook = ({updateTrigger, userId, inPlace, placeHandler
 
     useEffect(() => {
         async function doFetch() {
-            const postData = {userId: userId}
+            const postData = {userId: userId }
 
             return await fetchData('loadUserObjects', postData)
         }

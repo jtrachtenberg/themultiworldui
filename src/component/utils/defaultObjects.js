@@ -5,7 +5,6 @@ export const User = {
     userName: "",
     email: "",
     description: "",
-    isRoot: false,
     stateData: null
 }
 

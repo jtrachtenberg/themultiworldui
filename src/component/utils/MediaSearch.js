@@ -50,7 +50,7 @@ export const MediaSearch = ({ images, handleImages, editImages, audio, handleAud
             {formatAudio()}
             </div>
             <span>Add Media <ImageSearchIcon onClick={() => toggleShowModal(true)}/></span>
-            {modalReturn && modalReturn.alt && <div><img alt={modalReturn.alt} src={modalReturn.src} width="75"/></div>}
+            {modalReturn && modalReturn.apilink && <div><img alt={modalReturn.alt} src={modalReturn.src} width="75"/></div>}
             {modalReturn && modalReturn.externalUrl && <div><ReactPlayer width="240px" height="30px" controls={true} url={modalReturn.src} /></div>}
         </section>
         </span>

@@ -19,7 +19,7 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
 
     useEffect(() => {
         async function doFetch() {
-            const postData = { userId: inUser.userId}
+            const postData = { userId: inUser.userId }
 
             return await fetchData('loadSpaces', postData)
         }
@@ -52,7 +52,7 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
 
     useEffect(() => {
         async function doFetch() {
-            const postData = { userId: inUser.userId}
+            const postData = { userId: inUser.userId }
 
             return await fetchData('loadSpaces', postData)
         }
@@ -85,9 +85,12 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
                 <editorForms.ObjectsPaletteHook updateTrigger={updateTrigger} userId={inUser.userId} inPlace={inPlace} objectHandler={objectHandler} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }}/>
-                <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => updateHandler(newSpace, 'space')} />
+                <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => {
+                    const tmpSpace = Array.from(spaces)
+                    tmpSpace.push(newSpace)
+                    loadSpaces(tmpSpace)
+                    updateHandler(newSpace, 'space')}} />
                 <editorForms.UpdateSpaceForm userId={inUser.userId} spaces={spaces} spaceHandler={newSpace => {
-                    console.log(newSpace)
                     updateHandler(newSpace, 'space')
                 }} />
                 <editorForms.CreatePlaceForm userId={inUser.userId} inPlace={inPlace} spaces={spaces} placeHandler={newPlace => {

@@ -36,6 +36,7 @@ constructor(props) {
       modalReturn: {},
       menuToggle: "",
       isEdit: false,
+      isAdmin: false,
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -83,14 +84,21 @@ processResponse = (data) => {
     if (!Array.isArray(data.isAuth)) return
     const isAuth = data.isAuth[0]
     console.log(isAuth)
+    const perms = {}
     if (isAuth.isAuth) {
       if (isAuth.placeId)
         this.loadPlace(isAuth.placeId)
       if (isAuth.isEdit) {
-        this.setState({isEdit: true})
+        perms.isEdit=true
       } else {
-        this.setState({isEdit: false})
+        perms.isEdit=false
       }
+      if (isAuth.isAdmin) {
+        perms.isAdmin=true
+      } else {
+        perms.isAdmin=false
+      }
+      this.setState({...perms})
     } else {
       if (this.state.user.stateData.currentRoom === isAuth.placeId) {
         msg = `${data.isAuth[0].title} is locked.  Please [travel] to a new location.`
@@ -112,7 +120,7 @@ processResponse = (data) => {
     const name = data.msg.userName
     let prepend
     if (name !== "")
-      prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : `${name} says:`
+      prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : data.msg.emote ? `${name}` : `${name} says:`
     else
       prepend = ""
     this.setState({
@@ -146,8 +154,6 @@ messageResetHander = () => {
 }
 
 childHookUpdateHandler  = (inObj, type) => {
-  console.log(type)
-  console.log(inObj)
   let stateData = {}
   const message = typeof(inObj.failed) === 'undefined' ? null : inObj.failed ? `Update to ${inObj.title} failed.` : `${inObj.title} updated`
   delete inObj.failed
@@ -162,10 +168,18 @@ childHookUpdateHandler  = (inObj, type) => {
 
     const user = this.state.user
     if (inObj.placeId) {
-      user.stateData.currentRoom = inObj.placeId
-      user.stateData.currentSpace = inObj.spaceId
-      delete user.stateData.newRoom
-      this.updateUserHandler(user)
+      if (inObj.create) {
+        user.stateData.newRoom = inObj.placeId
+        delete inObj.created
+        user.stateData.currentSpace = inObj.spaceId
+        this.updateUserHandler(user)
+      } else {
+        user.stateData.currentRoom = inObj.placeId
+        user.stateData.currentSpace = inObj.spaceId
+        delete user.stateData.newRoom
+        this.updateUserHandler(user)
+      }
+      
     }
 
     this.state.socket.off(`place:${this.state.place.placeId}`)
@@ -210,8 +224,7 @@ loginHandler = (user) => {
 }
 
 updateUserHandler = (user) => {
-  console.log('updateUserHandler')
-  console.log(user)
+
   var message
   var success
   var alertVis
@@ -229,7 +242,6 @@ updateUserHandler = (user) => {
 
   if (user.stateData.newRoom) {
     const authData = {placeId: Number(user.stateData.newRoom)}
-    console.log(authData)
     this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
   }
 
@@ -262,6 +274,10 @@ updateUserHandler = (user) => {
 
 addUserHandler = (user,doLogin) => {
   doLogin = doLogin||false
+  if (!user.token) {
+    user.token = this.state.user.token
+    user.userId = this.state.user.userId
+  }
   fetchData('addUser',user).then(response => {
     user.userId = response[0]
     const message = `User ${user.userName} Created`
@@ -318,9 +334,9 @@ render() {
       <div className={`leftNav edgeCol ${this.state.menuToggle}`}>
         <ul>
         <li><userForms.LoginUserForm socket={this.state.socket} inUser={this.state.user} loginHandler={this.loginHandler} menuToggle={this.menuToggle} /></li>
-        <li><userForms.CreateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><userForms.UpdateUserForm inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
-        <li><EditorHook isEdit={this.state.isEdit} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
+        <li><userForms.CreateUserForm isAdmin={this.state.isAdmin} inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
+        <li><userForms.UpdateUserForm isAdmin={this.state.isAdmin} inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
+        <li><EditorHook isAdmin={this.state.isAdmin} isEdit={this.state.isEdit} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
       <div className="main midCol">
