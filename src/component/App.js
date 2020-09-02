@@ -32,7 +32,7 @@ constructor(props) {
       space: Space, 
       place: Place,
       inMsg: "",
-      showModal: false,
+      showModalLogin: false,
       modalReturn: {},
       menuToggle: "",
       isEdit: false,
@@ -42,7 +42,6 @@ constructor(props) {
 }
 
 componentDidMount() {
-  console.log("componentDidMount")
   var user = JSON.parse(localStorage.getItem('user'))
   let needLogin = false
 
@@ -51,8 +50,7 @@ componentDidMount() {
     needLogin = true
 
   }
-  console.log(user)
-  this.setState({user: user, showModal: needLogin},() => {
+  this.setState({user: user, showModalLogin: needLogin},() => {
     if (this.state.user.userId === 0) return
     if (typeof(this.state.user.stateData) === 'object' && this.state.user.stateData.currentRoom !== this.state.place.placeId) {
       const authData = {placeId: Number(this.state.user.stateData.currentRoom)}
@@ -64,7 +62,7 @@ componentDidMount() {
     socket.on("outgoing data", data => this.processResponse(data))
     socket.on(`place:${this.state.place.placeId}`, data => this.processResponse(data))
     socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
-    if (needLogin) this.setState({showModal: true})
+    if (needLogin) this.setState({showModalLogin: true})
   })
 
 }
@@ -79,11 +77,9 @@ menuToggle = () => {
 processResponse = (data) => {
 
   if (data.type && data.type === 'auth') {
-    console.log(data)
     let msg = ""
     if (!Array.isArray(data.isAuth)) return
     const isAuth = data.isAuth[0]
-    console.log(isAuth)
     const perms = {}
     if (isAuth.isAuth) {
       if (isAuth.placeId)
@@ -132,7 +128,8 @@ processResponse = (data) => {
 
 
 hideModal = () => {
-  this.setState({showModal: false})
+  //TODO = set correct false
+  this.setState({showModalLogin: false})
 }
 
 noOp = () => {
@@ -191,7 +188,6 @@ childHookUpdateHandler  = (inObj, type) => {
     this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
   }
   stateData[type] = inObj
-  console.log(stateData)
   if (message) {
     stateData.alertMessage=message
     stateData.alertVis=true
@@ -214,7 +210,7 @@ loginHandler = (user) => {
     alertVis: true,
     alertSuccess: success,
     alertId: Math.random().toString(),
-    showModal: !success
+    showModalLogin: !success
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
     this.state.socket.on("outgoing data", data => this.processResponse(data))
@@ -324,7 +320,6 @@ addUserHandler = (user,doLogin) => {
 }
 
 render() {
-  let doModal = this.state.showModal
   return (
     <div className="App">
         <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>
@@ -351,9 +346,9 @@ render() {
       </div>
 
       <div id="portal-root"></div>
-      {( doModal && 
+      {( this.state.showModalLogin && 
                     <Portal id="imageModal">
-                        <Modal handleClose={this.hideModal} show={this.state.showModal}
+                        <Modal handleClose={this.hideModal} show={this.state.showModalLogin}
                         >
                         <userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler} close={this.hideModal}/>
                         </Modal>

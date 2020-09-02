@@ -33,7 +33,6 @@ export const AuthKey = ({editActionStack, handleActionChange, actionNumber, user
             const postData = {spaceId: inSpaceId, userId: userId }
             await fetchData('loadPlaces', postData)
             .then(response => {
-                console.log(response)
                 editPlaces(response)
                 if (response.length>1)
                 inputUpdate(response[0].placeId)

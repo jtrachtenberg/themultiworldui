@@ -30,7 +30,6 @@ const look = async (inObj, inCmd) => {
         if (retVal === null) {
             const article = target.slice(-1) === 's' ? 'are' : 'is'
             const retMsg = `There ${article} no ${target} here.`
-            console.log(retMsg)
             retVal = await new Promise((resolve, reject) => resolve(retMsg))
         }
         //retVal = await checkExits(exits,target)  
@@ -40,7 +39,6 @@ const look = async (inObj, inCmd) => {
         }
         }
     }
-    console.log(retVal)
     return retVal
 }
 function setResponse(resolve, msg) {

@@ -3,7 +3,7 @@ import {ReactComponent as AddIcon} from '../create.svg'
 import {MediaSearch} from '../utils/MediaSearch'
 import * as Elements from './objectElements'
 
-export const CreateObjectModal = ({userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
+export const CreateObjectModal = ({ editElementStack, elementStack, userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
     const [inElements, editInElements] = useState([])
     const [elementList, editElementList] = useState([])
     const [showElements, editShowElements] = useState([])
@@ -45,25 +45,26 @@ export const CreateObjectModal = ({userId, createPreset, presets, inObject, setI
     const formatElements = () => {
         return inElements.map((element,i) => {
             //const Name = element.name
-            const NewElement = element.value
-            let symbol
+            const NewElement = Object.assign(element.value)
+            let elsymbol
             if (elementList.length > 0)
-                symbol = elementList[i].elementSymbol
+                elsymbol = elementList[i].elementSymbol
             return <span key={i}><button onClick={(e) => {
-                e.preventDefault()
+                e.preventDefault()  
                 if (currentActionNumber < 0) return
-                //const elementListCopy = [...elementList]
-                const symbol = Object.assign(elementList[i])
-                const newStack = [...actionStack]
+ 
+                const symbol = {...elementList[i]}//Object.assign(elementList[i])
+ 
+                const newStack = Array.from(actionStack)
                 const actionItem = newStack[currentActionNumber]
+
                 const commandResult = (typeof(actionItem.commandResult) !== 'undefined') ? actionItem.commandResult : ""
 
                 actionItem.commandResult = commandResult.concat(symbol.elementSymbol.toString())
 
-                const tmpElementList = Array.isArray(actionItem.elementList) ? [...actionItem.elementList] : []
+                const tmpElementList = Array.isArray(actionItem.elementList) ? Array.from(actionItem.elementList) : []
                 tmpElementList[i]=symbol
                 actionItem.elementList=tmpElementList
-                //tmpAction.elementList=elementList
                 newStack[currentActionNumber] = actionItem
 
                 const editShow = [...showElements]
@@ -71,7 +72,11 @@ export const CreateObjectModal = ({userId, createPreset, presets, inObject, setI
                 editShowElements(editShow)
                 editActionStack(newStack)
 
-            }}>{symbol}</button><NewElement show={showElements[i]} currentActionNumber={currentActionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={i}/>
+                const tmpElements = Array.isArray(elementStack) ? Array.from(elementStack) : []
+                tmpElements[currentActionNumber]=Object.assign(element)
+          
+                editElementStack(tmpElements)
+            }}>{elsymbol}</button><NewElement show={false} currentActionNumber={currentActionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={i}/>
             </span>
         })
     }
@@ -80,7 +85,6 @@ export const CreateObjectModal = ({userId, createPreset, presets, inObject, setI
             return <div></div>
         
         return presets.map((preset,i) => {
-            console.log(preset)
             const NewAction = preset.value
             
             return <div key={i}><NewAction editActionStack={editActionStack} userId={userId} spaces={spaces} handleActionChange={createPreset} actionNumber={i} /></div>
@@ -132,18 +136,27 @@ export const CreateObjectModal = ({userId, createPreset, presets, inObject, setI
             { (tab === 0) && <div>
         <form id="ObjectCreatorForm">
         <section>
+        <div className="row">
         <label>Title
             <input name="title" id="title" value={title} onChange={(e) => {
                 setTitle(e.target.value)}} />
         </label>
+        </div>
+        <div className="row">
+        <div className="doubleColumn">
         <label>Description:
             <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
         </label>
-        </section>
+        </div>
+        
+        <div className="column">
         <MediaSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} />
+        </div>
+        </div>
+        </section>
         <section>
             <div>{setFormHeader("Actions")}</div>
-            <div>
+            <div className="row">
                 <label>Add Action <AddIcon onClick = {() => {
                         const tmpActions = actions.map(action => ({...action}))
                         let newAction = Object.assign(tmpActions[currentAction])
@@ -164,11 +177,17 @@ export const CreateObjectModal = ({userId, createPreset, presets, inObject, setI
             </div>
         </section>
         <section>
+            <div className="row">
             {formatActions()}
+            </div>
+            <div className="row">
             <label>Available Elements</label>
             {formatElements()}
+            </div>
         </section>
+        <div className="row">
         <button name="submit" onClick={handleSubmit}>{buttonText}</button>
+        </div>
         </form>
         </div>}
         </div>

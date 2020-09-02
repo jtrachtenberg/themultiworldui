@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 172 172" style=" fill:#000000;">
+          <g transform="">
+            <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+              <path d="M0,172v-172h172v172z" fill="none" stroke="none"></path>
+              <g id="original-icon" fill="#000000" stroke="none" opacity="0" visibility="hidden">
+                <path d="M78.83333,21.5v100.83724l-32.75391,-32.7539l-10.75,10.75l50.67057,50.67057l50.67057,-50.67057l-10.75,-10.75l-32.7539,32.7539v-100.83724z"></path>
+              </g>
+              <g id="subtracted-icon" fill="#000000" stroke="none">
+                <path d="M93.16667,122.33724l32.7539,-32.7539l10.75,10.75l-50.67057,50.67057l-50.67057,-50.67057l10.75,-10.75l32.75391,32.7539v-100.83724l13.74724,0v34.74724h0.58609z"></path>
+              </g>
+              <path d="" fill="none" stroke="none"></path>
+              <path d="" fill="none" stroke="none"></path>
+              <path d="" fill="none" stroke="none"></path>
+              <path d="" fill="none" stroke="none"></path>
+              <path d="" fill="none" stroke="none"></path>
+              <path d="" fill="none" stroke="none"></path>
+              <g fill="#000000" stroke="none">
+                <g id="Sharp">
+                  <path d="M178.58058,41.91391h-28.66667v28.66667h-14.33333v-28.66667h-28.66667v-14.33333h28.66667v-28.66667h14.33333v28.66667h28.66667z"></path>
+                </g>
+                <g id="Sharp" opacity="0">
+                  <path d="M192.91391,13.24724v43h-28.66667v28.66667h-43v-28.66667h-28.66667v-43h28.66667v-28.66667h43v28.66667z"></path>
+                </g>
+              </g>
+              <path d="M106.91391,70.58058v-71.66667h71.66667v71.66667z" id="overlay-drag" fill="#ff0000" stroke="none" opacity="0"></path>
+            </g>
+          </g>
+        </svg>

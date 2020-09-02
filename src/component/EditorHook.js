@@ -14,6 +14,8 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
     const [spaces, loadSpaces] = useState([])
     const [editSpace, setCurrentSpace] = useState({})
     const [updateTrigger, setUpdateTrigger] = useState(false)
+    //const [showModalSpace, toggleShowModalSpace] = useState(false)
+    //const [showModalPlace, toggleShowModalPlace] = useState(false)
     const prevUserId = usePrevious(inUser.userId)
     const prevSpaceId = usePrevious(inSpace.spaceId)
 
@@ -38,14 +40,12 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
         if (prevSpaceId === 0 && inSpace.spaceId > 0) {
             setCurrentSpace(inSpace)
         } else {
-        if (!editSpace || (!Object.keys(editSpace).length === 0 && editSpace.constructor === Object)) return //empty
-        const shouldUpdate = editSpace.spaceId && (editSpace.spaceId !== prevSpaceId) ? true : (typeof(editSpace.failed) === 'number' || typeof(editSpace.failed) === 'boolean') ? true : false
-        if (shouldUpdate) {
-            updateHandler(editSpace, 'space')
-            setCurrentSpace(Object.create({}))
-        } else {
-            console.log('no update')
-        }
+            if (!editSpace || (!Object.keys(editSpace).length === 0 && editSpace.constructor === Object)) return //empty
+                const shouldUpdate = editSpace.spaceId && (editSpace.spaceId !== prevSpaceId) ? true : (typeof(editSpace.failed) === 'number' || typeof(editSpace.failed) === 'boolean') ? true : false
+            if (shouldUpdate) {
+                updateHandler(editSpace, 'space')
+                setCurrentSpace(Object.create({}))
+            }
         }
         
     },[editSpace, prevSpaceId, inSpace, updateHandler])
@@ -74,10 +74,9 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
     }, [spaces])
 
     const objectHandler = (response) => {
-        //console.log(response)
-        //TODO: Trigger object list load
         setUpdateTrigger(!updateTrigger)
     }
+    
     if (inUser && inUser.userId > 0)
         return (
             <div>

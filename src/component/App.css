@@ -17,6 +17,24 @@
   }
 }
 
+@keyframes slideInXMain {
+  0% {
+    left: 82px;
+  }
+  100% {
+    left: 250px;
+  }
+}
+
+@keyframes slideOutXMain {
+  0% {
+    left: 250px;
+  }
+  100% {
+    left: 82px;
+  }
+}
+
 @keyframes slideInY {
   from {
     transform: translateY(-50px);
@@ -219,6 +237,8 @@ input[type=email]:not(:placeholder-shown):invalid {
   cursor: pointer;
 }
 
+
+
 .menuIn {
   animation-name: slideInX;
   animation-duration: 0.5s;
@@ -389,6 +409,7 @@ form#Cli {
 .main .viewPort {
   display: flex;
   width: 57vw;
+  left: 250px;
   text-align: left;
   height: 67vh;
   padding-left: 10px;
@@ -397,8 +418,19 @@ form#Cli {
   overflow: auto;
 }
 
+.main .viewPort.menuIn {
+  transform: none;
+  animation-name: slideInXMain;
+  animation-duration: 0.5s;
+  left: 250px;
+}
+
 .main .viewPort.menuOut {
   width: 69vw;
+  transform: none;
+  left: 82px;
+  animation-name: slideOutXMain;
+  animation-duration: 0.5s;
 }
 
 .main .viewPort span.imageContainer {
@@ -430,19 +462,27 @@ form#Cli {
   filter: drop-shadow(3px 6px 3px #444);
 }
 
+.main .CliInput.menuIn {
+  transform: none;
+  animation-name: slideInXMain;
+  animation-duration: 0.5s;
+}
 .main .CliInput.menuOut {
-  transform: translateX(-166px);
+  transform: none;
+  left: 88px;
   width: 75vw;
+  animation-name: slideOutXMain;
+  animation-duration: 0.5s;
 }
 .clickable:hover {
   cursor: pointer;
 }
 
 .resultsWindow {
-  width: stretch;
+  width: 55vw;
   height: 7em;
   overflow: scroll;
-  margin-left: 6px;
+  margin-left: -154px;
 }
 
 .exits {
@@ -1000,4 +1040,75 @@ li.searchAudio {
 #freesound {
   position: relative;
   top: -70px;
+}
+
+.commandArrow {
+  display: inline;
+  vertical-align: middle;
+}
+
+
+
+
+
+
+form#ObjectCreatorForm {
+  background: #ccc;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 60vh;
+  overflow: scroll;
+}
+
+form#ObjectCreatorForm textarea {
+  width: 40vw;
+  height: 10vh;
+}
+
+form#ObjectCreatorForm .column {
+  flex-grow: 1;
+  width: 32%;
+  min-height: 50px;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+form#ObjectCreatorForm .doubleColumn {
+  flex-grow: 2;
+  width: 65%;
+  min-height: 50px;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+form#ObjectCreatorForm .addInput {
+  width: 24px;
+  height: 24px;
+}
+
+form#ObjectCreatorForm .row {
+  display: block;
+  width: 80vw;
+  border-bottom: 1px dashed grey;
+  padding: 2px;
+}
+
+form#ObjectCreatorForm .inputLabel {
+  display: block;
+}
+
+form#ObjectCreatorForm .columnContent {
+  display: block;
+}
+
+form#ObjectCreatorForm .columnContent img,
+form#ObjectCreatorForm .columnContent svg {
+  vertical-align: middle;
+}
+
+.cliPlayButton {
+  float: right;
+  margin-left: 2px;
+  margin-top: 5px;
 }
