@@ -1032,6 +1032,11 @@ li.searchAudio {
   margin-top: 5px;
 }
 
+li.searchAudioEmpty {
+  text-align: left;
+  margin-top: 65px;
+}
+
 #audioModal .modalCloseButton {
   position: relative;
   top: -70px;

@@ -12,7 +12,7 @@ export const Freesound = ({modalClose}) => {
     // eslint-disable-next-line
     const [playResults, setPlayResults] = useState({})
     // eslint-disable-next-line
-    const [count, setCount] = useState(1)
+    const [count, setCount] = useState(-1)
     const [leftDisabled, setLeftDisabled] = useState(true)
     const [rightDisabled, setRightDisabled] = useState(false)
     
@@ -30,6 +30,7 @@ export const Freesound = ({modalClose}) => {
 
     }
     const formatResults = () => {
+        if (count === 0) return <li className="searchAudioEmpty">No Results Found</li>
         if (Array.isArray(results)) {
             //id,name,description,previews,url,username
         return results.map((value,i) => <li className="searchAudio" key={value.id}><ReactPlayer width="340px" height="50px" controls={true} url={value.previews['preview-lq-mp3']} /><span onClick={(e) => handleAudioClick(e, value.name, value.description, value.id, value.url, value.previews['preview-hq-mp3'], value.username)}>{value.name}</span><span className="attribution"> by <a rel="noopener noreferrer" target="_blank" href={value.url}>{value.username}</a></span></li>)
