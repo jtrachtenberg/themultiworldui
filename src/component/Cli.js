@@ -254,7 +254,6 @@ ${result.response}`
                             this.props.updateUserHandler(result.outUser)
                         }
                         const place = this.props.inPlace
-                        console.log(place.audio)
                         place.objects = result.value
                         const resultStr = this.state.results.length === 0 ?
                         result.response :                      

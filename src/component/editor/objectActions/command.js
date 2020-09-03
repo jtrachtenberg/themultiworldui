@@ -18,7 +18,8 @@ export const Command = ({handleActionChange, actionNumber, setCurrentActionNumbe
                 if (typeof element === 'undefined') return <div></div>
                 if (typeof element.value === 'undefined') return <div></div>
                 const NewElement = element.value
-                return <span key={actionNumber}><NewElement show={true} currentActionNumber={actionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={actionNumber}/></span>
+                const defaultElementFormat = element.elementFormat ? element.elementFormat : null
+                return <span key={actionNumber}><NewElement defaultElementFormat={defaultElementFormat} show={true} currentActionNumber={actionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={actionNumber}/></span>
             
         } else return <div></div>
     }

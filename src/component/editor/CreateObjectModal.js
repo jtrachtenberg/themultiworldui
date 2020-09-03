@@ -6,7 +6,6 @@ import * as Elements from './objectElements'
 export const CreateObjectModal = ({ editElementStack, elementStack, userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
     const [inElements, editInElements] = useState([])
     const [elementList, editElementList] = useState([])
-    const [showElements, editShowElements] = useState([])
     const [modalReturn, setModalReturn] = useState({})
     const [tab, setTab] = useState(0)
 
@@ -15,23 +14,36 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
     },[modalReturn, setImageModal])
 
     useEffect(() => {
-        if (typeof(inObject) === 'undefined') return
         const initVars = () => {
-            editImages(inObject.images)
+            const tmpElementStack = []
+            if (inObject.actionStack) {
+                const tmpActionStack = JSON.parse(inObject.actionStack)
+                tmpActionStack.forEach(value => {
+                    const elementList = [...value.elementList]
+                    elementList.forEach (elementValue => {
+                        const Element = {...inElements.find(element => element.name === elementValue.element)}
+                        Element.elementFormat = elementValue.elementFormat
+                        tmpElementStack.push(Element)
+                    })
+                })
+            }
+
+            editElementStack(tmpElementStack)
         }
-        if (Array.isArray(inObject.images)) initVars()
-    },[inObject, editImages])
+        if (typeof(inObject) === 'undefined') return
+        if (Array.isArray(inObject.images)) editImages(inObject.images)
+        if (Array.isArray(inElements) && inElements.length > 0) initVars()
+    },[inObject, editImages, editElementStack,inElements])
 
     useEffect(() => {
+        
         let elements = []
-        let showElements = []
         for (const [key, value] of Object.entries(Elements)) {
             elements.push({name: key, value: value})
-            showElements.push(false)
         }
         editInElements(elements)
-        editShowElements(showElements)
-    },[actions])
+
+    },[actions,editElementStack])
 
     const handleElementChange = (name,value,elementNumber) => {
         const newActionStack = [...actionStack]
@@ -67,9 +79,6 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
                 actionItem.elementList=tmpElementList
                 newStack[currentActionNumber] = actionItem
 
-                const editShow = [...showElements]
-                editShow[i] = true
-                editShowElements(editShow)
                 editActionStack(newStack)
 
                 const tmpElements = Array.isArray(elementStack) ? Array.from(elementStack) : []

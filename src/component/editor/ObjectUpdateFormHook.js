@@ -12,13 +12,13 @@ export const ObjectUpdateFormHook = ({userId, inObject, objectHandler}) => {
     const [showModal, toggleShowModal] = useState(false)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
-    //const [triggers, editTriggers] = useState([])
     const [actions, editActions] = useState([])
     const [currentAction, setCurrentAction] = useState(0)
     const [commandId, incrementId] = useState(1)
     const [currentActionNumber, setCurrentActionNumber] = useState(-1)
     const [imageModal, setImageModal] = useState({})
     const [images, editImages] = useState([])
+    const [elementStack, editElementStack] = useState([])
 
     useEffect(() => {
         const initVars = () => {
@@ -51,6 +51,17 @@ export const ObjectUpdateFormHook = ({userId, inObject, objectHandler}) => {
         toggleShowModal(false)
     };
 
+    const handleElementChange = (name,value,elementSymbol, actionNumber) => {
+
+        const newActionStack = Array.from(actionStack)
+        const newCommand = newActionStack[actionNumber]
+        const elementListItem = Object.assign(newCommand.elementList.find(element => element.elementSymbol === elementSymbol))
+        elementListItem[name] = value
+
+        newActionStack[actionNumber]=newCommand
+        editActionStack(newActionStack)
+    }
+
     const formatActions = () => {
         if (!Array.isArray(actionStack) || actionStack.length === 0)
             return <div></div>
@@ -61,7 +72,7 @@ export const ObjectUpdateFormHook = ({userId, inObject, objectHandler}) => {
             let NewAction = null
             if (NewActionCmd) NewAction = NewActionCmd.value ? NewActionCmd.value : null
             if (NewAction)
-                return <div key={i}><NewAction userId={userId} handleActionChange={handleActionChange} actionNumber={i} setCurrentActionNumber={setCurrentActionNumber} actionStack={actionStack} /></div>
+                return <div key={i}><NewAction userId={userId} handleActionChange={handleActionChange} actionNumber={i} setCurrentActionNumber={setCurrentActionNumber} actionStack={actionStack} elementStack={elementStack} editActionStack={editActionStack} editElementStack={editElementStack} handleElementChange={handleElementChange} /></div>
             else
                 return <div key={i}></div>
         })
@@ -103,7 +114,7 @@ export const ObjectUpdateFormHook = ({userId, inObject, objectHandler}) => {
         {showModal && (
             <Portal id="objectModal">
                 <Modal handleClose={hideModal} show={showModal}>
-                    <CreateObjectModal inObject={inObject} setImageModal={setImageModal} setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} actionStack={actionStack} editActionStack={editActionStack} currentAction={currentAction} setCurrentAction={setCurrentAction} currentActionNumber={currentActionNumber} actions={actions} commandId={commandId} incrementId={incrementId} handleSubmit={handleSubmit} buttonText="Update" images={images} editImages={editImages} />
+                    <CreateObjectModal inObject={inObject} elementStack={elementStack} editElementStack={editElementStack} userId={userId} setImageModal={setImageModal} setFormHeader={setFormHeader} title={title} setTitle={setTitle} description={description} setDescription={setDescription} formatActionsSelect={formatActionsSelect} formatActions={formatActions} actionStack={actionStack} editActionStack={editActionStack} currentAction={currentAction} setCurrentAction={setCurrentAction} currentActionNumber={currentActionNumber} actions={actions} commandId={commandId} incrementId={incrementId} handleSubmit={handleSubmit} buttonText="Update" images={images} editImages={editImages} />
                 </Modal>
                 </Portal>       
         )}  

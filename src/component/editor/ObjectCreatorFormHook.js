@@ -21,7 +21,6 @@ export const ObjectCreatorFormHook = ({userId, objectHandler, spaces}) => {
     const [showModal, toggleShowModal] = useState(false)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
-    //const [triggers, editTriggers] = useState([])
     const [actions, editActions] = useState([])
     const [presets, editPresets] = useState([])
     const [currentAction, setCurrentAction] = useState(0)

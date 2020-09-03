@@ -32,12 +32,18 @@ const timeFormats = [
     'HH:mm:ss'
 ]
 
-export const Time = ({show, currentActionNumber, actionStack, editActionStack, elementList, editElementList,handleElementChange, elementNumber}) => {
+export const Time = ({show, currentActionNumber, defaultElementFormat, actionStack, editActionStack, elementList, editElementList,handleElementChange, elementNumber}) => {
     const [dateTime , setDateTime] = useState("")
     const [dateFormat, setDateFormat] = useState(0)
     const elementSymbol = "<time>"
     const elementType = "replace"
 
+    useEffect(() => {
+        if (defaultElementFormat === null) return
+        timeFormats.forEach( (value,i) => {
+            if (value === defaultElementFormat) setDateFormat(i)
+        })
+    },[defaultElementFormat])
     useEffect(() => {
         if (!Array.isArray(elementList)) return
         if (!elementList.find((el,i) => el.element === "Time")) {
