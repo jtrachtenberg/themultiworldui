@@ -18,7 +18,6 @@ const get = async (inObj, inCmd) => {
             const target = inCmd[1]
             try {
                 const newObjects = checkObjects(objects,target)
-                console.log(newObjects)
             if (newObjects === null) {
                 const article = target.slice(-1) === 's' ? 'are' : 'is'
                 const retMsg = `There ${article} no ${target} here.`
@@ -60,7 +59,6 @@ function checkActions(inObj) {
     if (actionStack.length === 0) return retVal
 
     for (let item of actionStack) {
-        console.log(item)
         if (item.command === 'authkey') {
             retVal.push({authChange:"add",authType:item.authType,[item.authType]:item[item.authType]})
         }
@@ -75,7 +73,6 @@ function checkObjects(objects,target) {
             const titleArray = object.title.split(" ")
             if (titleArray.find(word => word.toLowerCase() === target.toLowerCase())) {
                 const retArray = objects.filter(obj => obj.objectId !== object.objectId)
-                console.log(retArray)
                 retVal = {
                     invObj:object,objects:retArray
                 }

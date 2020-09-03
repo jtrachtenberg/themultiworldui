@@ -30,7 +30,6 @@ const drop = async (inObj, inCmd) => {
 
                 
                 const objects = (Array.isArray(inObj.inPlace.objects) && inObj.inPlace.objects.length > 0) ? [...inObj.inPlace.objects] : []
-                console.log(objects)
                 objects.push(newObjects.dropObj)
                 const retObj = {type:"objects",value: objects, outUser: inUser,response: `You dropped the ${target}.`}
                 retVal = await new Promise((resolve, reject) => resolve(retObj))
@@ -54,7 +53,6 @@ function checkObjects(inventory,target) {
             const titleArray = object.title.split(" ")
             if (titleArray.find(word => word.toLowerCase() === target.toLowerCase())) {
                 const retArray = inventory.filter(obj => obj.objectId !== object.objectId)
-                console.log(retArray)
                 retVal = {
                     dropObj:object,inventory:retArray
                 }

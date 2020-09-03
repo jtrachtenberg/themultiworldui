@@ -3,11 +3,14 @@ import {handleInputChange, updateHandler} from './utils/formUtils'
 import {ReactComponent as SendIcon} from './sendCommand.svg';
 import * as GlobalCommands from './globalCommands/globalCommands'
 import * as Constants from './constants'
+import ReactPlayer from 'react-player'
+import {isMobile,isFirefox} from 'react-device-detect'
+import {MediaSearch} from './utils/MediaSearch'
 
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
+        this.state = {playing: true, disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
@@ -50,11 +53,12 @@ class Cli extends React.Component {
                                         if (element.elementType === 'replace') {
                                         // eslint-disable-next-line
                                         const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
-                                        console.log(replaceFunc)
                                         const replace = replaceFunc(element.elementFormat)
-                                        console.log(replace)
     
                                         result = result.replace(element.elementSymbol, replace)
+                                        } else if (element.elementType === 'action') {
+                                            // eslint-disable-next-line
+                                            result = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
                                         }
                                     })
                                     resolve(result)
@@ -86,9 +90,7 @@ class Cli extends React.Component {
                                         if (element.elementType === 'replace') {
                                         // eslint-disable-next-line
                                         const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
-                                        console.log(replaceFunc)
                                         const replace = replaceFunc(element.elementFormat)
-                                        console.log(replace)
     
                                         result = result.replace(element.elementSymbol, replace)
                                         }
@@ -109,8 +111,10 @@ class Cli extends React.Component {
         })
     }
     componentDidMount() {
-        this.cliInput.focus()
+        this.cliInput.focus()    
+        if (isMobile) this.setState({playing:false})          
     }
+
     componentDidUpdate(prevProps) {
 
         if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
@@ -228,7 +232,6 @@ Available commands: ${cmdString}`
                 const origResult = result
                 if (typeof(result) === 'object') {
                     if (result.type === 'place') {
-                        console.log(result)
                         const newUser = this.props.inUser
                         newUser.stateData.newRoom = result.value.placeId
                         newUser.stateData.currentSpace = result.value.spaceId
@@ -282,7 +285,6 @@ ${result}`
                 },() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                     if (executeCommand.isBroadcast) {
-                        console.log('broadcast')
                         const message = `${this.props.inUser.userName} uses ${executeCommand.objTitle}: ${origResult}`
                         this.props.socket.emit('incoming data', {msg: message, msgPlaceId: this.props.inPlace.placeId, userName: ""})
 
@@ -315,8 +317,25 @@ Nothing to do here.`
         }
     }
 
+    formatAudio = () => {
+        const audio = this.props.inPlace.audio
+        if (Array.isArray(audio) && audio.length > 0)
+            //return audio.map((value,i) => <span key={i}></span>)
+    return audio.map((value,i) => <span key={i} className="audioContainer"><ReactPlayer playing={this.state.playing} width="1px" height="1px" controls={false} url={value.src} />{!isFirefox && <embed width="0" height="0" autostart="1" src={value.src} />}</span>)
+    //return audio.map((value,i) => <span key={i} className="audioContainer">{audioContext(value.src)}</span>)
+      }
+      handlePlayPause = (e) => {
+          e.preventDefault()
+        this.setState({ playing: !this.state.playing })
+      }
+
+      setModalReturn = (inModalReturn) => {
+        this.cliInput.value = this.cliInput.value + inModalReturn.src
+          //this.setState({modalReturn})
+      }
     render() {
         return (
+                <div>
                 <form id="Cli">
                     <section>
                         <textarea ref={this.resultRef} name="resultsWindow" className="resultsWindow" readOnly value={this.state.results} />
@@ -327,10 +346,12 @@ Nothing to do here.`
                     <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}> 
                     <SendIcon />
                     </button>
-                     
+                    <span className="cliPlayButton">{this.formatAudio()}{(Array.isArray(this.props.inPlace.audio) && this.props.inPlace.audio.length > 0) && <button onClick={this.handlePlayPause}>{ this.state.playing ? <img alt="pause" src="https://img.icons8.com/android/24/000000/pause.png"/> : <img alt="play" src="https://img.icons8.com/android/24/000000/play.png"/>}</button> }</span>
+                    <span className="cliAudioSearch"><MediaSearch audioOnly={true} modalReturn={this.setModalReturn} handleAudio={this.setModalReturn} /></span>
                     </span>
                     </section>
                 </form>
+                </div>
         )
     }
 }

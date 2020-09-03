@@ -2,8 +2,6 @@ import React from 'react'
 import {Place} from './utils/defaultObjects'
 import TooltipPopover from './utils/TooltipPopover'
 import Portal from './utils/Portal'
-import ReactPlayer from 'react-player'
-import {isMobile} from 'react-device-detect'
 
 class Main extends React.Component {
     constructor(props) {
@@ -21,10 +19,6 @@ class Main extends React.Component {
         this.toolTipText = ""
     }  
 
-    componentDidMount() {
-      if (isMobile) this.setState({playing:false})
-    }
-
     componentDidUpdate() {
       /*let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
       const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
@@ -38,10 +32,6 @@ class Main extends React.Component {
       
       if (JSON.stringify(this.state.images) !== JSON.stringify(images))
         this.setState({images:images})
-    }
-
-    handlePlayPause = () => {
-      this.setState({ playing: !this.state.playing })
     }
 
     handleOnMouseOut = (e) => {
@@ -61,13 +51,6 @@ class Main extends React.Component {
         toolTipText: el.getAttribute(`description`),
         toolTipId: e.currentTarget.id
       })
-    }
-    
-    formatAudio = () => {
-      const audio = this.props.inPlace.audio
-      if (Array.isArray(audio) && audio.length > 0)
-        return audio.map((value,i) => <span key={i} className="audioContainer"><ReactPlayer playing={this.state.playing} width="1px" height="1px" controls={false} url={value.src} /></span>)
-      
     }
 
     formatImage = () => {
@@ -121,13 +104,12 @@ class Main extends React.Component {
 
     formatPlace = () => {
         const place = typeof(this.props.inPlace) === 'undefined' ? Place : this.props.inPlace
-    return <div><h3>{place.title}</h3><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><span>{this.formatImage()}</span><span>{this.formatAudio()}</span></div>
+    return <div><h3>{place.title}</h3><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><span>{this.formatImage()}</span></div>
     }
     render() {
         return (
             <div>
             <div>{this.formatPlace()}</div>
-        {(Array.isArray(this.props.inPlace.audio) && this.props.inPlace.audio.length > 0) && <button onClick={this.handlePlayPause}>{ this.state.playing ? <img alt="pause" src="https://img.icons8.com/android/24/000000/pause.png"/> : <img alt="play" src="https://img.icons8.com/android/24/000000/play.png"/>}</button> }
             {this.state.showToolTip && (
               <Portal id="toolTip">
                 <TooltipPopover

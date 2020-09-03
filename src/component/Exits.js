@@ -20,7 +20,6 @@ class Exits extends React.Component {
                  return {}
             })
             
-            console.log(postData)
             fetchData('loadImages',{inObj:postData}).then(response => this.setState({images: response}))
             }
         }

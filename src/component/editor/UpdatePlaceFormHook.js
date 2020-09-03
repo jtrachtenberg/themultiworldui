@@ -163,7 +163,7 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) =>
             poiCopy.splice(i,1)
             editPoi(poiCopy)
             })} />Keyword: {value.word}</label>
-        <input id={i} name={value.word} type="text" value={poi.find(word => word.word === value.word).description} 
+        <input id={value.word} name={value.word} type="text" value={poi.find(word => word.word === value.word).description} 
         onChange={(e) => {
             const {id, value} = e.target
             
@@ -190,7 +190,7 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) =>
                 const exitsCopy = [...exits]
                 exitsCopy.splice(i,1)
                 setExits(exitsCopy)
-                })} />Exit: {value.name}<input id={i} name={value.name} type="text" value={exits.find(exit => exit.placeId === value.placeId).name||""} 
+                })} />Exit: {value.name}<input id={value.name} name={value.name} type="text" value={exits.find(exit => exit.placeId === value.placeId).name||""} 
                 onChange={(e) => {
                     const {id, value} = e.target
                     

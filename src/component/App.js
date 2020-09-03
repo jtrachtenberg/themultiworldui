@@ -16,6 +16,7 @@ import {userStateData} from './utils/defaultObjects'
 import {Modal} from './utils/Modal'
 import Portal from './utils/Portal'
 import {fetchData} from './utils/fetchData'
+import {audioContext} from './utils/audioContext'
 
 class App extends React.Component {
 
@@ -32,17 +33,17 @@ constructor(props) {
       space: Space, 
       place: Place,
       inMsg: "",
-      showModal: false,
+      showModalLogin: false,
       modalReturn: {},
       menuToggle: "",
       isEdit: false,
       isAdmin: false,
+      inCmd: {},
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
 
 componentDidMount() {
-  console.log("componentDidMount")
   var user = JSON.parse(localStorage.getItem('user'))
   let needLogin = false
 
@@ -51,8 +52,7 @@ componentDidMount() {
     needLogin = true
 
   }
-  console.log(user)
-  this.setState({user: user, showModal: needLogin},() => {
+  this.setState({user: user, showModalLogin: needLogin},() => {
     if (this.state.user.userId === 0) return
     if (typeof(this.state.user.stateData) === 'object' && this.state.user.stateData.currentRoom !== this.state.place.placeId) {
       const authData = {placeId: Number(this.state.user.stateData.currentRoom)}
@@ -64,7 +64,7 @@ componentDidMount() {
     socket.on("outgoing data", data => this.processResponse(data))
     socket.on(`place:${this.state.place.placeId}`, data => this.processResponse(data))
     socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
-    if (needLogin) this.setState({showModal: true})
+    if (needLogin) this.setState({showModalLogin: true})
   })
 
 }
@@ -79,11 +79,9 @@ menuToggle = () => {
 processResponse = (data) => {
 
   if (data.type && data.type === 'auth') {
-    console.log(data)
     let msg = ""
     if (!Array.isArray(data.isAuth)) return
     const isAuth = data.isAuth[0]
-    console.log(isAuth)
     const perms = {}
     if (isAuth.isAuth) {
       if (isAuth.placeId)
@@ -118,6 +116,11 @@ processResponse = (data) => {
   } else if (data.msg) {
     const msg = data.msg.msg
     const name = data.msg.userName
+    const cmd = data.msg.cmd
+    if (cmd) {
+        //this.setState({inCmd: cmd })
+        audioContext(cmd.src)
+    }
     let prepend
     if (name !== "")
       prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : data.msg.emote ? `${name}` : `${name} says:`
@@ -132,7 +135,8 @@ processResponse = (data) => {
 
 
 hideModal = () => {
-  this.setState({showModal: false})
+  //TODO = set correct false
+  this.setState({showModalLogin: false})
 }
 
 noOp = () => {
@@ -191,7 +195,6 @@ childHookUpdateHandler  = (inObj, type) => {
     this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
   }
   stateData[type] = inObj
-  console.log(stateData)
   if (message) {
     stateData.alertMessage=message
     stateData.alertVis=true
@@ -214,7 +217,7 @@ loginHandler = (user) => {
     alertVis: true,
     alertSuccess: success,
     alertId: Math.random().toString(),
-    showModal: !success
+    showModalLogin: !success
   },() => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
     this.state.socket.on("outgoing data", data => this.processResponse(data))
@@ -323,8 +326,20 @@ addUserHandler = (user,doLogin) => {
   }); 
 }
 
+formatCmd = () => {
+  const cmd = this.state.inCmd
+  if (Object.keys(cmd).length === 0 && cmd.constructor === Object) return <span></span>
+
+  this.setState({inCmd: {}}, () => {
+    if (cmd.type === 'audio') {
+      const src = cmd.src
+      audioContext(src)
+      return <span></span>
+    }
+  })
+}
+
 render() {
-  let doModal = this.state.showModal
   return (
     <div className="App">
         <div className="alertArea"><Alert message={this.state.alertMessage} isVis={this.state.alertVis} success={this.state.alertSuccess} alertId={this.state.alertId}/></div>
@@ -349,11 +364,10 @@ render() {
         <div className="inventory"><Inventory inUser={this.state.user} /></div>
       </div>
       </div>
-
       <div id="portal-root"></div>
-      {( doModal && 
+      {( this.state.showModalLogin && 
                     <Portal id="imageModal">
-                        <Modal handleClose={this.hideModal} show={this.state.showModal}
+                        <Modal handleClose={this.hideModal} show={this.state.showModalLogin}
                         >
                         <userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler} close={this.hideModal}/>
                         </Modal>
