@@ -6,16 +6,17 @@ import Portal from '../utils/Portal'
 import Unsplash from '../editor/Unsplash'
 import {Freesound} from '../editor/Freesound'
 import ReactPlayer from 'react-player'
+import {ReactComponent as AddIcon} from '../soundsearch.svg';
 
-export const MediaSearch = ({ images, handleImages, editImages, audio, handleAudio, editAudio, modalReturn }) => {
+export const MediaSearch = ({ audioOnly, images, handleImages, editImages, audio, handleAudio, editAudio, modalReturn }) => {
     const [showModal, toggleShowModal] = useState(false)
     const [tab, setTab] = useState(0)
   
     const hideModal = (e) => {
         e = e||{}
         toggleShowModal(false)
-        const handler = tab === 0 ? handleImages : handleAudio
-        handler(e)
+        const handler = audioOnly ? modalReturn : tab === 0 ? handleImages ? handleImages : handleAudio : handleAudio
+        if (typeof handler === 'function') handler(e)
     };
 
     const formatAudio = () => {
@@ -38,9 +39,17 @@ export const MediaSearch = ({ images, handleImages, editImages, audio, handleAud
         else return <div>No Images</div>
     }
 
-    return (   
-    <div>
-        <div> 
+    return (
+        <div>
+        <div>
+            {audioOnly && 
+            <button><AddIcon onClick={(e) => {
+                e.preventDefault()
+                toggleShowModal(true)}}/></button>
+
+            } 
+    {!audioOnly &&    
+
         <span>
         <section>
             <div className="display-block">
@@ -54,7 +63,17 @@ export const MediaSearch = ({ images, handleImages, editImages, audio, handleAud
             {modalReturn && modalReturn.externalUrl && <div><ReactPlayer width="240px" height="30px" controls={true} url={modalReturn.src} /></div>}
         </section>
         </span>
-        {showModal && (
+    }
+        {showModal && audioOnly && (
+            <Portal id='audioModal'>
+                <Modal handleClose={hideModal} show={showModal}>
+                    <span>
+                        <Freesound modalClose={hideModal} />
+                    </span>
+                </Modal>
+            </Portal>
+        )}
+        {showModal && !audioOnly && (
             <Portal id={tab === 0 ? 'imageModal' : tab === 1 ? 'audioModal' : 'videoModal'}>
                 <Modal handleClose={hideModal} show={showModal}
                 >

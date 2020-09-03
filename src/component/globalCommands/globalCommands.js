@@ -6,5 +6,6 @@ import get from './get'
 import inventory from './inventory'
 import drop from './drop'
 import emote from './emote' 
+import sayaudio from './sayaudio'
 
-export {look, wait, say, travel, get, inventory, drop, emote}
+export {look, wait, say, travel, get, inventory, drop, emote, sayaudio}

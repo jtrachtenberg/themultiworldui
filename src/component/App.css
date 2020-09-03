@@ -1112,3 +1112,9 @@ form#ObjectCreatorForm .columnContent svg {
   margin-left: 2px;
   margin-top: 5px;
 }
+
+.cliAudioSearch {
+  float: right;
+  margin-left: 2px;
+  margin-top: 6px;
+}

@@ -16,6 +16,7 @@ import {userStateData} from './utils/defaultObjects'
 import {Modal} from './utils/Modal'
 import Portal from './utils/Portal'
 import {fetchData} from './utils/fetchData'
+import {audioContext} from './utils/audioContext'
 
 class App extends React.Component {
 
@@ -37,6 +38,7 @@ constructor(props) {
       menuToggle: "",
       isEdit: false,
       isAdmin: false,
+      inCmd: {},
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -114,6 +116,11 @@ processResponse = (data) => {
   } else if (data.msg) {
     const msg = data.msg.msg
     const name = data.msg.userName
+    const cmd = data.msg.cmd
+    if (cmd) {
+        //this.setState({inCmd: cmd })
+        audioContext(cmd.src)
+    }
     let prepend
     if (name !== "")
       prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : data.msg.emote ? `${name}` : `${name} says:`
@@ -319,6 +326,19 @@ addUserHandler = (user,doLogin) => {
   }); 
 }
 
+formatCmd = () => {
+  const cmd = this.state.inCmd
+  if (Object.keys(cmd).length === 0 && cmd.constructor === Object) return <span></span>
+
+  this.setState({inCmd: {}}, () => {
+    if (cmd.type === 'audio') {
+      const src = cmd.src
+      audioContext(src)
+      return <span></span>
+    }
+  })
+}
+
 render() {
   return (
     <div className="App">
@@ -344,7 +364,6 @@ render() {
         <div className="inventory"><Inventory inUser={this.state.user} /></div>
       </div>
       </div>
-
       <div id="portal-root"></div>
       {( this.state.showModalLogin && 
                     <Portal id="imageModal">
