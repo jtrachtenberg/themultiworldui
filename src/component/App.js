@@ -33,6 +33,7 @@ constructor(props) {
       space: Space, 
       place: Place,
       inMsg: "",
+      inSnd: {},
       showModalLogin: false,
       modalReturn: {},
       menuToggle: "",
@@ -117,17 +118,20 @@ processResponse = (data) => {
     const msg = data.msg.msg
     const name = data.msg.userName
     const cmd = data.msg.cmd
+    const stateData = {}
     if (cmd) {
         //this.setState({inCmd: cmd })
-        audioContext(cmd.src)
+        //audioContext(cmd.src)
+        stateData.inSnd = cmd
     }
     let prepend
     if (name !== "")
       prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : data.msg.emote ? `${name}` : `${name} says:`
     else
       prepend = ""
+    stateData.inMsg=`${prepend} ${msg}`
     this.setState({
-      inMsg: `${prepend} ${msg}`
+      ...stateData
     })
   }
 }
@@ -155,6 +159,10 @@ loadPlace = (inPlaceId) => {
 
 messageResetHander = () => {
   this.setState({inMsg: ""})
+}
+
+audioResetHandler = () => {
+  this.setState({inSnd: {}})
 }
 
 childHookUpdateHandler  = (inObj, type) => {
@@ -357,7 +365,7 @@ render() {
       </div>
       <div className="main midCol">
         <div className={`viewPort ${this.state.menuToggle}`}><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} /></div>
-        <div className={`CliInput ${this.state.menuToggle}`}><Cli messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
+        <div className={`CliInput ${this.state.menuToggle}`}><Cli audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>

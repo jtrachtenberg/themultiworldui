@@ -4,7 +4,6 @@ import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {Modal} from '../utils/Modal'
 import Portal from '../utils/Portal'
 import Unsplash from '../editor/Unsplash'
-import {Freesound} from '../editor/Freesound'
 
 export const ImageSearch = ({ images, handleImages, editImages, modalReturn }) => {
     const [showModal, toggleShowModal] = useState(false)
@@ -38,7 +37,7 @@ export const ImageSearch = ({ images, handleImages, editImages, modalReturn }) =
             <Portal id="imageModal">
                 <Modal handleClose={hideModal} show={showModal}
                 >
-                <Freesound modalClose={hideModal} />
+                <Unsplash modalClose={hideModal} />
                 
                 </Modal>
             </Portal>      

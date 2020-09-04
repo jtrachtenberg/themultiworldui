@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
 import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {Modal} from '../utils/Modal'
@@ -8,7 +8,7 @@ import {Freesound} from '../editor/Freesound'
 import ReactPlayer from 'react-player'
 import {ReactComponent as AddIcon} from '../soundsearch.svg';
 
-export const MediaSearch = ({ audioOnly, images, handleImages, editImages, audio, handleAudio, editAudio, modalReturn }) => {
+export const MediaSearch = ({ forceOpen, audioOnly, images, handleImages, editImages, audio, handleAudio, editAudio, modalReturn }) => {
     const [showModal, toggleShowModal] = useState(false)
     const [tab, setTab] = useState(0)
   
@@ -38,6 +38,10 @@ export const MediaSearch = ({ audioOnly, images, handleImages, editImages, audio
             })} /></span></span>)
         else return <div>No Images</div>
     }
+
+    useEffect(() => {
+        toggleShowModal(forceOpen)
+    },[forceOpen])
 
     return (
         <div>

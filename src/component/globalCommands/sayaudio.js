@@ -1,12 +1,12 @@
 // inObj = props, inCmd = array of input words
-const sayaudio = async (inObj, inCmd) => {
+const sayaudio = async (inObj, inCmd, modalReturn) => {
     const socket = inObj.socket
     let retVal
     if (inCmd === null || inCmd.length === 1) {//no modifiers 
         retVal = await new Promise((resolve, reject) => setResponse(resolve, 'You are very quiet.'))
     } else {
         inCmd.shift()
-        const src = inCmd[0]
+        const src = modalReturn.src
         inCmd.shift()
         const message = inCmd.join(" ")
         const placeId = inObj.inPlace.placeId
