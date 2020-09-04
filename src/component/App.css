@@ -483,6 +483,11 @@ form#Cli {
   height: 7em;
   overflow: scroll;
   margin-left: -154px;
+  position: relative;
+  top: 8px;
+  left: 164px;
+  text-align: left;
+  border: 1px solid #ccc;
 }
 
 .exits {
@@ -1122,4 +1127,11 @@ form#ObjectCreatorForm .columnContent svg {
   float: right;
   margin-left: 2px;
   margin-top: 6px;
+}
+
+.inlineAudio {
+  display: inline-flex;
+  vertical-align: middle;
+  height: 24px;
+  margin-bottom: 4px;
 }

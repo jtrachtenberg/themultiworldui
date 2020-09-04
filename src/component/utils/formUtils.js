@@ -23,6 +23,17 @@ export const handleInputChange = (e,ruleSets) => {
     const ruleReturns = {}
     if (ruleSets) {
       ruleSets.forEach(ruleSet => {
+        if (ruleSet.type === 'trigger') {
+          let found = false
+          if (ruleSet.searchType === 'exact')
+            found = valueToUpdate === ruleSet.search
+          else
+            found = valueToUpdate.search(ruleSet.search) !== -1
+          if (found) {
+            ruleReturns[ruleSet.setState]=ruleSet.stateValue
+          }
+
+        }
         if (ruleSet.type === 'transform') {//alias
           if (typeof(ruleSet.pos) === 'number' && (Number(valueToUpdate.length) === Number(ruleSet.pos)+1)) {
             valueToUpdate=valueToUpdate.replace(ruleSet.search,ruleSet.replace)

@@ -4,13 +4,13 @@ import {ReactComponent as SendIcon} from './sendCommand.svg';
 import * as GlobalCommands from './globalCommands/globalCommands'
 import * as Constants from './constants'
 import ReactPlayer from 'react-player'
-import {isMobile,isFirefox} from 'react-device-detect'
+import {isMobile,isFirefox, isSafari} from 'react-device-detect'
 import {MediaSearch} from './utils/MediaSearch'
 
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {playing: true, disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: "", placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
+        this.state = { forceOpen: false, modalReturn: {}, playing: true, disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
@@ -129,18 +129,15 @@ class Cli extends React.Component {
         }
 
         if (this.props.inMsg !== "" && (prevProps.inMsg !== this.props.inMsg)) {
-            let result
-            if (this.state.results.length === 0)
-            result = this.props.inMsg
-            else
-            result = 
-`${this.state.results}
-${this.props.inMsg}`
-            this.setState({
-                results: result,
-            },() => {
+            let prepend = <span></span>
+            if (Object.keys(this.props.inSnd).length === 0 && this.props.inSnd.constructor === Object) {}
+            else {
+                prepend = <span className="inlineAudio"><ReactPlayer playing={false} onReady={() => {} } width={isSafari ? "44px" : "102px"} height="20px" controls={true} url={this.props.inSnd.src} />&nbsp;</span>
+            }
+            this.formatResults(<span>{prepend}{this.props.inMsg}</span>,{},() => {
                 this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 this.props.messageResetHander()
+                this.props.audioResetHandler()
             })
         }
     }
@@ -165,6 +162,14 @@ ${this.props.inMsg}`
             'pos':0,
             'replace':'emote '
         })
+        rulesets.push({
+            'type':'trigger',
+            'search':'sayaudio',
+            'searchType':'exact',
+            'pos':0,
+            'setState':'forceOpen',
+            'stateValue':'true'
+        })
         const cmds = [];
         this.state.availableCommands.forEach((cmd)=> {
             Object.keys(cmd).forEach((key) => {
@@ -183,6 +188,18 @@ ${this.props.inMsg}`
         this.setState(handleInputChange(e,rulesets))
     }
 
+    formatResults = (newLine, stateData, callback) => {
+        let newResult
+        if (this.state.results === <span></span>)
+            newResult = <span>{newLine}</span>
+        else
+            newResult = <span><span>{this.state.results}</span><br/><span>{newLine}</span></span>
+        this.setState({
+            results: newResult,
+            ...stateData
+        },callback)
+    }
+    
     handleCommand = async (e) => {
 
         e.preventDefault()
@@ -199,15 +216,8 @@ ${this.props.inMsg}`
                 })
             })
             const cmdString = cmds.join(",")
-            const resultStr = this.state.results.length === 0 ?
-                `Available commands: ${cmdString}` :                      
-`${this.state.results}
-Available commands: ${cmdString}`
-            this.setState({
-                results: resultStr,
-                currentInput: "",
-                loadCommands: true
-            },() => {
+            const stateData = {currentInput: "", loadCommands: true}
+            this.formatResults(`Available commands: ${cmdString}`, stateData, () => {
                 this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
             })
             return 
@@ -228,22 +238,15 @@ Available commands: ${cmdString}`
         if (typeof(executeCommand) !== 'undefined') {
         const action = executeCommand[cmdString]
         if (typeof(action) === 'function') {//Global command
-            action(this.props, inputParts).then(result => {
+            action(this.props, inputParts, this.state.modalReturn).then(result => {
                 const origResult = result
                 if (typeof(result) === 'object') {
                     if (result.type === 'place') {
                         const newUser = this.props.inUser
                         newUser.stateData.newRoom = result.value.placeId
                         newUser.stateData.currentSpace = result.value.spaceId
-                        const resultStr = this.state.results.length === 0 ?
-                        result.response :                      
-`${this.state.results}
-${result.response}`
-                        this.setState({
-                            results: resultStr,
-                            currentInput: "",
-                            loadCommands: true
-                        },() => {
+                        const stateData = {currentInput: "", loadCommands: true}
+                        this.formatResults(result.response, stateData, () => {
                             this.props.updateUserHandler(newUser)
                             this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                         })
@@ -259,37 +262,23 @@ ${result.response}`
                         }
                         const place = this.props.inPlace
                         place.objects = result.value
-                        const resultStr = this.state.results.length === 0 ?
-                        result.response :                      
-`${this.state.results}
-${result.response}`
-                        this.setState({
-                            results: resultStr,
-                            currentInput: "",
-                            loadCommands: true
-                        },() => {
+                        const stateData = {currentInput: "", loadCommands: true}
+                        this.formatResults(result.response, stateData, () => {
                             updateHandler("place", place, this.props.childUpdateHandler,true)
                             this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                         })
                     }
                 }
                 else {
-                if (this.state.results.length > 0) //string
-                result = 
-`${this.state.results}
-${result}`
-                this.setState({
-                    results: result,
-                    currentInput: "",
-                    loadCommands: true
-                },() => {
-                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
-                    if (executeCommand.isBroadcast) {
-                        const message = `${this.props.inUser.userName} uses ${executeCommand.objTitle}: ${origResult}`
-                        this.props.socket.emit('incoming data', {msg: message, msgPlaceId: this.props.inPlace.placeId, userName: ""})
-
-                    }
-                })
+                    const stateData = {currentInput: "",loadCommands: true}
+                    this.formatResults(result, stateData, () => {
+                        this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                        if (executeCommand.isBroadcast) {
+                            const message = `${this.props.inUser.userName} uses ${executeCommand.objTitle}: ${origResult}`
+                            this.props.socket.emit('incoming data', {msg: message, msgPlaceId: this.props.inPlace.placeId, userName: ""})
+    
+                        }
+                    })
             }
             }).catch(failed => {
                 console.log(failed)
@@ -304,16 +293,7 @@ ${result}`
             },this.props.updateUserHandler(newUser))
         }
         } else {//invalid command
-            let result
-            if (this.state.results.length === 0)
-                result = "Nothing to do here."
-             else
-                result = 
-`${this.state.results}
-Nothing to do here.`
-            this.setState({
-                results: result
-            })
+            this.formatResults("Nothing to do here.",{},()=>{})
         }
     }
 
@@ -328,17 +308,23 @@ Nothing to do here.`
           e.preventDefault()
         this.setState({ playing: !this.state.playing })
       }
+      handleInlinePlayPause = (e) => {
+        e.preventDefault()
+        console.log(this.state.inlinePlaying)
+      this.setState({ inlinePlaying: !this.state.inlinePlaying })
+    }
+    setModalReturn = (inModalReturn) => {
 
-      setModalReturn = (inModalReturn) => {
-        this.cliInput.value = this.cliInput.value + inModalReturn.src
-          //this.setState({modalReturn})
+        const newInput = this.state.currentInput.trim() + ' ' + inModalReturn.name.split(' ').join('_');
+          this.setState({modalReturn: inModalReturn, currentInput: newInput, forceOpen: false})
       }
+
     render() {
         return (
                 <div>
                 <form id="Cli">
                     <section>
-                        <textarea ref={this.resultRef} name="resultsWindow" className="resultsWindow" readOnly value={this.state.results} />
+                        <div ref={this.resultRef} name="resultsWindow" className="resultsWindow">{this.state.results}</div>
                     </section>
                     <section>
                     <span>
@@ -347,7 +333,7 @@ Nothing to do here.`
                     <SendIcon />
                     </button>
                     <span className="cliPlayButton">{this.formatAudio()}{(Array.isArray(this.props.inPlace.audio) && this.props.inPlace.audio.length > 0) && <button onClick={this.handlePlayPause}>{ this.state.playing ? <img alt="pause" src="https://img.icons8.com/android/24/000000/pause.png"/> : <img alt="play" src="https://img.icons8.com/android/24/000000/play.png"/>}</button> }</span>
-                    <span className="cliAudioSearch"><MediaSearch audioOnly={true} modalReturn={this.setModalReturn} handleAudio={this.setModalReturn} /></span>
+                    <span className="cliAudioSearch"><MediaSearch audioOnly={true} modalReturn={this.setModalReturn} handleAudio={this.setModalReturn} forceOpen={this.state.forceOpen} /></span>
                     </span>
                     </section>
                 </form>
