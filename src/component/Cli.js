@@ -315,8 +315,9 @@ class Cli extends React.Component {
     }
     setModalReturn = (inModalReturn) => {
 
-        const newInput = this.state.currentInput.trim() + ' ' + inModalReturn.name.split(' ').join('_');
+        const newInput = this.state.currentInput.trim() + ' ' + inModalReturn.name.split(' ').join('_') + ' ';
           this.setState({modalReturn: inModalReturn, currentInput: newInput, forceOpen: false})
+          this.cliInput.focus()
       }
 
     render() {
@@ -328,7 +329,7 @@ class Cli extends React.Component {
                     </section>
                     <section>
                     <span>
-                        <input ref={(input) => { this.cliInput = input; }} type="text" name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
+                        <input type="search" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" ref={(input) => { this.cliInput = input; }} name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
                     <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}> 
                     <SendIcon />
                     </button>
