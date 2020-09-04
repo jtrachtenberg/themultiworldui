@@ -153,7 +153,21 @@ loadPlace = (inPlaceId) => {
   const tmpPlace = {placeId: inPlaceId}
   
   fetchData('loadPlace',tmpPlace).then(response => {
+      console.log(response)
+      if (response.error) throw(response.error)
       this.childHookUpdateHandler(response[0],'place')
+  }).catch(e => {
+    console.log('error')
+    console.log(e)
+      console.log(e)
+        this.state.socket.off(`auth:${this.state.user.userId}`)
+        const blankUser = Object.assign(User)
+        blankUser.userId=0
+        blankUser.description=""
+        blankUser.email=""
+        blankUser.stateData={}
+        blankUser.userName=""
+        this.loginHandler(blankUser)   
   })
 }
 
