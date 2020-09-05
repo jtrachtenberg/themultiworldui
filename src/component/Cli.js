@@ -329,7 +329,7 @@ class Cli extends React.Component {
                     </section>
                     <section>
                     <span>
-                        <input type="search" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" ref={(input) => { this.cliInput = input; }} name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
+                        <input type="search" spellCheck="false" autoComplete="off" autoCorrect="off" autoCapitalize="off" ref={(input) => { this.cliInput = input; }} name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
                     <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}> 
                     <SendIcon />
                     </button>

@@ -65,6 +65,7 @@ export const fetchData = async (cmd, postData) => {
         body: JSON.stringify(postData)
         }).then(response => response.json())
         .then (response => {
+            if (response.status === 401) throw new Error(401)
             return resolve(response)
         })
         .catch(e => {
