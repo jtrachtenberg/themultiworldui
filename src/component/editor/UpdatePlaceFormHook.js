@@ -168,7 +168,9 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) =>
             const {id, value} = e.target
             
             editPoi(prevState => {
-              prevState[id].description = value
+                const poi = prevState[prevState.findIndex((obj => obj.word === id))]
+                poi.description = value
+                prevState[prevState.findIndex((obj => obj.word === id))] = poi
               return [...prevState]
             })
             if (value.length === 0) setDisabled(true)
