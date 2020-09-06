@@ -62,8 +62,15 @@ export const ObjectCreatorFormHook = ({userId, objectHandler, spaces}) => {
 
         const newActionStack = Array.from(actionStack)
         const newCommand = newActionStack[actionNumber]
+        newCommand.elementList =  newCommand.elementList.filter(function (el) {
+            return el != null;
+          });
         const elementListItem = Object.assign(newCommand.elementList.find(element => element.elementSymbol === elementSymbol))
         elementListItem[name] = value
+
+        newCommand.elementList = newCommand.elementList.filter(function (el) {
+            return el != null
+        })
 
         newActionStack[actionNumber]=newCommand
         editActionStack(newActionStack)
@@ -90,6 +97,11 @@ export const ObjectCreatorFormHook = ({userId, objectHandler, spaces}) => {
         let finalImages = Array.isArray(images) ? [...images] : []
         if (imageModal !== {}) finalImages.push(imageModal)
 
+        actionStack.forEach(cmd => {
+            cmd.elementList = cmd.elementList.filter(function (el) {
+                return el != null
+            })
+        })
         const submitData = {
             userId: userId,
             title: title,

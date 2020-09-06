@@ -1,3 +1,4 @@
 import {Time} from './time'
+import {Sound} from './sound'
 
-export {Time}
+export {Time, Sound}

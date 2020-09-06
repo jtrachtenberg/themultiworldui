@@ -10,7 +10,7 @@ import {MediaSearch} from './utils/MediaSearch'
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { forceOpen: false, modalReturn: {}, playing: true, disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
+        this.state = { forceOpen: false, modalReturn: {}, currentPlaying: 0, playingPlace: true, disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
@@ -58,7 +58,9 @@ class Cli extends React.Component {
                                         result = result.replace(element.elementSymbol, replace)
                                         } else if (element.elementType === 'action') {
                                             // eslint-disable-next-line
-                                            result = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
+                                            const actionFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
+
+                                            result = actionFunc(element.elementFormat, props, inputParts, this, React, ReactPlayer, isSafari)
                                         }
                                     })
                                     resolve(result)
@@ -112,7 +114,7 @@ class Cli extends React.Component {
     }
     componentDidMount() {
         this.cliInput.focus()    
-        if (isMobile) this.setState({playing:false})          
+        if (isMobile) this.setState({playingPlace:false})          
     }
 
     componentDidUpdate(prevProps) {
@@ -130,18 +132,28 @@ class Cli extends React.Component {
 
         if (this.props.inMsg !== "" && (prevProps.inMsg !== this.props.inMsg)) {
             let prepend = <span></span>
-            if (Object.keys(this.props.inSnd).length === 0 && this.props.inSnd.constructor === Object) {}
-            else {
-                prepend = <span className="inlineAudio"><ReactPlayer playing={false} onReady={() => {} } width={isSafari ? "44px" : "102px"} height="20px" controls={true} url={this.props.inSnd.src} />&nbsp;</span>
+            if (Object.keys(this.props.inSnd).length === 0 && this.props.inSnd.constructor === Object) {
+                this.formatResults(<span>{this.props.inMsg}</span>,{},() => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                    this.props.messageResetHander()
+                    this.props.audioResetHandler()
+                })
             }
-            this.formatResults(<span>{prepend}{this.props.inMsg}</span>,{},() => {
-                this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
-                this.props.messageResetHander()
-                this.props.audioResetHandler()
-            })
+            else {
+                    prepend = <span className="inlineAudio"><ReactPlayer playing={false} width={isSafari ? "44px" : "102px"} height="20px" controls={true} url={this.props.inSnd.src} />&nbsp;</span>
+                    this.formatResults(<span>{prepend}{this.props.inMsg}</span>,{},() => {
+                        this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                        this.props.messageResetHander()
+                        this.props.audioResetHandler()
+                    })
+            }
+
         }
     }
 
+    parseToJXS = (inString) => {
+        
+    }
     handleChange = (e) => {
         const rulesets = []
         rulesets.push({
@@ -194,6 +206,7 @@ class Cli extends React.Component {
             newResult = <span>{newLine}</span>
         else
             newResult = <span><span>{this.state.results}</span><br/><span>{newLine}</span></span>
+            console.log(newResult)
         this.setState({
             results: newResult,
             ...stateData
@@ -301,12 +314,12 @@ class Cli extends React.Component {
         const audio = this.props.inPlace.audio
         if (Array.isArray(audio) && audio.length > 0)
             //return audio.map((value,i) => <span key={i}></span>)
-    return audio.map((value,i) => <span key={i} className="audioContainer"><ReactPlayer playing={this.state.playing} width="1px" height="1px" controls={false} url={value.src} />{!isFirefox && <embed width="0" height="0" autostart="1" src={value.src} />}</span>)
+    return audio.map((value,i) => <span key={i} className="audioContainer"><ReactPlayer playing={this.state.playingPlace} width="1px" height="1px" controls={false} url={value.src} />{!isFirefox && <embed width="0" height="0" autostart="1" src={value.src} />}</span>)
     //return audio.map((value,i) => <span key={i} className="audioContainer">{audioContext(value.src)}</span>)
       }
       handlePlayPause = (e) => {
           e.preventDefault()
-        this.setState({ playing: !this.state.playing })
+        this.setState({ playingPlace: !this.state.playingPlace })
       }
       handleInlinePlayPause = (e) => {
         e.preventDefault()
@@ -333,7 +346,7 @@ class Cli extends React.Component {
                     <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}> 
                     <SendIcon />
                     </button>
-                    <span className="cliPlayButton">{this.formatAudio()}{(Array.isArray(this.props.inPlace.audio) && this.props.inPlace.audio.length > 0) && <button onClick={this.handlePlayPause}>{ this.state.playing ? <img alt="pause" src="https://img.icons8.com/android/24/000000/pause.png"/> : <img alt="play" src="https://img.icons8.com/android/24/000000/play.png"/>}</button> }</span>
+                    <span className="cliPlayButton">{this.formatAudio()}{(Array.isArray(this.props.inPlace.audio) && this.props.inPlace.audio.length > 0) && <button onClick={this.handlePlayPause}>{ this.state.playingPlace ? <img alt="pause" src="https://img.icons8.com/android/24/000000/pause.png"/> : <img alt="play" src="https://img.icons8.com/android/24/000000/play.png"/>}</button> }</span>
                     <span className="cliAudioSearch"><MediaSearch audioOnly={true} modalReturn={this.setModalReturn} handleAudio={this.setModalReturn} forceOpen={this.state.forceOpen} /></span>
                     </span>
                     </section>

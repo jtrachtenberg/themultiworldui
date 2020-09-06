@@ -59,13 +59,13 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
             //const Name = element.name
             const NewElement = Object.assign(element.value)
             let elsymbol
-            if (elementList.length > 0)
-                elsymbol = elementList[i].elementSymbol
+            if (typeof elementList.find(listel => listel.element === element.name) !== 'undefined')
+                elsymbol = elementList.find(listel => listel.element === element.name).elementSymbol
             return <span key={i}><button onClick={(e) => {
                 e.preventDefault()  
                 if (currentActionNumber < 0) return
- 
-                const symbol = {...elementList[i]}//Object.assign(elementList[i])
+                
+                const symbol = {...elementList.find(listel => listel.element === element.name)}//Object.assign(elementList[i])
  
                 const newStack = Array.from(actionStack)
                 const actionItem = newStack[currentActionNumber]
@@ -83,7 +83,7 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
 
                 const tmpElements = Array.isArray(elementStack) ? Array.from(elementStack) : []
                 tmpElements[currentActionNumber]=Object.assign(element)
-          
+                console.log(tmpElements)
                 editElementStack(tmpElements)
             }}>{elsymbol}</button><NewElement show={false} currentActionNumber={currentActionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={i}/>
             </span>

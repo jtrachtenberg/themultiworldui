@@ -1,4 +1,4 @@
-import { AudioContext, decodeAudioData } from 'standardized-audio-context';
+//import { AudioContext, decodeAudioData } from 'standardized-audio-context';
 import {isSafari} from 'react-device-detect'
 
 export const audioContext = (URL) => {
@@ -13,12 +13,12 @@ export const audioContext = (URL) => {
     window.fetch(URL)
       .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
-        if (isSafari) decodeAudioData(context, arrayBuffer);
-        else context.decodeAudioData(arrayBuffer)
+        //if (isSafari) decodeAudioData(context, arrayBuffer);
+        if (!isSafari) context.decodeAudioData(arrayBuffer)
       })
       .then(inaudioBuffer => {
         audioBuffer = inaudioBuffer;
-        play(audioBuffer)
+        if (!isSafari) play(audioBuffer)
       });
         
     function play(audioBuffer) {
