@@ -15,7 +15,6 @@ export const Time = ({actionStack, editActionStack, actionStackIndex, elementInd
 
     useEffect(() => {
         if (typeof actionStack[actionStackIndex].elementList[elementIndex].elementFormat !== 'string' || (actionStack[actionStackIndex].elementList[elementIndex].elementFormat.toString() !== timeFormats[dateFormat].toString())) {
-            console.log('!!!')
             const currentActionStack = Object.assign(actionStack)
             const currentAction = Object.assign(currentActionStack[actionStackIndex])
             const currentElement = currentAction.elementList[elementIndex]

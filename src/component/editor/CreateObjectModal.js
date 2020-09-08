@@ -2,7 +2,9 @@ import React, {useState,useEffect} from 'react'
 import {ReactComponent as AddIcon} from '../create.svg'
 import {MediaSearch} from '../utils/MediaSearch'
 import * as Elements from './objectElements'
-
+/***
+ * DEPRECATED: Use CreateObjectModalSelector
+ */
 export const CreateObjectModal = ({ tabReset, currentElementNumber, setCurrentElementNumber, editElementStack, elementStack, userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
     const [inElements, editInElements] = useState([])
     const [elementList, editElementList] = useState([])

@@ -8,6 +8,10 @@ import * as Actions from './objectActions'
 import * as Presets from './presetObjects'
 import {CreateObjectModal} from './CreateObjectModal'
 
+/****
+ * 
+    DEPRECATED: Use CreateObjectForm
+ */
 /*const objectMap = (obj, fn) =>
   Object.fromEntries(
     Object.entries(obj).map(
