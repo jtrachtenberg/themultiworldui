@@ -3,11 +3,16 @@ import {ReactComponent as AddIcon} from '../create.svg'
 import {MediaSearch} from '../utils/MediaSearch'
 import * as Elements from './objectElements'
 
-export const CreateObjectModal = ({ editElementStack, elementStack, userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
+export const CreateObjectModal = ({ tabReset, currentElementNumber, setCurrentElementNumber, editElementStack, elementStack, userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
     const [inElements, editInElements] = useState([])
     const [elementList, editElementList] = useState([])
     const [modalReturn, setModalReturn] = useState({})
     const [tab, setTab] = useState(0)
+
+    useEffect(() => {
+        
+        //tabReset(tab)
+    },[tab,tabReset])
 
     useEffect(() => {
         setImageModal(modalReturn)
@@ -75,7 +80,7 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
                 actionItem.commandResult = commandResult.concat(symbol.elementSymbol.toString())
 
                 const tmpElementList = Array.isArray(actionItem.elementList) ? Array.from(actionItem.elementList) : []
-                tmpElementList[i]=symbol
+                tmpElementList[currentElementNumber]=symbol
                 actionItem.elementList=tmpElementList
                 newStack[currentActionNumber] = actionItem
 
@@ -85,7 +90,7 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
                 tmpElements[currentActionNumber]=Object.assign(element)
                 console.log(tmpElements)
                 editElementStack(tmpElements)
-            }}>{elsymbol}</button><NewElement show={false} currentActionNumber={currentActionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={i}/>
+            }}>{elsymbol}</button><NewElement show={false} currentElementNumber={currentElementNumber} setCurrentElementNumber={setCurrentElementNumber} currentActionNumber={currentActionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={i}/>
             </span>
         })
     }

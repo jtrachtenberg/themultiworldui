@@ -80,7 +80,7 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
     if (inUser && inUser.userId > 0)
         return (
             <div>
-                <editorForms.ObjectCreatorForm userId={inUser.userId} objectHandler={objectHandler} spaces={spaces} />
+                <editorForms.CreateObjectForm userId={inUser.userId} objectHandler={objectHandler} />
                 <editorForms.ObjectsPaletteHook updateTrigger={updateTrigger} userId={inUser.userId} inPlace={inPlace} objectHandler={objectHandler} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }}/>
