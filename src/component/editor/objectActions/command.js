@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {ReactComponent as AddLockIcon} from '../../addConstraint.svg'
 import {ReactComponent as AddActionIcon} from '../../addAction.svg'
-//import * as Elements from '../objectElements'
 
 export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, setSelectedElementRow}) => {
     //({currentElementNumber, setCurrentElementNumber, handleActionChange, actionNumber, setCurrentActionNumber, actionStack, elementStack, editActionStack, editElementStack, elementList, editElementList,handleElementChange}) => {
@@ -14,8 +13,19 @@ export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, s
 
         for (let i = 0;i<inRow+1;i++) {
             retRows.push(<span key={i}><label className="inputLabel">Result:</label>
-            <input id={i} name="commandResult" onClick={(e) => {e.preventDefault();setElementRow(i);setSelectedElementRow(i)}} onFocus={(e) => {e.preventDefault();setElementRow(i);setSelectedElementRow(i)}} value={actionStack[actionStackIndex].elementList[i].commandResult||""} type="text" onChange={handleElementInputChange} />
-                <AddActionIcon className="clickable" onClick={(e) => setElementRow(elementRow+1)}/></span>)
+            <input id={i} name="commandResult" onClick={(e) => {e.preventDefault();setSelectedElementRow(i)}} onFocus={(e) => {e.preventDefault();setSelectedElementRow(i)}} value={actionStack[actionStackIndex].elementList[i].commandResult||""} type="text" onChange={handleElementInputChange} />
+                <AddActionIcon className="clickable" onClick={(e) => {
+                    const currentActionStack = [...actionStack]
+                    const currentAction = currentActionStack[actionStackIndex]
+                    const currentElementList = currentAction.elementList//[i].commandResult
+                    currentElementList.push({commandResult:""})
+                    currentAction.elementList = currentElementList
+                    currentActionStack[actionStackIndex] = currentAction
+                    
+                    editActionStack(currentActionStack)
+                    setElementRow(elementRow+1)
+                    }
+                }/></span>)
         }
         return retRows
     }

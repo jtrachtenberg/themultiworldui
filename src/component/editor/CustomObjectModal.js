@@ -33,7 +33,7 @@ export const CustomObjectModal = ({ userId, objectHandler, buttonText, hideModal
         if (actionStack.length === 0)
             return <span></span>
         return actionStack.map((command,i) => {
-            const NewAction = command[1]
+            const NewAction = command.value
             return <div key={i}><NewAction setSelectedElementRow={setSelectedElementRow} userId={userId} actionStack={actionStack} editActionStack={editActionStack} actionStackIndex={i} /></div>
         })
     }
@@ -58,6 +58,7 @@ export const CustomObjectModal = ({ userId, objectHandler, buttonText, hideModal
             actionStack: actionStack,
             images: finalImages
         }
+        
         createHandler("object", submitData, objectHandler)
         editActionStack([])
         setTitle("")
@@ -95,9 +96,8 @@ export const CustomObjectModal = ({ userId, objectHandler, buttonText, hideModal
                     <div className="row">
                         <label>Add Action <AddIcon onClick = {() => {
                                 const currentActionStack = [...actionStack]
-                                const newAction = Object.entries(Actions)[currentAction]
-                                newAction.elementList = [{commandResult:""}]
-                                newAction.commandAction = ""
+                                const Action = Object.entries(Actions)[currentAction]
+                                const newAction = {key:Action[0],value:Action[1],elementList:[{commandResult:""}],commandAction:""}
                                 currentActionStack.push(newAction)
                                 editActionStack(currentActionStack)
                             }
