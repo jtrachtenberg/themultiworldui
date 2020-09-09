@@ -8,6 +8,7 @@ import {EditorHook} from './EditorHook.js'
 import Main from './main'
 import Cli from './Cli'
 import Exits from './Exits'
+import {Population} from './Population'
 import {Inventory} from './Inventory'
 import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
@@ -386,6 +387,7 @@ render() {
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
+        <div className="population"><Population userId={this.state.user.userId} placeId={this.state.place.placeId} /></div>
         <div className="inventory"><Inventory inUser={this.state.user} /></div>
       </div>
       </div>
