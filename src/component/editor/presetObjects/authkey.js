@@ -2,16 +2,27 @@ import React, {useState, useEffect} from 'react';
 import {PlaceSelector} from '../PlaceSelector'
 import {fetchData} from '../../utils/fetchData'
 
-export const AuthKey = ({editActionStack, handleActionChange, actionNumber, userId, spaces }) => {
+export const AuthKey = ({editActionStack, actionStack, actionStackIndex, userId}) => {
     const [isGet, toggleIsGet] = useState(false)
     const [isDrop, toggleIsDrop] = useState(false)
     const [isGive, toggleIsGive] = useState(false)
+    const [spaces, editSpaces] = useState([])
     const [spaceId, setSpaceId] = useState(0)
-    const [defaultSpaceId, setDefaultSpaceId] = useState(0)
     const [keyPlace, setKeyPlace] = useState({})
     const [places, editPlaces] = useState([])
 
     useEffect(() => {
+
+        async function loadSpaces () {
+            const postData = { userId: userId }
+            await fetchData('loadSpaces', postData)
+            .then(response => {
+                editSpaces(response)
+                if (response.length>0)
+                setSpaceId(response[0].spaceId)
+            })
+            .catch(e => console.log(e))
+        }
         const initData = {
             isGet: isGet,
             isDrop: isDrop,
@@ -20,8 +31,10 @@ export const AuthKey = ({editActionStack, handleActionChange, actionNumber, user
             authType: 'placeId',
             preset: 'authkey'
         }
-        const tmpArray = []
-        tmpArray[actionNumber]=initData
+        loadSpaces()
+        const tmpArray = [...actionStack]
+        const tmpAction = {...tmpArray[actionStackIndex],...initData}
+        tmpArray[actionStackIndex] = tmpAction
         editActionStack(tmpArray)
         // eslint-disable-next-line react-hooks/exhaustive-deps   
     },[])
@@ -39,16 +52,9 @@ export const AuthKey = ({editActionStack, handleActionChange, actionNumber, user
             })
             .catch(e => console.log(e))
         }
-        loadPlaces()
+        if (spaceId > 0) loadPlaces()
     // eslint-disable-next-line react-hooks/exhaustive-deps   
     }, [spaceId])
-
-    useEffect(() => {
-        if (Array.isArray(spaces) && spaces.length > 0) {
-            setSpaceId(spaces[0].spaceId)
-            setDefaultSpaceId(spaces[0].spaceId)
-        }
-    },[spaces])
 
     const inputUpdate = (e,setFn) => {
         setFn=setFn||setKeyPlace
@@ -62,12 +68,20 @@ export const AuthKey = ({editActionStack, handleActionChange, actionNumber, user
             valueToUpdate = type === 'checkbox' ? checked : value
         }
         setFn(valueToUpdate)
-        handleActionChange(nameToUpdate,valueToUpdate,actionNumber)
+
+        //createPreset
+        const tmpActions = (Array.isArray(actionStack) && actionStack.length > 0) ? [...actionStack] : []
+
+        if ( typeof(tmpActions[actionStackIndex]) === 'undefined') tmpActions[actionStackIndex] = {}
+        const inAction = Object.assign(tmpActions[actionStackIndex])
+        inAction[nameToUpdate]=valueToUpdate
+        tmpActions[actionStackIndex] = inAction
+        editActionStack(tmpActions)
     }
     const addActionHandler = () => {
         return (
         <section>
-             <PlaceSelector userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={defaultSpaceId} setSpaceId={setSpaceId} loadPlaces={() => {}} places={places} name="addKeyPlace" value={keyPlace} setPlace={inputUpdate} skipPlaceId={0}/>
+             <PlaceSelector userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={spaceId} setSpaceId={setSpaceId} loadPlaces={() => {}} places={places} name="addKeyPlace" value={keyPlace} setPlace={inputUpdate} skipPlaceId={0}/>
              <label>
                 Gettable?:
                 <input

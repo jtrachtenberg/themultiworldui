@@ -8,6 +8,7 @@ import {EditorHook} from './EditorHook.js'
 import Main from './main'
 import Cli from './Cli'
 import Exits from './Exits'
+import {Population} from './Population'
 import {Inventory} from './Inventory'
 import {User} from './utils/defaultObjects'
 import {Space,Place} from './utils/defaultObjects'
@@ -40,6 +41,7 @@ constructor(props) {
       isEdit: false,
       isAdmin: false,
       inCmd: {},
+      popUpdate: false,
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -98,11 +100,17 @@ processResponse = (data) => {
         perms.isAdmin=false
       }
       this.setState({...perms})
-    } else {
+    } else {//Tried to go in a locked room
+
+      const user = this.state.user
+      delete user.stateData.newRoom
+      this.updateUserHandler(user)
+
       if (this.state.user.stateData.currentRoom === isAuth.placeId) {
         msg = `${data.isAuth[0].title} is locked.  Please [travel] to a new location.`
         this.loadPlace(Constants.DEFAULT_PLACE)
       } else msg = `${data.isAuth[0].title} is locked.`
+      
     }
     this.setState({
       inMsg: msg
@@ -128,6 +136,7 @@ processResponse = (data) => {
         stateData.inSnd = cmd
     }
     let prepend
+    if (data.msg.enter || data.msg.exit) stateData.popUpdate = true
     if (name !== "")
       prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : data.msg.emote ? `${name}` : `${name} says:`
     else
@@ -156,7 +165,6 @@ loadPlace = (inPlaceId) => {
   const tmpPlace = {placeId: inPlaceId}
   
   fetchData('loadPlace',tmpPlace).then(response => {
-      console.log(response)
       if (response.error) throw(response.error)
       this.childHookUpdateHandler(response[0],'place')
   }).catch(e => {
@@ -293,7 +301,7 @@ updateUserHandler = (user) => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
     update.stateData=this.state.user.stateData
     update.userId=this.state.user.userId
-    this.state.socket.emit('incoming data', update)
+    let timer = setTimeout(() => {console.log('ggg');this.state.socket.emit('incoming data', update);clearTimeout(timer);},1000)
   })
   else
   this.setState({
@@ -363,7 +371,11 @@ formatCmd = () => {
     }
   })
 }
-
+togglePopUpdate = () => {
+  this.setState({
+    popUpdate: !this.state.popUpdate
+  })
+}
 render() {
   return (
     <div className="App">
@@ -386,6 +398,7 @@ render() {
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
+        <div className="population"><Population forceUpdate={this.state.popUpdate} toggleUpdate={this.togglePopUpdate} userId={this.state.user.userId} placeId={this.state.place.placeId} /></div>
         <div className="inventory"><Inventory inUser={this.state.user} /></div>
       </div>
       </div>
