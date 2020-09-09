@@ -38,38 +38,45 @@ class Cli extends React.Component {
             this.props.inPlace.objects.forEach(object => {
                 const actionStack = JSON.parse(object.actionStack.replace(/\\/g, ""))
                 actionStack.forEach(action => {
-                    if (action.command === "Command")
-                        if (!Array.isArray(action.elementList)) {//Simple string response
-                            const retFunction = (props, inputParts) => {
-                                const retVal = new Promise((resolve) => resolve(action.commandResult))
-                                return retVal
+                    const funcArray = []
+                    if (action.key === "Command") {
+                        action.elementList.forEach(element => {
+                            if (!Array.isArray(element.selectedElement)) {//Simple string response
+                                const retFunction = (props, inputParts) => {
+                                    const retVal = new Promise((resolve) => resolve(element.commandResult))
+                                    return retVal
+                                }
+                                funcArray.push(retFunction)
                             }
-                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
-                        } else { //elements
-                            const retFunction = (props, inputParts) => {
-                                const retVal = new Promise((resolve) => {
-                                    let result = action.commandResult
-                                    action.elementList.forEach((element,i) =>{
+                            else {
+                                const retFunction = (props, inputParts) => {
+                                    const retVal = new Promise((resolve) => {
+                                        let result = element.commandResult
+                                        
                                         if (element.elementType === 'replace') {
                                         // eslint-disable-next-line
-                                        const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
-                                        const replace = replaceFunc(element.elementFormat)
-    
-                                        result = result.replace(element.elementSymbol, replace)
+                                            const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
+                                            const replace = replaceFunc(element.elementFormat)
+        
+                                            result = result.replace(element.elementSymbol, replace)
                                         } else if (element.elementType === 'action') {
                                             // eslint-disable-next-line
                                             const actionFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
 
                                             result = actionFunc(element.elementFormat, props, inputParts, this, React, ReactPlayer, isSafari)
+                                            console.log(result)
                                         }
+                                        
+                                        resolve(result)
                                     })
-                                    resolve(result)
-                                })
-                                return retVal
+                                    return retVal
+                                }
+                                funcArray.push(retFunction)
                             }
-                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
-                        }
+                        })
+                    }
 
+                    commands.push({[action.commandAction]:funcArray,isBroadcast:true,objTitle:object.title})
                 })
             })
 
@@ -206,13 +213,56 @@ class Cli extends React.Component {
             newResult = <span>{newLine}</span>
         else
             newResult = <span><span>{this.state.results}</span><br/><span>{newLine}</span></span>
-            console.log(newResult)
         this.setState({
             results: newResult,
             ...stateData
         },callback)
     }
     
+    processCommandResult = (result,executeCommand) => {
+        const origResult = result
+            if (typeof(result) === 'object') {
+                if (result.type === 'place') {
+                    const newUser = this.props.inUser
+                    newUser.stateData.newRoom = result.value.placeId
+                    newUser.stateData.currentSpace = result.value.spaceId
+                    const stateData = {currentInput: "", loadCommands: true}
+                    this.formatResults(result.response, stateData, () => {
+                        this.props.updateUserHandler(newUser)
+                        this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                    })
+                } else if (result.type === 'objects') {
+                    if (typeof(result.outUser) === 'object') {
+                        if (Array.isArray(result.modifiers) && result.modifiers.length > 0) {
+                            result.modifiers.forEach((item) => {
+                                if (typeof(item.authType) !== 'undefined')//updateAuth
+                                    result.outUser.auth=item
+                            })
+                        }
+                        this.props.updateUserHandler(result.outUser)
+                    }
+                    const place = this.props.inPlace
+                    place.objects = result.value
+                    const stateData = {currentInput: "", loadCommands: true}
+                    this.formatResults(result.response, stateData, () => {
+                        updateHandler("place", place, this.props.childUpdateHandler,true)
+                        this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                    })
+                }
+            }
+            else {
+                const stateData = {currentInput: "",loadCommands: true}
+                this.formatResults(result, stateData, () => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                    if (executeCommand.isBroadcast) {
+                        const message = `${this.props.inUser.userName} uses ${executeCommand.objTitle}: ${origResult}`
+                        this.props.socket.emit('incoming data', {msg: message, msgPlaceId: this.props.inPlace.placeId, userName: ""})
+
+                    }
+                })
+        }
+    }
+
     handleCommand = async (e) => {
 
         e.preventDefault()
@@ -250,50 +300,16 @@ class Cli extends React.Component {
         })
         if (typeof(executeCommand) !== 'undefined') {
         const action = executeCommand[cmdString]
-        if (typeof(action) === 'function') {//Global command
-            action(this.props, inputParts, this.state.modalReturn).then(result => {
-                const origResult = result
-                if (typeof(result) === 'object') {
-                    if (result.type === 'place') {
-                        const newUser = this.props.inUser
-                        newUser.stateData.newRoom = result.value.placeId
-                        newUser.stateData.currentSpace = result.value.spaceId
-                        const stateData = {currentInput: "", loadCommands: true}
-                        this.formatResults(result.response, stateData, () => {
-                            this.props.updateUserHandler(newUser)
-                            this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
-                        })
-                    } else if (result.type === 'objects') {
-                        if (typeof(result.outUser) === 'object') {
-                            if (Array.isArray(result.modifiers) && result.modifiers.length > 0) {
-                                result.modifiers.forEach((item) => {
-                                    if (typeof(item.authType) !== 'undefined')//updateAuth
-                                        result.outUser.auth=item
-                                })
-                            }
-                            this.props.updateUserHandler(result.outUser)
-                        }
-                        const place = this.props.inPlace
-                        place.objects = result.value
-                        const stateData = {currentInput: "", loadCommands: true}
-                        this.formatResults(result.response, stateData, () => {
-                            updateHandler("place", place, this.props.childUpdateHandler,true)
-                            this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
-                        })
-                    }
-                }
-                else {
-                    const stateData = {currentInput: "",loadCommands: true}
-                    this.formatResults(result, stateData, () => {
-                        this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
-                        if (executeCommand.isBroadcast) {
-                            const message = `${this.props.inUser.userName} uses ${executeCommand.objTitle}: ${origResult}`
-                            this.props.socket.emit('incoming data', {msg: message, msgPlaceId: this.props.inPlace.placeId, userName: ""})
-    
-                        }
-                    })
-            }
-            }).catch(failed => {
+        if (Array.isArray(action)) {//object command
+            action.forEach(cmd => cmd(this.props, inputParts,this.state.modalReturn).then(result => this.processCommandResult(result,executeCommand))
+                .catch(failed => {
+                    console.log(failed)
+                }) 
+            )       
+        }
+        else if (typeof(action) === 'function') {//Global command
+            action(this.props, inputParts, this.state.modalReturn).then(result => this.processCommandResult(result,executeCommand))
+            .catch(failed => {
                 console.log(failed)
             })        
         } else if (typeof(action) === 'object') {//exit

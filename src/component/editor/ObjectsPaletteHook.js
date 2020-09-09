@@ -4,7 +4,7 @@ import {ReactComponent as AddIcon} from '../addobject.svg'
 import {ReactComponent as DelIcon} from '../delete.svg'
 
 import {updateHandler} from '../utils/formUtils'
-import {ObjectUpdateFormHook} from './ObjectUpdateFormHook'
+import {UpdateObjectForm} from './UpdateObjectForm'
 
 export const ObjectsPaletteHook = ({updateTrigger, userId, inPlace, placeHandler, objectHandler}) => {
     const [userObjects, editUserObjects] = useState([])
@@ -18,6 +18,12 @@ export const ObjectsPaletteHook = ({updateTrigger, userId, inPlace, placeHandler
         
         doFetch()
         .then(response => {
+            response.forEach( (item,i) => {
+                if (typeof item.actionStack === 'string') {
+                    item.actionStack = JSON.parse(item.actionStack)
+                    response[i] = item
+                }
+            })
             editUserObjects(response)
            
         })
@@ -26,7 +32,7 @@ export const ObjectsPaletteHook = ({updateTrigger, userId, inPlace, placeHandler
     const formatObjects = () => {
         return userObjects.map((object,i) => <div key={i}><h4><DelIcon onClick={() => {
             fetchData("deleteObject",{objectId: object.objectId}).then(response => objectHandler(response))
-        }}/><ObjectUpdateFormHook inObject={object} userId={userId} objectHandler={objectHandler} /><AddIcon onClick={()=> {
+        }}/><UpdateObjectForm object={object} userId={userId} objectHandler={objectHandler} /><AddIcon onClick={()=> {
             const tmpObjects = (Array.isArray(inPlace.objects) && inPlace.objects.length > 0) ? [...inPlace.objects] : []
             tmpObjects.push(userObjects[i])
 

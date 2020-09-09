@@ -1,11 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { setFormHeader, createHandler } from '../utils/formUtils';
 import {ReactComponent as AddIcon} from '../create.svg'
 import {MediaSearch} from '../utils/MediaSearch'
 import * as Actions from './objectActions'
 import * as Elements from './objectElements'
 
-export const CustomObjectModal = ({ userId, objectHandler, buttonText, hideModal}) => {
+export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, hideModal}) => {
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [images, editImages] = useState([])
@@ -14,6 +14,31 @@ export const CustomObjectModal = ({ userId, objectHandler, buttonText, hideModal
     const [currentAction, setCurrentAction] = useState(0)
     const [selectedElementRow, setSelectedElementRow] = useState(0)
 
+    useEffect(() => {
+        if (typeof object !== 'undefined') {
+            setTitle(object.title)
+            setDescription(object.description)
+            editImages(object.images)
+            const inActionStack = object.actionStack
+            inActionStack.forEach( (action,i) => {
+                const key = action.key
+                const value = Actions[key]
+                action.value=value
+
+                const elementList = action.elementList
+                elementList.forEach( (element, j) => {
+                    if (Array.isArray(element.selectedElement)) {
+                        const key = element.selectedElement[0]
+                        const eleFunc = Elements[key]
+                        elementList[j].selectedElement[1]=eleFunc
+                    }
+                })
+                action.elementList=elementList
+                inActionStack[i]=action
+            })
+            editActionStack(object.actionStack)
+        }
+    },[object])
     const formatElements = () => {
         return Object.keys(Elements).map((item,i) => {
             return <span key={i}><button value={i} onClick = {(e) => {
