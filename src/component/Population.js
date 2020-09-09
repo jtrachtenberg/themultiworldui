@@ -28,6 +28,7 @@ export const Population = ({placeId, userId, forceUpdate, toggleUpdate}) => {
 
     const formatPeople = () => {
         if (people.length === 0) return <div>You are alone.</div>
+        if (!Array.isArray(people)) return <div></div>
         const allButUser = people.filter(person => person.userId !== userId)
         if (allButUser.length === 0) return <div>You are alone.</div>
 
