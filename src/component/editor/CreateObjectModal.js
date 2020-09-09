@@ -2,12 +2,19 @@ import React, {useState,useEffect} from 'react'
 import {ReactComponent as AddIcon} from '../create.svg'
 import {MediaSearch} from '../utils/MediaSearch'
 import * as Elements from './objectElements'
-
-export const CreateObjectModal = ({ editElementStack, elementStack, userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
+/***
+ * DEPRECATED: Use CreateObjectModalSelector
+ */
+export const CreateObjectModal = ({ tabReset, currentElementNumber, setCurrentElementNumber, editElementStack, elementStack, userId, createPreset, presets, inObject, setImageModal, setFormHeader, title, setTitle, description, setDescription, formatActionsSelect, formatActions, actionStack, editActionStack, currentAction, setCurrentAction, currentActionNumber, actions, commandId, incrementId, handleSubmit, buttonText, images, editImages, spaces}) => {
     const [inElements, editInElements] = useState([])
     const [elementList, editElementList] = useState([])
     const [modalReturn, setModalReturn] = useState({})
     const [tab, setTab] = useState(0)
+
+    useEffect(() => {
+        
+        //tabReset(tab)
+    },[tab,tabReset])
 
     useEffect(() => {
         setImageModal(modalReturn)
@@ -59,13 +66,13 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
             //const Name = element.name
             const NewElement = Object.assign(element.value)
             let elsymbol
-            if (elementList.length > 0)
-                elsymbol = elementList[i].elementSymbol
+            if (typeof elementList.find(listel => listel.element === element.name) !== 'undefined')
+                elsymbol = elementList.find(listel => listel.element === element.name).elementSymbol
             return <span key={i}><button onClick={(e) => {
                 e.preventDefault()  
                 if (currentActionNumber < 0) return
- 
-                const symbol = {...elementList[i]}//Object.assign(elementList[i])
+                
+                const symbol = {...elementList.find(listel => listel.element === element.name)}//Object.assign(elementList[i])
  
                 const newStack = Array.from(actionStack)
                 const actionItem = newStack[currentActionNumber]
@@ -75,7 +82,7 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
                 actionItem.commandResult = commandResult.concat(symbol.elementSymbol.toString())
 
                 const tmpElementList = Array.isArray(actionItem.elementList) ? Array.from(actionItem.elementList) : []
-                tmpElementList[i]=symbol
+                tmpElementList[currentElementNumber]=symbol
                 actionItem.elementList=tmpElementList
                 newStack[currentActionNumber] = actionItem
 
@@ -83,9 +90,9 @@ export const CreateObjectModal = ({ editElementStack, elementStack, userId, crea
 
                 const tmpElements = Array.isArray(elementStack) ? Array.from(elementStack) : []
                 tmpElements[currentActionNumber]=Object.assign(element)
-          
+                console.log(tmpElements)
                 editElementStack(tmpElements)
-            }}>{elsymbol}</button><NewElement show={false} currentActionNumber={currentActionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={i}/>
+            }}>{elsymbol}</button><NewElement show={false} currentElementNumber={currentElementNumber} setCurrentElementNumber={setCurrentElementNumber} currentActionNumber={currentActionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={i}/>
             </span>
         })
     }

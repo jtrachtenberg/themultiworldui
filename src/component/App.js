@@ -16,7 +16,7 @@ import {userStateData} from './utils/defaultObjects'
 import {Modal} from './utils/Modal'
 import Portal from './utils/Portal'
 import {fetchData} from './utils/fetchData'
-import {audioContext} from './utils/audioContext'
+//import {audioContext} from './utils/audioContext'
 
 class App extends React.Component {
 
@@ -120,8 +120,11 @@ processResponse = (data) => {
     const cmd = data.msg.cmd
     const stateData = {}
     if (cmd) {
-        //this.setState({inCmd: cmd })
-        //audioContext(cmd.src)
+        const audio = new Audio(cmd.src)
+        audio.addEventListener("canplaythrough", event => {
+          /* the audio is now playable; play it if permissions allow */
+          audio.play();
+        });
         stateData.inSnd = cmd
     }
     let prepend
@@ -354,8 +357,8 @@ formatCmd = () => {
 
   this.setState({inCmd: {}}, () => {
     if (cmd.type === 'audio') {
-      const src = cmd.src
-      audioContext(src)
+      //const src = cmd.src
+     // audioContext(src)
       return <span></span>
     }
   })
