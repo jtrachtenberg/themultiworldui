@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { setFormHeader, createHandler } from '../utils/formUtils';
+import { setFormHeader, createHandler, updateHandler } from '../utils/formUtils';
 import {ReactComponent as AddIcon} from '../create.svg'
 import {MediaSearch} from '../utils/MediaSearch'
 import * as Actions from './objectActions'
@@ -83,8 +83,12 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
             actionStack: actionStack,
             images: finalImages
         }
-        
-        createHandler("object", submitData, objectHandler)
+        if (typeof object === 'undefined')
+            createHandler("object", submitData, objectHandler)
+        else {
+            submitData.objectId = object.objectId
+            updateHandler("object", submitData, objectHandler)
+        }
         editActionStack([])
         setTitle("")
         setDescription("")

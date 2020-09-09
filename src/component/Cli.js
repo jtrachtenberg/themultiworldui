@@ -36,7 +36,7 @@ class Cli extends React.Component {
 
         if (Array.isArray(this.props.inPlace.objects) && this.props.inPlace.objects.length > 0)
             this.props.inPlace.objects.forEach(object => {
-                const actionStack = JSON.parse(object.actionStack.replace(/\\/g, ""))
+                const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack
                 actionStack.forEach(action => {
                     const funcArray = []
                     if (action.key === "Command") {
