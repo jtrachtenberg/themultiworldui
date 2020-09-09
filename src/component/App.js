@@ -291,7 +291,10 @@ updateUserHandler = (user) => {
 
   if (user.stateData.newRoom) {
     const authData = {placeId: Number(user.stateData.newRoom)}
+    update.stateData=this.state.user.stateData
+    update.userId=this.state.user.userId
     this.state.socket.emit('incoming data',{type: 'auth',userId: user.userId, auth: authData})
+    this.state.socket.emit('incoming data', update)
   }
 
   if (stateData.success)
@@ -301,7 +304,13 @@ updateUserHandler = (user) => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
     update.stateData=this.state.user.stateData
     update.userId=this.state.user.userId
-    let timer = setTimeout(() => {console.log('ggg');this.state.socket.emit('incoming data', update);clearTimeout(timer);},1000)
+    if (typeof this.state.user.stateData.newRoom === 'undefined') {
+      let timer = setTimeout(() => {
+        console.log('ggg');
+        this.state.socket.emit('incoming data', update);
+        clearTimeout(timer);
+      },1000)
+    }
   })
   else
   this.setState({
