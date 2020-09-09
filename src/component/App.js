@@ -41,6 +41,7 @@ constructor(props) {
       isEdit: false,
       isAdmin: false,
       inCmd: {},
+      popUpdate: false,
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -129,6 +130,7 @@ processResponse = (data) => {
         stateData.inSnd = cmd
     }
     let prepend
+    if (data.msg.enter || data.msg.exit) stateData.popUpdate = true
     if (name !== "")
       prepend = data.msg.enter ? `${name}` : data.msg.exit ? `${name}` : data.msg.emote ? `${name}` : `${name} says:`
     else
@@ -364,7 +366,11 @@ formatCmd = () => {
     }
   })
 }
-
+togglePopUpdate = () => {
+  this.setState({
+    popUpdate: !this.state.popUpdate
+  })
+}
 render() {
   return (
     <div className="App">
@@ -387,7 +393,7 @@ render() {
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
-        <div className="population"><Population userId={this.state.user.userId} placeId={this.state.place.placeId} /></div>
+        <div className="population"><Population forceUpdate={this.state.popUpdate} toggleUpdate={this.togglePopUpdate} userId={this.state.user.userId} placeId={this.state.place.placeId} /></div>
         <div className="inventory"><Inventory inUser={this.state.user} /></div>
       </div>
       </div>

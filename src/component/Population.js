@@ -2,8 +2,20 @@ import React, {useState, useEffect} from 'react'
 import {setFormHeader} from './utils/formUtils'
 import {fetchData} from './utils/fetchData'
 
-export const Population = ({placeId, userId}) => {
+export const Population = ({placeId, userId, forceUpdate, toggleUpdate}) => {
     const [people, editPeople] = useState([])
+
+    useEffect(() => {
+        const getPeople = () => {
+            const postData = {placeId: placeId}
+            fetchData('getPopulation',postData).then(people => editPeople(people))
+        }
+
+        if (forceUpdate) {
+            toggleUpdate()
+            getPeople()
+        }
+    },[forceUpdate, toggleUpdate])
 
     useEffect(() => {
         const getPeople = () => {
