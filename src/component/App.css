@@ -494,14 +494,14 @@ form#Cli {
   position: relative;
 }
 
-.exits ul, .inventory ul {
+.exits ul, .inventory ul, .population ul {
   list-style: none;
   text-align: left;
   width: max-content;
   padding-left: 0px;
 }
 
-.exits ul li, .inventory ul li {
+.exits ul li, .inventory ul li , .population ul li {
   margin-bottom: 6px;
 }
 

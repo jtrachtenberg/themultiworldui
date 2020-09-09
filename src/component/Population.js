@@ -15,7 +15,7 @@ export const Population = ({placeId, userId, forceUpdate, toggleUpdate}) => {
             toggleUpdate()
             getPeople()
         }
-    },[forceUpdate, toggleUpdate])
+    },[forceUpdate, toggleUpdate, placeId])
 
     useEffect(() => {
         const getPeople = () => {

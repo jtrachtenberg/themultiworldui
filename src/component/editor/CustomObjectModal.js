@@ -39,6 +39,7 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
             editActionStack(object.actionStack)
         }
     },[object])
+    
     const formatElements = () => {
         return Object.keys(Elements).map((item,i) => {
             return <span key={i}><button value={i} onClick = {(e) => {

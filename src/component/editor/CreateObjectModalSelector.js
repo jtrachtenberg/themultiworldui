@@ -24,7 +24,7 @@ export const CreateObjectModalSelector = ({ object, userId, objectHandler, hideM
             }
         { (tab === 0) && <div><CustomObjectModal object={object} hideModal={hideModal} userId={userId} objectHandler={objectHandler} buttonText={editMode ? 'Update' : 'Create'} /></div>
         }
-        { (tab === 1) && <div><PresetObjectModal userId={userId} objectHandler={objectHandler} /></div>
+        { (tab === 1) && <div><PresetObjectModal hideModal={hideModal} buttonText={editMode ? 'Update' : 'Create'} userId={userId} objectHandler={objectHandler} /></div>
         }
         { (tab === 2) && <div><NPCEditor userId={userId} objectHandler={objectHandler} /></div>
         }

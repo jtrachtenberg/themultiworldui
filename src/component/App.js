@@ -100,11 +100,17 @@ processResponse = (data) => {
         perms.isAdmin=false
       }
       this.setState({...perms})
-    } else {
+    } else {//Tried to go in a locked room
+
+      const user = this.state.user
+      delete user.stateData.newRoom
+      this.updateUserHandler(user)
+
       if (this.state.user.stateData.currentRoom === isAuth.placeId) {
         msg = `${data.isAuth[0].title} is locked.  Please [travel] to a new location.`
         this.loadPlace(Constants.DEFAULT_PLACE)
       } else msg = `${data.isAuth[0].title} is locked.`
+      
     }
     this.setState({
       inMsg: msg
@@ -159,7 +165,6 @@ loadPlace = (inPlaceId) => {
   const tmpPlace = {placeId: inPlaceId}
   
   fetchData('loadPlace',tmpPlace).then(response => {
-      console.log(response)
       if (response.error) throw(response.error)
       this.childHookUpdateHandler(response[0],'place')
   }).catch(e => {
@@ -296,7 +301,7 @@ updateUserHandler = (user) => {
     localStorage.setItem('user', JSON.stringify(this.state.user));
     update.stateData=this.state.user.stateData
     update.userId=this.state.user.userId
-    this.state.socket.emit('incoming data', update)
+    let timer = setTimeout(() => {console.log('ggg');this.state.socket.emit('incoming data', update);clearTimeout(timer);},1000)
   })
   else
   this.setState({
