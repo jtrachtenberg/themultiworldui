@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { setFormHeader, createHandler } from '../utils/formUtils';
 import { Space } from '../utils/defaultObjects';
 
-export const CreateSpaceFormHook = ({userId, spaceHandler}) => {
+export const CreateSpaceFormHook = ({userId, spaceHandler, spaces}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [isRoot, toggleIsRoot] = useState(false)
+
+    useEffect(() => {
+        if (!Array.isArray(spaces) || spaces.length === 0 || (Object.keys(spaces[0]).length === 0 && spaces[0].constructor === Object)) {
+            toggleIsRoot(true)
+        } else {
+            toggleIsRoot(false)
+        }
+    },[spaces])
 
     const handleSubmit = (e) => {
         const space = Object.assign(Space)

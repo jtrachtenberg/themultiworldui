@@ -5,7 +5,7 @@ export const SpaceSelect = ({userId, inSpaceId, spaces, setCurrentSpace, loadPla
     const [spaceId, setSpaceId] = useState(inSpaceId)
 
     useEffect(() => {
-        if (Array.isArray(spaces) && spaces.length > 0) setSpaceId(spaces[0].spaceId)
+        if (Array.isArray(spaces) && spaces.length > 0 && (Object.keys(spaces).length > 0 && spaces.constructor === Object)) setSpaceId(spaces[0].spaceId)
     },[spaces])
 
     useEffect(() => {
@@ -13,7 +13,7 @@ export const SpaceSelect = ({userId, inSpaceId, spaces, setCurrentSpace, loadPla
     }, [spaceId, setCurrentSpace]) // Only re-run the effect if spaceId changes
 
     const formatSpaces = () => {
-        return spaces.map((value,i) => <option key={i} value={value.spaceId}>{value.title}</option>)
+        return spaces.map((value,i) => Object.keys(value).length === 0 ? <span></span> : <option key={i} value={value.spaceId}>{value.title}</option>)
     }
 
     if (userId && Array.isArray(spaces))
