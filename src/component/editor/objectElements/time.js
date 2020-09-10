@@ -14,6 +14,15 @@ export const Time = ({actionStack, editActionStack, actionStackIndex, elementInd
     const elementType = "replace"
 
     useEffect(() => {
+        const inElementListItem = actionStack[actionStackIndex].elementList[elementIndex]
+
+        if (typeof inElementListItem.elementFormat === 'string') {//edit mode
+            setDateFormat(timeFormats.findIndex(item => item.toString() === inElementListItem.elementFormat.toString()))
+        }
+// eslint-disable-next-line react-hooks/exhaustive-deps 
+    },[])
+
+    useEffect(() => {
         if (typeof actionStack[actionStackIndex].elementList[elementIndex].elementFormat !== 'string' || (actionStack[actionStackIndex].elementList[elementIndex].elementFormat.toString() !== timeFormats[dateFormat].toString())) {
             const currentActionStack = Object.assign(actionStack)
             const currentAction = Object.assign(currentActionStack[actionStackIndex])

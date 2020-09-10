@@ -1,10 +1,19 @@
 import React, { useState, useEffect  } from 'react';
 import {MediaSearch} from '../../utils/MediaSearch'
-
+//TODO: read in format on edit
 export const Sound = ({actionStack, editActionStack, actionStackIndex, elementIndex}) => {
     const [modalReturn, setModalReturn] = useState({})
     const elementSymbol = "<sound>"
     const elementType = "action"
+
+    useEffect(() => {
+        const inElementListItem = actionStack[actionStackIndex].elementList[elementIndex]
+
+        if (typeof inElementListItem.elementFormat === 'string') {//edit mode
+            setModalReturn({src: inElementListItem.elementFormat})
+        }
+// eslint-disable-next-line react-hooks/exhaustive-deps 
+    },[])
 
     useEffect(() => {
         const elementFormat = typeof modalReturn.src !== 'undefined' ? modalReturn.src : ""
