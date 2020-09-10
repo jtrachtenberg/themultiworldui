@@ -12,6 +12,7 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
     const [modalReturn, setModalReturn] = useState({})
     const [actionStack, editActionStack] = useState([])
     const [currentAction, setCurrentAction] = useState(0)
+    const [selectedAction, setSelectedAction] = useState(0)
     const [selectedElementRow, setSelectedElementRow] = useState(0)
 
     useEffect(() => {
@@ -19,14 +20,16 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
             setTitle(object.title)
             setDescription(object.description)
             editImages(object.images)
-            const inActionStack = object.actionStack
+            const inActionStack = [...object.actionStack]
             inActionStack.forEach( (action,i) => {
                 const key = action.key
                 const value = Actions[key]
                 action.value=value
 
                 const elementList = action.elementList
+                
                 elementList.forEach( (element, j) => {
+                    
                     if (Array.isArray(element.selectedElement)) {
                         const key = element.selectedElement[0]
                         const eleFunc = Elements[key]
@@ -45,11 +48,11 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
             return <span key={i}><button value={i} onClick = {(e) => {
                 e.preventDefault()
                 const currentActionStack = [...actionStack]
-                const newAction = currentActionStack[currentAction]
-                const currentElementList = newAction.elementList
-                currentElementList[selectedElementRow].selectedElement=Object.entries(Elements)[i]
-                currentElementList[selectedElementRow].commandResult=`<${item}>`
-                currentActionStack[currentAction] = newAction
+                const newAction = Object.assign(currentActionStack[selectedAction])//{...currentActionStack[selectedAction]}
+                const currentElementList = [...newAction.elementList]
+                currentElementList[selectedElementRow].selectedElement=[...Object.entries(Elements)[i]]
+                currentElementList[selectedElementRow].commandResult=`<${item.toLowerCase()}>`
+                currentActionStack[selectedAction] = newAction
                 editActionStack(currentActionStack)
             }}>{item}</button></span>
         })
@@ -60,7 +63,7 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
             return <span></span>
         return actionStack.map((command,i) => {
             const NewAction = command.value
-            return <div key={i}><NewAction setSelectedElementRow={setSelectedElementRow} userId={userId} actionStack={actionStack} editActionStack={editActionStack} actionStackIndex={i} /></div>
+            return <div key={i}><NewAction setSelectedElementRow={setSelectedElementRow} userId={userId} actionStack={actionStack} editActionStack={editActionStack} actionStackIndex={i} setSelectedAction={setSelectedAction} /></div>
         })
     }
 
@@ -130,6 +133,7 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
                                 const newAction = {key:Action[0],value:Action[1],elementList:[{commandResult:""}],commandAction:""}
                                 currentActionStack.push(newAction)
                                 editActionStack(currentActionStack)
+                                //setSelectedAction(currentActionStack.length-1)
                             }
                         }/>
                         </label>

@@ -1,10 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {ReactComponent as AddLockIcon} from '../../addConstraint.svg'
 import {ReactComponent as AddActionIcon} from '../../addAction.svg'
 
-export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, setSelectedElementRow}) => {
-    //({currentElementNumber, setCurrentElementNumber, handleActionChange, actionNumber, setCurrentActionNumber, actionStack, elementStack, editActionStack, editElementStack, elementList, editElementList,handleElementChange}) => {
+export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, setSelectedElementRow, setSelectedAction}) => {
     const [elementRow, setElementRow] = useState(0)
+
+    useEffect(() => {
+        if (actionStack[actionStackIndex].elementList.length > 0 && elementRow !== actionStack[actionStackIndex].elementList.length-1)
+            setElementRow(actionStack[actionStackIndex].elementList.length-1)
+    },[elementRow, actionStack, actionStackIndex])
 
     const formatElementRow = () => {
         let inRow = Number(elementRow)
@@ -13,8 +17,9 @@ export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, s
 
         for (let i = 0;i<inRow+1;i++) {
             retRows.push(<span key={i}><label className="inputLabel">Result:</label>
-            <input id={i} name="commandResult" onClick={(e) => {e.preventDefault();setSelectedElementRow(i)}} onFocus={(e) => {e.preventDefault();setSelectedElementRow(i)}} value={actionStack[actionStackIndex].elementList[i].commandResult||""} type="text" onChange={handleElementInputChange} />
+            <input id={i} name="commandResult" onClick={(e) => {setSelectedAction(actionStackIndex);setSelectedElementRow(i)}} onFocus={(e) => {setSelectedAction(actionStackIndex);setSelectedElementRow(i)}} value={actionStack[actionStackIndex].elementList[i].commandResult||""} type="text" onChange={handleElementInputChange} />
                 <AddActionIcon className="clickable" onClick={(e) => {
+                    e.preventDefault();
                     const currentActionStack = [...actionStack]
                     const currentAction = currentActionStack[actionStackIndex]
                     const currentElementList = currentAction.elementList//[i].commandResult
@@ -31,11 +36,16 @@ export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, s
     }
 
     const formatSelectedElement = () => {
-        if (Array.isArray(actionStack[actionStackIndex].elementList[elementRow].selectedElement)) {
-            const NewElement = actionStack[actionStackIndex].elementList[elementRow].selectedElement[1]
-            return <span><NewElement actionStack={actionStack} editActionStack={editActionStack} actionStackIndex={actionStackIndex} elementIndex={elementRow}/></span>
-        }
-        return <span></span>
+        console.log(actionStack[actionStackIndex].elementList)
+        const retItem = [<span key={'a'}></span>]
+        actionStack[actionStackIndex].elementList.forEach( (ele, i) => {
+            if (Array.isArray(actionStack[actionStackIndex].elementList[i].selectedElement)) {
+                const NewElement = actionStack[actionStackIndex].elementList[i].selectedElement[1]
+                retItem.push(<span key={i}><NewElement actionStack={actionStack} editActionStack={editActionStack} actionStackIndex={actionStackIndex} elementIndex={i}/></span>)
+            }
+        })
+
+        return retItem.map(item => item)
     }
 
     const handleElementInputChange = (e) => {
@@ -61,7 +71,7 @@ export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, s
             <label className="inputLabel">Command to Activate:</label>
                 <div>
                     <AddLockIcon />
-                    <input name="commandAction" value={actionStack[actionStackIndex].commandAction||""} type="text" onChange={handleInputChange} />
+                    <input name="commandAction" value={actionStack[actionStackIndex].commandAction||""} type="text" onClick={(e) => {setSelectedAction(actionStackIndex)}} onFocus={(e) => {setSelectedAction(actionStackIndex)}} onChange={handleInputChange} />
                 </div>
             </div>
         </div>

@@ -306,7 +306,6 @@ updateUserHandler = (user) => {
     update.userId=this.state.user.userId
     if (typeof this.state.user.stateData.newRoom === 'undefined') {
       let timer = setTimeout(() => {
-        console.log('ggg');
         this.state.socket.emit('incoming data', update);
         clearTimeout(timer);
       },1000)

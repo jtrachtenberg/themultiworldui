@@ -54,11 +54,14 @@ class Cli extends React.Component {
                                         let result = element.commandResult
                                         
                                         if (element.elementType === 'replace') {
+                                            console.log(element)
                                         // eslint-disable-next-line
                                             const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
                                             const replace = replaceFunc(element.elementFormat)
-        
-                                            result = result.replace(element.elementSymbol, replace)
+                                            console.log(replace)
+                                            console.log(result)
+                                            console.log(element.elementSymbol.toLowerCase())
+                                            result = result.replace(element.elementSymbol.toLowerCase(), replace.toLowerCase())
                                         } else if (element.elementType === 'action') {
                                             // eslint-disable-next-line
                                             const actionFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
@@ -82,7 +85,7 @@ class Cli extends React.Component {
 
             if (this.props.inUser.userId > 0 && this.props.inUser.state !== null & typeof(this.props.inUser.stateData) !== 'undefined' && typeof(this.props.inUser.stateData.inventory) !== 'undefined' && Array.isArray(this.props.inUser.stateData.inventory) && this.props.inUser.stateData.inventory.length > 0)
             this.props.inUser.stateData.inventory.forEach(object => {
-                const actionStack = JSON.parse(object.actionStack.replace(/\\/g, ""))
+                const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack
                 actionStack.forEach(action => {
                     if (action.command === "Command")
                         if (!Array.isArray(action.elementList)) {//Simple string response
