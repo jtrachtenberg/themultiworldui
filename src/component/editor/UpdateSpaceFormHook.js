@@ -3,7 +3,7 @@ import { setFormHeader, updateHandler } from '../utils/formUtils';
 import {SpaceSelect} from './SpaceSelect'
 
 export const UpdateSpaceFormHook = ({userId, spaces, spaceHandler}) => {
-    const [isVis, toggleIsVis] = useState(true)
+    const [isVis, toggleIsVis] = useState(false)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [isRoot, toggleIsRoot] = useState(true)

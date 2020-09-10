@@ -2,39 +2,30 @@ import React, { useState, useEffect } from 'react'
 import { setFormHeader, createHandler } from '../utils/formUtils'
 import { Place } from '../utils/defaultObjects';
 import { SpaceSelect } from './SpaceSelect'
-import { fetchData } from '../utils/fetchData'
 
-export const CreatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => {
+export const CreatePlaceFormHook = ({userId, inPlace, spaces, places, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [spaceId, setSpaceId] = useState(0)
-    const [places, setPlaces] = useState([])
     const [isRoot, toggleIsRoot] = useState(false)
     const [isExit, toggleIsExit] = useState(false)
     const [canEdit, toggleCanEdit] = useState(false)
     const [cmd, setCmd] = useState("")
     
     useEffect(() => {
-        const loadPlaces = async (inSpaceId) => {
-            inSpaceId = inSpaceId||spaceId
-            const postData = {spaceId: inSpaceId, userId: userId}
-            await fetchData('loadPlaces', postData)
-            .then(response => {
-                setPlaces(response)
-                if (response.length === 0) toggleIsRoot(true)
-            })
-            .catch(e => console.log(e))
-            
-        }
+        if (places.length > 0) toggleIsRoot(false)
+        else toggleIsRoot(true)
+    }, [places])
+
+    useEffect(() => {
         if (!Array.isArray(spaces) || spaces.length === 0 || (Object.keys(spaces[0]).length === 0 && spaces[0].constructor === Object)) {
             toggleCanEdit(false)
         } else {
             toggleCanEdit(true)
             setSpaceId(spaces[0].spaceId)
-            loadPlaces(spaces[0].spaceId)
         }
-    },[spaces])
+    },[spaces, spaceId, userId])
 
     const handleSubmit = (e) => {
         const place = Object.assign(Place)

@@ -39,23 +39,6 @@ export const AuthKey = ({editActionStack, actionStack, actionStackIndex, userId}
         // eslint-disable-next-line react-hooks/exhaustive-deps   
     },[])
 
-    useEffect(() => {
-
-        async function loadPlaces (inSpaceId) {
-            inSpaceId = inSpaceId||spaceId
-            const postData = {spaceId: inSpaceId, userId: userId }
-            await fetchData('loadPlaces', postData)
-            .then(response => {
-                editPlaces(response)
-                if (response.length>1)
-                inputUpdate(response[0].placeId)
-            })
-            .catch(e => console.log(e))
-        }
-        if (spaceId > 0) loadPlaces()
-    // eslint-disable-next-line react-hooks/exhaustive-deps   
-    }, [spaceId])
-
     const inputUpdate = (e,setFn) => {
         setFn=setFn||setKeyPlace
         let valueToUpdate, nameToUpdate
@@ -81,7 +64,7 @@ export const AuthKey = ({editActionStack, actionStack, actionStackIndex, userId}
     const addActionHandler = () => {
         return (
         <section>
-             <PlaceSelector userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={spaceId} setSpaceId={setSpaceId} loadPlaces={() => {}} places={places} name="addKeyPlace" value={keyPlace} setPlace={inputUpdate} skipPlaceId={0}/>
+             <PlaceSelector places={places} name="addKeyPlace" value={keyPlace} setPlace={inputUpdate} editPlaces={editPlaces} skipPlaceId={0} userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={spaceId} setSpaceId={setSpaceId} />            
              <label>
                 Gettable?:
                 <input
