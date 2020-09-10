@@ -1,17 +1,32 @@
-import React, { useState } from 'react';
-import { setFormHeader, createHandler } from '../utils/formUtils';
+import React, { useState, useEffect } from 'react'
+import { setFormHeader, createHandler } from '../utils/formUtils'
 import { Place } from '../utils/defaultObjects';
 import { SpaceSelect } from './SpaceSelect'
 
-export const CreatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => {
+export const CreatePlaceFormHook = ({userId, inPlace, spaces, places, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [spaceId, setSpaceId] = useState(0)
     const [isRoot, toggleIsRoot] = useState(false)
     const [isExit, toggleIsExit] = useState(false)
+    const [canEdit, toggleCanEdit] = useState(false)
     const [cmd, setCmd] = useState("")
     
+    useEffect(() => {
+        if (places.length > 0) toggleIsRoot(false)
+        else toggleIsRoot(true)
+    }, [places])
+
+    useEffect(() => {
+        if (!Array.isArray(spaces) || spaces.length === 0 || (Object.keys(spaces[0]).length === 0 && spaces[0].constructor === Object)) {
+            toggleCanEdit(false)
+        } else {
+            toggleCanEdit(true)
+            setSpaceId(spaces[0].spaceId)
+        }
+    },[spaces, spaceId, userId])
+
     const handleSubmit = (e) => {
         const place = Object.assign(Place)
         e.preventDefault();
@@ -40,7 +55,7 @@ export const CreatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
             return (
                 <div>
                 <div>{setFormHeader("Create Place", () => toggleIsVis(!isVis))}</div>
-                
+                { canEdit &&
                 <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
                 <label>Title
                     <input name="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -63,6 +78,12 @@ export const CreatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => 
                 <label>Exit Command</label><input name="cmd"  type="text" value={cmd} onChange={(e) => setCmd(e.target.value)}  /> 
                 <input type="submit" value="Submit" />
                 </form>
+                }
+                {!canEdit &&
+                    <div>
+                        Please create a space.
+                    </div>
+                }
                 </div>
             )
     else

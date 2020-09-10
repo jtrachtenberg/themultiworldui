@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { setFormHeader, updateHandler } from '../utils/formUtils';
 import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {ReactComponent as CreateIcon} from '../create.svg';
@@ -6,17 +6,15 @@ import {ReactComponent as AddIcon} from '../addkeyword.svg';
 import {MediaSearch} from '../utils/MediaSearch';
 import {PlaceSelector} from './PlaceSelector'
 
-import {fetchData} from '../utils/fetchData'
-
-function usePrevious(value) {
+/*function usePrevious(value) {
     const ref = useRef();
     useEffect(() => {
       ref.current = value;
     });
     return ref.current;
-}
+}*/
 
-export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) => {
+export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlaces, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [spaceId, setSpaceId] = useState(inPlace.spaceId)
     const [title, setTitle] = useState("")
@@ -25,7 +23,6 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) =>
     const [direction, setDirection] = useState("")
     const [modalReturn, setModalReturn] = useState({})
     const [disabled, setDisabled] = useState(false)
-    const [places, setPlaces] = useState([])
     const [exits, setExits] = useState([])
     const [exitSelect, setExitSelect] = useState(-1)
     const [poi, editPoi] = useState([])
@@ -33,9 +30,8 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) =>
     const [audio, editAudio] = useState([])
     const [showNewPoi, toggleNewPoi] = useState(false)
     const [newKeyword, setNewKeyword] = useState("")
-    const [fetching, setFetching] = useState(false)
     const [isPrivate, setIsPrivate] = useState(false)
-    const prevSpaceId = usePrevious(spaceId)
+    //const prevSpaceId = usePrevious(spaceId)
 
     useEffect(() => {
         if (Array.isArray(spaces) && spaces.length > 0) {
@@ -44,51 +40,37 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) =>
     },[spaces])
 
     useEffect(() => {
-        if (spaceId > 0 && spaceId !== prevSpaceId) loadPlaces(spaceId)
-    })
-
-    const loadPlaces = async (inSpaceId) => {
-        inSpaceId = inSpaceId||spaceId
-        if (!fetching) {
-        setFetching(true)
-        const postData = {spaceId: inSpaceId, userId: userId}
-        await fetchData('loadPlaces', postData)
-        .then(response => {
-            setPlaces(response)
-            setFetching(false)
-        })
-        .catch(e => console.log(e))
-        }
-    }
-
-    useEffect(() => {
-        if (typeof(inPlace.title) !== 'undefined') setTitle(inPlace.title)
-        if (typeof(inPlace.description) !== 'undefined') setDescription(inPlace.description)
-        typeof(inPlace.isRoot) === 'number' || typeof(inPlace.isRoot) === 'boolean' ? toggleIsRoot(inPlace.isRoot) : toggleIsRoot(false)
-        typeof(inPlace.authType) === 'number' ? setIsPrivate(inPlace.authType) : setIsPrivate(false)
-
-        editPoi(inPlace.poi)
-        editImages(inPlace.images)
-        editAudio(inPlace.audio)
-        if (Array.isArray(inPlace.exits) && inPlace.exits.length>0) {
-        let exitsArray = []
-        inPlace.exits.forEach(exit => {
-            for (const [key,value] of Object.entries(exit)) {
-               const exitObj = {
-                   name: key,
-                   title: value.title,
-                   placeId: value.placeId
-               }
-               exitsArray.push(exitObj)
+        const initVars = (place) => {
+            place=place||inPlace
+            if (typeof(place.title) !== 'undefined') setTitle(place.title)
+            if (typeof(place.description) !== 'undefined') setDescription(place.description)
+            typeof(place.isRoot) === 'number' || typeof(place.isRoot) === 'boolean' ? toggleIsRoot(place.isRoot) : toggleIsRoot(false)
+            typeof(place.authType) === 'number' ? setIsPrivate(place.authType) : setIsPrivate(false)
+    
+            editPoi(place.poi)
+            editImages(place.images)
+            editAudio(place.audio)
+            if (Array.isArray(place.exits) && place.exits.length>0) {
+                let exitsArray = []
+                place.exits.forEach(exit => {
+                    for (const [key,value] of Object.entries(exit)) {
+                    const exitObj = {
+                        name: key,
+                        title: value.title,
+                        placeId: value.placeId
+                    }
+                    exitsArray.push(exitObj)
+                    }
+                })
+    
+                setExits(exitsArray)
             }
-           })
-
-        setExits(exitsArray)
         }
-        if (Array.isArray(spaces) && spaces.length > 0)
-            setSpaceId(inPlace.spaceId)
 
-    },[inPlace, spaces, prevSpaceId])
+        if (inPlace.placeId > 0) {
+            initVars()
+        }
+    },[inPlace])
 
     const handleSubmit = (e) => {
         const place = Object.assign(inPlace)
@@ -257,7 +239,7 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, placeHandler}) =>
                 {formatExits()}
                 <section>
                 <label>Add an Exit?</label>
-                <PlaceSelector userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setSpaceId={setSpaceId} loadPlaces={loadPlaces} places={places} name="addExit" value={exitSelect} setPlace={setExitSelect} skipPlaceId={inPlace.placeId}/>
+                <PlaceSelector userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setSpaceId={setSpaceId} places={places} editPlaces={editPlaces} name="addExit" value={exitSelect} setPlace={setExitSelect} skipPlaceId={inPlace.placeId}/>
                  <label>Direction for Exit?</label>
                  <input name="direction" value={direction} type="text" onChange={(e) => setDirection(e.target.value)} />
                 </section>

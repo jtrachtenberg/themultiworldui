@@ -84,23 +84,30 @@ processResponse = (data) => {
   if (data.type && data.type === 'auth') {
     let msg = ""
     if (!Array.isArray(data.isAuth)) return
-    const isAuth = data.isAuth[0]
-    const perms = {}
-    if (isAuth.isAuth) {
-      if (isAuth.placeId)
-        this.loadPlace(isAuth.placeId)
-      if (isAuth.isEdit) {
-        perms.isEdit=true
-      } else {
-        perms.isEdit=false
-      }
-      if (isAuth.isAdmin) {
-        perms.isAdmin=true
-      } else {
-        perms.isAdmin=false
-      }
-      this.setState({...perms})
-    } else {//Tried to go in a locked room
+    if (data.isAuth.length === 0) {//error state - could be a place that no longer exists
+      const user = this.state.user
+      user.stateData.newRoom = Constants.DEFAULT_PLACE
+      this.updateUserHandler(user)
+      //this.loadPlace(Constants.DEFAULT_PLACE)
+      msg = `Your previous location is no more.  Please [travel] to a new one.`
+    } else {
+      const isAuth = data.isAuth[0]
+      const perms = {}
+      if (isAuth.isAuth) {
+        if (isAuth.placeId)
+          this.loadPlace(isAuth.placeId)
+        if (isAuth.isEdit) {
+          perms.isEdit=true
+        } else {
+          perms.isEdit=false
+        }
+        if (isAuth.isAdmin) {
+          perms.isAdmin=true
+        } else {
+          perms.isAdmin=false
+        }
+        this.setState({...perms})
+      } else {//Tried to go in a locked room
 
       const user = this.state.user
       delete user.stateData.newRoom
@@ -111,7 +118,8 @@ processResponse = (data) => {
         this.loadPlace(Constants.DEFAULT_PLACE)
       } else msg = `${data.isAuth[0].title} is locked.`
       
-    }
+      }
+   }
     this.setState({
       inMsg: msg
     })

@@ -1,7 +1,33 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {SpaceSelect} from './SpaceSelect'
+import {fetchData} from '../utils/fetchData'
 
-export const PlaceSelector = ({ places, name, value, setPlace, skipPlaceId, userId, inSpaceId, spaces, defaultSpaceId, setSpaceId, loadPlaces }) => {
+export const PlaceSelector = ({ places, name, value, setPlace, editPlaces, skipPlaceId, userId, inSpaceId, spaces, defaultSpaceId, setSpaceId }) => {
+    const [fetching, setFetching] = useState(false)
+
+    useEffect(() => {
+        loadPlaces()
+            // eslint-disable-next-line react-hooks/exhaustive-deps   
+    },[inSpaceId])
+
+    useEffect(() => {
+        loadPlaces()
+            // eslint-disable-next-line react-hooks/exhaustive-deps   
+    },[skipPlaceId])
+
+    const loadPlaces = async (spaceId) => {
+        spaceId = spaceId||inSpaceId
+        if (!fetching) {
+            setFetching(true)
+            const postData = {spaceId: spaceId}
+            await fetchData('loadPlaces', postData)
+            .then(response => {
+                editPlaces(response)
+                setFetching(false)
+            })
+            .catch(e => console.log(e))
+        }      
+    }
 
     const formatPlaces = () => {
         if (Array.isArray(places))

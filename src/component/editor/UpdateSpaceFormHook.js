@@ -3,7 +3,7 @@ import { setFormHeader, updateHandler } from '../utils/formUtils';
 import {SpaceSelect} from './SpaceSelect'
 
 export const UpdateSpaceFormHook = ({userId, spaces, spaceHandler}) => {
-    const [isVis, toggleIsVis] = useState(true)
+    const [isVis, toggleIsVis] = useState(false)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [isRoot, toggleIsRoot] = useState(true)
@@ -17,7 +17,7 @@ export const UpdateSpaceFormHook = ({userId, spaces, spaceHandler}) => {
     useEffect(() => {
         if (typeof(currentSpace.title) !== 'undefined') setTitle(currentSpace.title)
         if (typeof(currentSpace.description) !== 'undefined')setDescription(currentSpace.description)
-        typeof(currentSpace.isRoot) === 'number' ? toggleIsRoot(currentSpace.isRoot) : toggleIsRoot(false)
+        toggleIsRoot(typeof currentSpace.isRoot === 'boolean' ? currentSpace.isRoot : typeof currentSpace.isRoot === 'number' ? currentSpace.isRoot : false)
     },[currentSpace])
 
     const handleSubmit = (e) => {

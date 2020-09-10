@@ -12,29 +12,11 @@ function usePrevious(value) {
 
 export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) => {
     const [spaces, loadSpaces] = useState([])
+    const [places, editPlaces] = useState([])
     const [editSpace, setCurrentSpace] = useState({})
     const [updateTrigger, setUpdateTrigger] = useState(false)
-    //const [showModalSpace, toggleShowModalSpace] = useState(false)
-    //const [showModalPlace, toggleShowModalPlace] = useState(false)
     const prevUserId = usePrevious(inUser.userId)
     const prevSpaceId = usePrevious(inSpace.spaceId)
-
-    useEffect(() => {
-        async function doFetch() {
-            const postData = { userId: inUser.userId }
-
-            return await fetchData('loadSpaces', postData)
-        }
-        if (inUser.userId > 0 && spaces.length === 0) {
-            
-                doFetch().then(response => {
-                    if (response.length === 0)
-                        response.push({})
-                    loadSpaces(response)
-                    })
-                    .catch(e=>console.log(e))
-        }
-    },[inUser.userId, spaces.length])
 
     useEffect(() => {
         if (prevSpaceId === 0 && inSpace.spaceId > 0) {
@@ -60,7 +42,7 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
        
             doFetch().then(response => {
                     if (response.length === 0)
-                        response.push({})
+                        response = []
                     loadSpaces(response)
                 })
                 .catch(e=>console.log(e))
@@ -84,7 +66,7 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
                 <editorForms.ObjectsPaletteHook updateTrigger={updateTrigger} userId={inUser.userId} inPlace={inPlace} objectHandler={objectHandler} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }}/>
-                <editorForms.CreateSpaceForm userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => {
+                <editorForms.CreateSpaceForm spaces={spaces} userId={inUser.userId} inSpaceId={inSpace.spaceId} spaceHandler={newSpace => {
                     const tmpSpace = Array.from(spaces)
                     tmpSpace.push(newSpace)
                     loadSpaces(tmpSpace)
@@ -92,11 +74,11 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
                 <editorForms.UpdateSpaceForm userId={inUser.userId} spaces={spaces} spaceHandler={newSpace => {
                     updateHandler(newSpace, 'space')
                 }} />
-                <editorForms.CreatePlaceForm userId={inUser.userId} inPlace={inPlace} spaces={spaces} placeHandler={newPlace => {
+                <editorForms.CreatePlaceForm userId={inUser.userId} inPlace={inPlace} spaces={spaces} places={places} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }} />
                 { isEdit && 
-                <editorForms.UpdatePlaceForm userId={inUser.userId} spaces={spaces} inPlace={inPlace} placeHandler={newPlace => {
+                <editorForms.UpdatePlaceForm userId={inUser.userId} spaces={spaces} inPlace={inPlace} places={places} editPlaces={editPlaces} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }} />
                 }
