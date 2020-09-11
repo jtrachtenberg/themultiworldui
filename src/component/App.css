@@ -1,4 +1,17 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,600,700');
+
+@keyframes shadowClick {
+  0% {
+    filter: drop-shadow(3px 6px 3px #444);
+  }
+  50% {
+    filter: drop-shadow(0px 3px 3px #444);
+  }
+  100% {
+    filter: drop-shadow(3px 6px 3px #444);
+  }
+}
+
 @keyframes slideInX {
   0% {
     transform: translateX(-166px);
@@ -460,6 +473,10 @@ form#Cli {
   height: 75px;
   object-fit: contain;
   filter: drop-shadow(3px 6px 3px #444);
+}
+
+.rightNav span.imageContainer img.clicked {
+  animation: shadowClick 0.15s ease-out;
 }
 
 .main .CliInput.menuIn {
