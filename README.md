@@ -12,10 +12,12 @@ The MultiWorld is a MUD/MUX like environment rebuilt from the ground up for the 
 
 - React Based front end
   - UI editor for world creations
-    - Spaces, Places, Objects, Scripts
+    - Spaces, Places, Objects, NPCs
       - Public domain image search
         - [unsplash implementation](https://github.com/jtrachtenberg/unsplash)
       - User image upload
+      - Public domain audio search (currently within unsplash implementation, using freesound.org)
+      - Video search
     - Scene editor - NPC specific scripting
 - [Express based backend](https://github.com/jtrachtenberg/themultiworld)
   - RESTful API for public stats / fan pages
@@ -28,7 +30,9 @@ The MultiWorld is a MUD/MUX like environment rebuilt from the ground up for the 
   - While every user will be required to create at least a minimal public world (A root space containing a root place), individual places or entire spaces can require keys
 
 
+Current release build is hosted at http://www.themulti.world
 
+We are currently taking Alpha testers!  Send your request to j.trachtenberg@gmail.com for an account.
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
