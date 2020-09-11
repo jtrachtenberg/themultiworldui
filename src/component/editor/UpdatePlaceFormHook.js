@@ -177,9 +177,9 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
                 })} />Exit: {value.name}<input id={value.name} name={value.name} type="text" value={exits.find(exit => exit.placeId === value.placeId).name||""} 
                 onChange={(e) => {
                     const {id, value} = e.target
-                    
+                    const index = exits.findIndex(item => item.name === id)
                     setExits(prevState => {
-                      prevState[id].name = value
+                      prevState[index].name = value
                       return [...prevState]
                     })
                     if (value.length === 0) setDisabled(true)
