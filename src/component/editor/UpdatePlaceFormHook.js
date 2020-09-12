@@ -212,10 +212,10 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
                 <MediaSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} audio={audio} editAudio={editAudio} handleAudio={setModalReturn} />
                 <section>
                 <label>Title
-                    <input name="title" type="text" value={title||""} onChange={(e) => setTitle(e.target.value)} />
+                    <input name="title" type="text" value={title||""} required={true}  onChange={(e) => setTitle(e.target.value)} />
                 </label>
                 <label>Description:
-                    <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                    <textarea name="description" value={description} required={true} onChange={(e) => setDescription(e.target.value)} />
                 </label>
                 <label>
                 Is Root?:

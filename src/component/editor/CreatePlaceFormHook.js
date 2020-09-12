@@ -58,10 +58,10 @@ export const CreatePlaceFormHook = ({userId, inPlace, spaces, places, placeHandl
                 { canEdit &&
                 <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
                 <label>Title
-                    <input name="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                    <input name="title" type="text" value={title} required={true} onChange={(e) => setTitle(e.target.value)} />
                 </label>
                 <label>Description:
-                    <textarea name="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                    <textarea name="description" value={description} required={true} onChange={(e) => setDescription(e.target.value)} />
                 </label>
                 <SpaceSelect userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={Array.isArray(spaces) && spaces.length > 0 ? spaces[0].spaceId : 0} setCurrentSpace={inSpaceId => setSpaceId(inSpaceId)}/>              
                 <label>
