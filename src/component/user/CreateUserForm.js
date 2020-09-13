@@ -31,6 +31,11 @@ class CreateUserForm extends React.Component {
         this.user.stateData = stateData
         createHandler("user", this.user, this.props.updateUserHandler)
         e.preventDefault();
+        this.setState({
+            userName: "",
+            email: "",
+            password: ""
+        })
     }
 
     render() {
