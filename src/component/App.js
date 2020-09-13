@@ -67,9 +67,17 @@ componentDidMount() {
     socket.on("outgoing data", data => this.processResponse(data))
     socket.on(`place:${this.state.place.placeId}`, data => this.processResponse(data))
     socket.on(`auth:${this.state.user.userId}`, data => this.processResponse(data))
+    socket.on('connect', this.connected)
+    socket.on('reconnect', this.connected)
+    socket.on('diconnect', this.connected)
     if (needLogin) this.setState({showModalLogin: true})
   })
 
+}
+
+connected = () => {
+  console.log('@@@@@-----@@@@@')
+  console.log(this.state.socket.id)
 }
 
 menuToggle = () => {

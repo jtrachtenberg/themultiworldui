@@ -30,6 +30,7 @@ export const CreateSpaceFormHook = ({userId, spaceHandler, spaces}) => {
         setTitle("")
         setDescription("")
         toggleIsRoot(false)
+        toggleIsVis(false)
     }
 
     if (userId)
