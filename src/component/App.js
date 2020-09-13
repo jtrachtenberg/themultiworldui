@@ -428,7 +428,7 @@ render() {
       </div>
       <div id="portal-root"></div>
       {( this.state.showModalLogin && 
-                    <Portal id="imageModal">
+                    <Portal id="loginModal">
                         <Modal handleClose={this.hideModal} show={this.state.showModalLogin}
                         >
                         <userForms.LoginUserForm inUser={this.state.user} loginHandler={this.loginHandler} close={this.hideModal}/>
