@@ -76,8 +76,8 @@ componentDidMount() {
 }
 
 connected = () => {
-  console.log('@@@@@-----@@@@@')
-  console.log(this.state.socket.id)
+  //console.log('@@@@@-----@@@@@')
+  //console.log(this.state.socket.id)
 }
 
 menuToggle = () => {

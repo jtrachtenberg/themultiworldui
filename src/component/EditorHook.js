@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as editorForms from './editor/editorForms'
 import {fetchData} from './utils/fetchData'
-import {S3Uploader} from './S3Uploader'
 
 function usePrevious(value) {
     const ref = useRef();
@@ -63,7 +62,6 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
     if (inUser && inUser.userId > 0)
         return (
             <div>
-                <S3Uploader userId={inUser.userId} />
                 <editorForms.CreateObjectForm userId={inUser.userId} objectHandler={objectHandler} />
                 <editorForms.ObjectsPaletteHook updateTrigger={updateTrigger} userId={inUser.userId} inPlace={inPlace} objectHandler={objectHandler} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')

@@ -3,15 +3,8 @@ import {setFormHeader} from './utils/formUtils'
 import {fetchMediaData} from './utils/fetchData'
 
 export const S3Uploader = ({images, editImages}) => {
-    const [url, setUrl] = useState("")
-    const [isSucces, toggleIsSuccess] = useState(false)
     const [altText, setAltText] = useState("")
     const fileRef = useRef()
-
-    const handleUpdate = (e) => {
-        toggleIsSuccess(false)
-        setUrl("")
-    }
 
     const handleUpload = (e) => {
         e.preventDefault()
@@ -24,7 +17,6 @@ export const S3Uploader = ({images, editImages}) => {
             const returnData = response.data;
             const signedRequest = returnData.signedRequest;
             const inUrl = returnData.url;
-            setUrl(inUrl)
             console.log("Recieved a signed request " + signedRequest);
 
             fetch(signedRequest, {
@@ -59,9 +51,9 @@ export const S3Uploader = ({images, editImages}) => {
         <form>
             <section>
             {setFormHeader('File Upload')}
-            <input ref={fileRef} name="fileName" type="file" onChange={handleUpdate}></input>
-            <label>Alt text</label>
-            <input type="text" name="altText" value={altText} onChange={(e) => setAltText(e.target.value)}></input>
+            <input ref={fileRef} name="fileName" type="file" />
+            <label>Description</label>
+            <input type="text" name="altText" required={true} value={altText} onChange={(e) => setAltText(e.target.value)}></input>
             </section>
             <button onClick={handleUpload}>Upload</button>
         </form>

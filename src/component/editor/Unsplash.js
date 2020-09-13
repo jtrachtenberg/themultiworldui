@@ -4,10 +4,6 @@ import * as Constants from '../constants'
 import {ReactComponent as LeftIcon} from '../circledarrowleft.svg';
 import {ReactComponent as RightIcon} from '../circledarrowright.svg';
 
-
-
-//const CLIENT_ID = "T96xrE-u_EqE-WdvwR47aNL0QWd_CNAsZQKr6OJ0yF4"
-
 class Unsplash extends React.Component {
     constructor(props) {
         super(props)
