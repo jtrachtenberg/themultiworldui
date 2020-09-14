@@ -122,6 +122,7 @@ processResponse = (data) => {
 
       const user = this.state.user
       delete user.stateData.newRoom
+      delete user.stateData.adminMove
       this.updateUserHandler(user)
 
       if (this.state.user.stateData.currentRoom === isAuth.placeId) {
@@ -191,6 +192,7 @@ loadPlace = (inPlaceId) => {
   
   fetchData('loadPlace',tmpPlace).then(response => {
       if (response.error) throw(response.error)
+      console.log(this.state.user.stateData)
       this.childHookUpdateHandler(response[0],'place')
   }).catch(e => {
     console.log('error')
@@ -232,6 +234,7 @@ childHookUpdateHandler  = (inObj, type) => {
     inObj.updated = true
 
     const user = this.state.user
+    let adminMove = user.stateData.adminMove||false
     if (inObj.placeId) {
       if (inObj.create) {
         user.stateData.newRoom = inObj.placeId
@@ -242,15 +245,17 @@ childHookUpdateHandler  = (inObj, type) => {
         user.stateData.currentRoom = inObj.placeId
         user.stateData.currentSpace = inObj.spaceId
         delete user.stateData.newRoom
+        delete user.stateData.adminMove
         this.updateUserHandler(user)
       }
       
     }
-
+    const leftMsg = adminMove ? 'left in a puff of smoke.' : 'left.';
+    const arriveMsg = adminMove ? 'arrived in a puff of smoke.' : 'arrived.';
     this.state.socket.off(`place:${this.state.place.placeId}`)
     this.state.socket.on(`place:${inObj.placeId}`, data => this.processResponse(data))
-    this.state.socket.emit('incoming data', {msg: `left.`, exit:true, msgPlaceId: this.state.place.placeId, userName: this.state.user.userName})
-    this.state.socket.emit('incoming data', {msg: `arrived.`, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
+    this.state.socket.emit('incoming data', {msg: leftMsg, exit:true, msgPlaceId: this.state.place.placeId, userName: this.state.user.userName})
+    this.state.socket.emit('incoming data', {msg: arriveMsg, enter:true, msgPlaceId: inObj.placeId, userName: this.state.user.userName})
   }
   stateData[type] = inObj
   if (message) {
