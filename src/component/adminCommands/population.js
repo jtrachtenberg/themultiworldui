@@ -7,11 +7,7 @@ const formatPopulation = (response) => {
         inArray.push(item.userName)
         finalArray[item.placeId]=inArray
     })
-    console.log(finalArray)
-    finalArray.map( (item,i) => {
-        console.log('i',i)
-        console.log('item',item)
-    })
+
     return finalArray.map ( (item,i) => <span key={i}><span>PlaceId: {i} : </span><span>{item.map( (person,i) => i === item.length-1 ? person : `${person}, `)}</span><br/> </span>)
 }
 

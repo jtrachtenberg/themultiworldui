@@ -1,8 +1,8 @@
 import React, {useState, useRef} from 'react'
-import {setFormHeader} from './utils/formUtils'
-import {fetchMediaData} from './utils/fetchData'
+import {setFormHeader} from './formUtils'
+import {fetchMediaData} from './fetchData'
 
-export const S3Uploader = ({images, editImages}) => {
+export const S3Uploader = ({modalClose}) => {
     const [altText, setAltText] = useState("")
     const fileRef = useRef()
 
@@ -35,11 +35,11 @@ export const S3Uploader = ({images, editImages}) => {
                     apilink: inUrl,
                     alt: altText
                 }
-                console.log(retObj)
-                const tmpImages = images||[]
-                tmpImages.push(retObj)
-                if (typeof editImages === 'function') editImages(tmpImages)
-                
+                //console.log(retObj)
+                //const tmpImages = images||[]
+                //tmpImages.push(retObj)
+                //if (typeof editImages === 'function') editImages(tmpImages)
+                modalClose(retObj)
               })
               .catch((error) => {
                 console.error('Error:', error);
@@ -51,7 +51,7 @@ export const S3Uploader = ({images, editImages}) => {
         <form>
             <section>
             {setFormHeader('File Upload')}
-            <input ref={fileRef} name="fileName" type="file" />
+            <input ref={fileRef} accept="image/*" name="fileName" type="file" />
             <label>Description</label>
             <input type="text" name="altText" required={true} value={altText} onChange={(e) => setAltText(e.target.value)}></input>
             </section>

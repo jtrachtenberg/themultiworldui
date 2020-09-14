@@ -3,7 +3,7 @@ import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
 import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {Modal} from '../utils/Modal'
 import Portal from '../utils/Portal'
-import Unsplash from '../editor/Unsplash'
+import {ImageSelector} from '../editor/ImageSelector'
 import {Freesound} from '../editor/Freesound'
 import ReactPlayer from 'react-player'
 import {ReactComponent as AddIcon} from '../soundsearch.svg';
@@ -88,7 +88,7 @@ export const MediaSearch = ({ forceOpen, audioOnly, images, handleImages, editIm
                 </div>
                 { (tab === 0) && 
                 <span>
-                <Unsplash modalClose={hideModal} />
+                <ImageSelector images={images} editImages={editImages} modalClose={hideModal} />
                 </span>
                 }
                 { (tab === 1) && 
