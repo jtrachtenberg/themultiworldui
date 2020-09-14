@@ -91,7 +91,6 @@ menuToggle = () => {
 }
 
 processResponse = (data) => {
-
   if (data.type && data.type === 'auth') {
     let msg = ""
     if (!Array.isArray(data.isAuth)) return
@@ -166,8 +165,7 @@ processResponse = (data) => {
       ...stateData
     })
   } else if (data.type && data.type === 'admin') {
-    console.log(data)
-    console.log(typeof adminCommands[data.admincmd])
+
     if (typeof adminCommands[data.admincmd] === 'function') {
       adminCommands[data.admincmd](data).then(response => this.setState({inMsg: response}))
     }
@@ -192,12 +190,9 @@ loadPlace = (inPlaceId) => {
   
   fetchData('loadPlace',tmpPlace).then(response => {
       if (response.error) throw(response.error)
-      console.log(this.state.user.stateData)
       this.childHookUpdateHandler(response[0],'place')
   }).catch(e => {
-    console.log('error')
     console.log(e)
-      console.log(e)
         this.state.socket.off(`auth:${this.state.user.userId}`)
         const blankUser = Object.assign(User)
         blankUser.userId=0

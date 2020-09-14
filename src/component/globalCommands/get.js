@@ -30,7 +30,7 @@ const get = async (inObj, inCmd) => {
                 const modifiers = checkActions(newObjects.invObj)
                 stateData.inventory = inventory
                 inUser.stateData=stateData
-                const retObj = {type:"objects",value: newObjects.objects, outUser: inUser,modifiers: modifiers,response: `You got the ${target}.`}
+                const retObj = {type:"objects",msg: `${inUser.userName} got the ${target}.`,value: newObjects.objects, outUser: inUser,modifiers: modifiers,response: `You got the ${target}.`}
                 retVal = await new Promise((resolve, reject) => resolve(retObj))
 
             }

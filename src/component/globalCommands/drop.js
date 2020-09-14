@@ -31,7 +31,7 @@ const drop = async (inObj, inCmd) => {
                 
                 const objects = (Array.isArray(inObj.inPlace.objects) && inObj.inPlace.objects.length > 0) ? [...inObj.inPlace.objects] : []
                 objects.push(newObjects.dropObj)
-                const retObj = {type:"objects",value: objects, outUser: inUser,response: `You dropped the ${target}.`}
+                const retObj = {type:"objects",msg: `${inUser.userName} dropped the ${target}.`,value: objects, outUser: inUser,response: `You dropped the ${target}.`}
                 retVal = await new Promise((resolve, reject) => resolve(retObj))
 
             }
