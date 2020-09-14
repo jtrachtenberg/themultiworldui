@@ -2,6 +2,7 @@ import React from 'react'
 import {handleInputChange, updateHandler} from './utils/formUtils'
 import {ReactComponent as SendIcon} from './sendCommand.svg';
 import * as GlobalCommands from './globalCommands/globalCommands'
+import * as AdminCommands from './adminCommands/adminCommands'
 import * as Constants from './constants'
 import ReactPlayer from 'react-player'
 import {isMobile,isFirefox, isSafari} from 'react-device-detect'
@@ -20,6 +21,13 @@ class Cli extends React.Component {
         for (const [key, value] of Object.entries(GlobalCommands)) {
             commands.push({[key]: value})
         }
+
+        if (this.props.isAdmin) {
+            for (const [key, value] of Object.entries(AdminCommands)) {
+                commands.push({[key]: value})
+            }
+        }
+
         if (Array.isArray(this.props.inPlace.exits)) {
 
         const exits = this.props.inPlace.exits
@@ -143,7 +151,11 @@ class Cli extends React.Component {
         if (this.props.inMsg !== "" && (prevProps.inMsg !== this.props.inMsg)) {
             let prepend = <span></span>
             if (Object.keys(this.props.inSnd).length === 0 && this.props.inSnd.constructor === Object) {
-                this.formatResults(<span>{this.props.inMsg}</span>,{},() => {
+                console.log(this.props.inMsg)
+                let formatMsg
+                if (typeof this.props.inMsg === 'object') formatMsg = this.props.inMsg
+                else formatMsg = <span>{this.props.inMsg}</span>
+                this.formatResults(formatMsg,{},() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                     this.props.messageResetHander()
                     this.props.audioResetHandler()

@@ -84,6 +84,11 @@ class LoginUserForm extends React.Component {
 
     userLogout = (e) => {
         e.preventDefault();
+        const update = {}
+        update.stateData=this.props.inUser.stateData
+        update.stateData.logout=true
+        update.userId=this.props.inUser.userId
+        this.props.socket.emit('incoming data', update)
         this.props.socket.off(`auth:${this.props.inUser.userId}`)
         const blankUser = Object.assign(User)
         blankUser.userId=0
