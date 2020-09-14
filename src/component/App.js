@@ -3,6 +3,7 @@ import socketIOClient from "socket.io-client";
 import './App.css';
 import Title from './Title.js'
 import * as userForms from './user/userForms'
+import * as adminCommands from './adminCommands/adminCommands'
 import Alert from './Alert.js'
 import {EditorHook} from './EditorHook.js'
 import Main from './main'
@@ -76,8 +77,10 @@ componentDidMount() {
 }
 
 connected = () => {
-  //console.log('@@@@@-----@@@@@')
-  //console.log(this.state.socket.id)
+  const update = {}
+  update.stateData = this.state.user.stateData
+  update.userId = this.state.user.userId
+  if (this.state.user.userId > 0) this.state.socket.emit('incoming data', update)
 }
 
 menuToggle = () => {
@@ -161,6 +164,12 @@ processResponse = (data) => {
     this.setState({
       ...stateData
     })
+  } else if (data.type && data.type === 'admin') {
+    console.log(data)
+    console.log(typeof adminCommands[data.admincmd])
+    if (typeof adminCommands[data.admincmd] === 'function') {
+      adminCommands[data.admincmd](data).then(response => this.setState({inMsg: response}))
+    }
   }
 }
 
@@ -418,7 +427,7 @@ render() {
       </div>
       <div className="main midCol">
         <div className={`viewPort ${this.state.menuToggle}`}><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} /></div>
-        <div className={`CliInput ${this.state.menuToggle}`}><Cli audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket}/></div>
+        <div className={`CliInput ${this.state.menuToggle}`}><Cli audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket} isAdmin={this.state.isAdmin}/></div>
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
