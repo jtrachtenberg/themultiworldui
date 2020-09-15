@@ -11,7 +11,7 @@ import {MediaSearch} from './utils/MediaSearch'
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { forceOpen: false, modalReturn: {}, currentPlaying: 0, playingPlace: true, disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
+        this.state = { forceOpen: false, modalReturn: {}, currentPlaying: 0, playingPlace: true, disabled: false, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
@@ -203,13 +203,13 @@ class Cli extends React.Component {
             })
         })
  
-        const regexp = new RegExp(`^${cmds.join('|')}|help|Help$`)
+        /*const regexp = new RegExp(`^${cmds.join('|')}|help|Help$`)
         rulesets.push({
             'type':'validate',
             'invert': true,
             'regexp': regexp,
             'state':'disabled'
-        })
+        })*/
         this.setState(handleInputChange(e,rulesets))
     }
 
@@ -351,10 +351,11 @@ class Cli extends React.Component {
       this.setState({ inlinePlaying: !this.state.inlinePlaying })
     }
     setModalReturn = (inModalReturn) => {
-
-        const newInput = this.state.currentInput.trim() + ' ' + inModalReturn.name.split(' ').join('_') + ' ';
-          this.setState({modalReturn: inModalReturn, currentInput: newInput, forceOpen: false})
-          this.cliInput.focus()
+        let newInput = this.state.currentInput.trim()
+        if (typeof inModalReturn !== 'undefined' && typeof inModalReturn.name !== 'undefined')
+            newInput = newInput + ' ' + inModalReturn.name.split(' ').join('_') + ' ';
+        this.setState({modalReturn: inModalReturn, currentInput: newInput, forceOpen: false})
+        this.cliInput.focus()
       }
 
     render() {
