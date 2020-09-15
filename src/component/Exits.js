@@ -6,12 +6,21 @@ import {EXIT_NO_IMAGE} from './constants'
 class Exits extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {vis: true, exits: []}
+        this.state = {vis: true, exits: [], inExits: []}
     }
 
+    shouldComponentUpdate(props, state, something) {
+        console.log(props)
+        console.log(state)
+        console.log(something)
+
+        return true
+    }
     componentDidUpdate(prevUpdate) {
         if (this.props.inPlace.placeId === 0) return
-        if (prevUpdate.inPlace && prevUpdate.inPlace.placeId !== this.props.inPlace.placeId) {
+  
+       // if (prevUpdate.inPlace && prevUpdate.inPlace.exits && prevUpdate.inPlace.exits !== this.props.inPlace.exits) {
+           if (this.state.inExits !== this.props.inPlace.exits) {
             if (Array.isArray(this.props.inPlace.exits)) {
             const postData = this.props.inPlace.exits.map(exit => {
                  // eslint-disable-next-line
@@ -42,7 +51,7 @@ class Exits extends React.Component {
                     exitsArray.push(exitObj)
                  }
                 })
-                this.setState({exits: exitsArray})
+                this.setState({exits: exitsArray, inExits: this.props.inPlace.exits})
                 })
             }
         }

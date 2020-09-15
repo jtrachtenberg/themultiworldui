@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { setFormHeader } from '../utils/formUtils';
 
-export const SpaceSelect = ({userId, inSpaceId, spaces, setCurrentSpace, loadPlaces}) => {
+export const SpaceSelect = ({useTitle, userId, inSpaceId, spaces, setCurrentSpace, loadPlaces}) => {
     const [spaceId, setSpaceId] = useState(inSpaceId)
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export const SpaceSelect = ({userId, inSpaceId, spaces, setCurrentSpace, loadPla
     if (userId && Array.isArray(spaces))
         return (
             <div>
-                <div>{setFormHeader("Select a space")}</div>
+                <div>{useTitle && setFormHeader("Select a space")}</div>
                     <select value={spaceId} onChange={(e) => {
                         setSpaceId(Number(e.target.value))
                         if (typeof loadPlaces === 'function') loadPlaces(e.target.value)

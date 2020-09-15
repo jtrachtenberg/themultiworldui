@@ -62,13 +62,13 @@ export const updateHandler = async (type, obj, handler, isSilent) => {
     .then(response => {
         if (!isSilent) obj.failed = false
         else obj.update = true
-        handler(obj)
+        if (typeof handler === 'function') handler(obj)
     })
     .catch(err => {
-        console.log(err);
+        console.log('error',err);
         if (!isSilent) obj.failed = true
         else obj.update = true
-        handler(obj)
+        if (typeof handler === 'function') handler(obj)
     }); 
   }
 

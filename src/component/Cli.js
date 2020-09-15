@@ -287,7 +287,7 @@ class Cli extends React.Component {
                         cmds.push(`${key}`)
                 })
             })
-            const cmdString = cmds.join(",")
+            const cmdString = cmds.join(", ")
             const stateData = {currentInput: "", loadCommands: true}
             this.formatResults(`Available commands: ${cmdString}`, stateData, () => {
                 this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight

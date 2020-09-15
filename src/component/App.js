@@ -7,7 +7,6 @@ import * as adminCommands from './adminCommands/adminCommands'
 import Alert from './Alert.js'
 import {EditorHook} from './EditorHook.js'
 import Main from './main'
-import Cli from './Cli'
 import Exits from './Exits'
 import {Population} from './Population'
 import {Inventory} from './Inventory'
@@ -426,8 +425,7 @@ render() {
         </ul>
       </div>
       <div className="main midCol">
-        <div className={`viewPort ${this.state.menuToggle}`}><Main inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} /></div>
-        <div className={`CliInput ${this.state.menuToggle}`}><Cli audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inPlace={this.state.place} updateUserHandler={this.updateUserHandler} childUpdateHandler={this.childHookUpdateHandler} socket={this.state.socket} isAdmin={this.state.isAdmin}/></div>
+        <div className={`viewPort ${this.state.menuToggle}`}><Main isEdit={this.state.isEdit} audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} updateUserHandler={this.updateUserHandler} socket={this.state.socket} isAdmin={this.state.isAdmin}/></div>
       </div>
       <div className="rightNav edgeCol">
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
