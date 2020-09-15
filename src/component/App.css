@@ -500,6 +500,9 @@ div.imageList {
   margin: 6px;
 }
 
+.main input[type='checkbox'] {
+  width: auto;
+}
 form#Cli {
   width: stretch;
 }
@@ -514,6 +517,10 @@ form#Cli {
   line-height: 1.5em;
   position: fixed;
   overflow: auto;
+}
+
+.main .viewPort .editButton {
+  vertical-align: middle;
 }
 
 .main .viewPort.menuIn {
@@ -592,6 +599,9 @@ form#Cli {
   border: 1px solid #ccc;
 }
 
+.resultsWindow span {
+  overflow-wrap: break-word;
+}
 .exits {
   position: relative;
 }
@@ -1064,6 +1074,30 @@ form#Cli {
 .imageContainer .iconInset {
   position: relative;
   right: 24px;
+}
+
+.viewPort .imageContainer .iconInset {
+  top: -30px;
+}
+
+.viewPort form.editorForm {
+  width: 65vw;
+}
+.viewPort .editorInput {
+  width: 75%;
+  display: block;
+}
+.viewPort label {
+  display: block;
+}
+
+.viewPort label.checkBox {
+  display: inline;
+}
+
+.viewPort .placeDescription {
+  width: 75%;
+  height: 20vh;
 }
 
 .audioContainer .iconInset {

@@ -11,7 +11,7 @@ import {MediaSearch} from './utils/MediaSearch'
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { forceOpen: false, modalReturn: {}, currentPlaying: 0, playingPlace: true, disabled: true, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
+        this.state = { forceOpen: false, modalReturn: {}, currentPlaying: 0, playingPlace: true, disabled: false, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
@@ -62,20 +62,16 @@ class Cli extends React.Component {
                                         let result = element.commandResult
                                         
                                         if (element.elementType === 'replace') {
-                                            console.log(element)
                                         // eslint-disable-next-line
                                             const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
                                             const replace = replaceFunc(element.elementFormat)
-                                            console.log(replace)
-                                            console.log(result)
-                                            console.log(element.elementSymbol.toLowerCase())
+                       
                                             result = result.replace(element.elementSymbol.toLowerCase(), replace.toLowerCase())
                                         } else if (element.elementType === 'action') {
                                             // eslint-disable-next-line
                                             const actionFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
 
                                             result = actionFunc(element.elementFormat, props, inputParts, this, React, ReactPlayer, isSafari)
-                                            console.log(result)
                                         }
                                         
                                         resolve(result)
@@ -140,8 +136,7 @@ class Cli extends React.Component {
         if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
             this.setState({
                 placeId: this.props.inPlace.placeId,
-                place: this.props.place,
-                results: ""
+                place: this.props.place
             },this.loadCommands())
         } else if (this.props.inPlace.updated) {
             this.props.inPlace.updated = false
@@ -151,7 +146,6 @@ class Cli extends React.Component {
         if (this.props.inMsg !== "" && (prevProps.inMsg !== this.props.inMsg)) {
             let prepend = <span></span>
             if (Object.keys(this.props.inSnd).length === 0 && this.props.inSnd.constructor === Object) {
-                console.log(this.props.inMsg)
                 let formatMsg
                 if (typeof this.props.inMsg === 'object') formatMsg = this.props.inMsg
                 else formatMsg = <span>{this.props.inMsg}</span>
@@ -173,9 +167,6 @@ class Cli extends React.Component {
         }
     }
 
-    parseToJXS = (inString) => {
-        
-    }
     handleChange = (e) => {
         const rulesets = []
         rulesets.push({
@@ -212,13 +203,13 @@ class Cli extends React.Component {
             })
         })
  
-        const regexp = new RegExp(`^${cmds.join('|')}|help|Help$`)
+        /*const regexp = new RegExp(`^${cmds.join('|')}|help|Help$`)
         rulesets.push({
             'type':'validate',
             'invert': true,
             'regexp': regexp,
             'state':'disabled'
-        })
+        })*/
         this.setState(handleInputChange(e,rulesets))
     }
 
@@ -262,6 +253,9 @@ class Cli extends React.Component {
                     this.formatResults(result.response, stateData, () => {
                         updateHandler("place", place, this.props.childUpdateHandler,true)
                         this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                        if (typeof result.msg !== 'undefined') {
+                            this.props.socket.emit('incoming data', {msg: result.msg, msgPlaceId: this.props.inPlace.placeId, userName: ""})
+                        }
                     })
                 }
             }
@@ -293,7 +287,7 @@ class Cli extends React.Component {
                         cmds.push(`${key}`)
                 })
             })
-            const cmdString = cmds.join(",")
+            const cmdString = cmds.join(", ")
             const stateData = {currentInput: "", loadCommands: true}
             this.formatResults(`Available commands: ${cmdString}`, stateData, () => {
                 this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
@@ -354,14 +348,14 @@ class Cli extends React.Component {
       }
       handleInlinePlayPause = (e) => {
         e.preventDefault()
-        console.log(this.state.inlinePlaying)
       this.setState({ inlinePlaying: !this.state.inlinePlaying })
     }
     setModalReturn = (inModalReturn) => {
-
-        const newInput = this.state.currentInput.trim() + ' ' + inModalReturn.name.split(' ').join('_') + ' ';
-          this.setState({modalReturn: inModalReturn, currentInput: newInput, forceOpen: false})
-          this.cliInput.focus()
+        let newInput = this.state.currentInput.trim()
+        if (typeof inModalReturn !== 'undefined' && typeof inModalReturn.name !== 'undefined')
+            newInput = newInput + ' ' + inModalReturn.name.split(' ').join('_') + ' ';
+        this.setState({modalReturn: inModalReturn, currentInput: newInput, forceOpen: false})
+        this.cliInput.focus()
       }
 
     render() {

@@ -1,7 +1,9 @@
 import React from 'react'
+import {UpdatePlaceFormHook} from './editor/UpdatePlaceFormHook'
 import {Place} from './utils/defaultObjects'
 import TooltipPopover from './utils/TooltipPopover'
 import Portal from './utils/Portal'
+import Cli from './Cli'
 
 class Main extends React.Component {
     constructor(props) {
@@ -13,7 +15,8 @@ class Main extends React.Component {
           coords: null,
           toolTipText: "",
           toolTipId: "",
-          playing: true
+          playing: true,
+          editMode: false
         }
         this.toolTip = React.createRef()
         this.toolTipText = ""
@@ -102,14 +105,24 @@ class Main extends React.Component {
       })
     }
 
+    toggleEditMode = () => {
+      this.setState({
+        editMode: !this.state.editMode
+      })
+    }
+
     formatPlace = () => {
         const place = typeof(this.props.inPlace) === 'undefined' ? Place : this.props.inPlace
-    return <div><h3>{place.title}</h3><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><span>{this.formatImage()}</span></div>
+    return <div><h3>{this.props.isEdit && <span><button className="editButton" onClick={this.toggleEditMode}><img alt="edit" src="https://img.icons8.com/material-sharp/24/000000/edit.png"/></button>&nbsp;</span>}{place.title}</h3><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><span>{this.formatImage()}</span></div>
     }
     render() {
         return (
             <div>
-            <div>{this.formatPlace()}</div>
+            <div>{!this.state.editMode && this.formatPlace()}</div>
+            <div>{this.state.editMode && <UpdatePlaceFormHook userId={this.props.inUser.userId} inPlace={this.props.inPlace} onSave={() => {this.setState({editMode: false})}} placeHandler={newPlace => {
+                    this.props.childUpdateHandler(newPlace, 'place')
+                }} />}</div>
+            <div className={`CliInput ${this.props.menuToggle}`}><Cli audioResetHandler={this.props.audioResetHandler} messageResetHander={this.props.messageResetHander} inMsg={this.props.inMsg} inSnd={this.props.inSnd} inUser={this.props.inUser} inPlace={this.props.inPlace} updateUserHandler={this.props.updateUserHandler} childUpdateHandler={this.props.childUpdateHandler} socket={this.props.socket} isAdmin={this.props.isAdmin}/></div>
             {this.state.showToolTip && (
               <Portal id="toolTip">
                 <TooltipPopover

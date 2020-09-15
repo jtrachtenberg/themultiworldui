@@ -13,8 +13,17 @@ import {PlaceSelector} from './PlaceSelector'
     });
     return ref.current;
 }*/
-
-export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlaces, placeHandler}) => {
+/**
+ * 
+ * @param {userId} bigint (Required) 
+ * @param {inPlace} object (Required)
+ * @param {placeHandler} function (Required)
+ * @param {spaces} array (optional)
+ * @param {places} array (optional)
+ * @param {editPlaces} array (optional)
+ * @param {onSave} function (optional)
+ */
+export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlaces, placeHandler, onSave}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [spaceId, setSpaceId] = useState(inPlace.spaceId)
     const [title, setTitle] = useState("")
@@ -31,6 +40,7 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
     const [showNewPoi, toggleNewPoi] = useState(false)
     const [newKeyword, setNewKeyword] = useState("")
     const [isPrivate, setIsPrivate] = useState(false)
+    const [placeList, editPlaceList] = useState([])
     //const prevSpaceId = usePrevious(spaceId)
 
     useEffect(() => {
@@ -94,7 +104,8 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
         })
 
         if (exitSelect > 0) {
-            const exit = places.find((element) => {
+            const arraySearch = Array.isArray(places) ? places : placeList
+            const exit = arraySearch.find((element) => {
                 return Number(element.placeId) === Number(exitSelect)
             })
 
@@ -135,6 +146,7 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
 
         setExits(exitsArray)
         setExitSelect(-1)
+        if (typeof onSave === 'function') onSave()
     }
 
     const formatPoi = () => {
@@ -145,7 +157,7 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
             poiCopy.splice(i,1)
             editPoi(poiCopy)
             })} />Keyword: {value.word}</label>
-        <input id={value.word} name={value.word} type="text" value={poi.find(word => word.word === value.word).description} 
+        <input className="editorInput" id={value.word} name={value.word} type="text" value={poi.find(word => word.word === value.word).description} 
         onChange={(e) => {
             const {id, value} = e.target
             
@@ -174,7 +186,7 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
                 const exitsCopy = [...exits]
                 exitsCopy.splice(i,1)
                 setExits(exitsCopy)
-                })} />Exit: {value.name}<input id={value.name} name={value.name} type="text" value={exits.find(exit => exit.placeId === value.placeId).name||""} 
+                })} />Exit: {value.name}<input className="editorInput" id={value.name} name={value.name} type="text" value={exits.find(exit => exit.placeId === value.placeId).name||""} 
                 onChange={(e) => {
                     const {id, value} = e.target
                     const index = exits.findIndex(item => item.name === id)
@@ -186,7 +198,7 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
                     else setDisabled(false)
                 }} /></label>
                 <div className="display-block">
-                    <input id={i} name="title" type="text" value={exits.find(exit => exit.placeId === value.placeId).title||""}  onChange={(e) => {
+                    <input id={i} className="editorInput" name="title" type="text" value={exits.find(exit => exit.placeId === value.placeId).title||""}  onChange={(e) => {
                     const {id, value} = e.target
                     
                     setExits(prevState => {
@@ -206,42 +218,42 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
     if (userId && inPlace && inPlace.placeId)
             return (
                 <div>
-                <div>{setFormHeader("Update Place", () => toggleIsVis(!isVis))}</div>
+                <div>
+                    {setFormHeader("Update Place", () => {
+                        if (typeof onSave !== 'function') toggleIsVis(!isVis)})
+                    }
+                </div>
                 
-                <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
-                <MediaSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} audio={audio} editAudio={editAudio} handleAudio={setModalReturn} />
+                <form className={isVis ? "editorForm" : "invis"} onSubmit={handleSubmit}>
                 <section>
-                <label>Title
-                    <input name="title" type="text" value={title||""} required={true}  onChange={(e) => setTitle(e.target.value)} />
-                </label>
-                <label>Description:
-                    <textarea name="description" value={description} required={true} onChange={(e) => setDescription(e.target.value)} />
-                </label>
-                <label>
-                Is Root?:
-                <input
+                <label htmlFor="title">Title:</label>
+                    <input className="editorInput" name="title" type="text" value={title||""} required={true}  onChange={(e) => setTitle(e.target.value)} />
+                
+                <label htmlFor="description">Description:</label>
+                    <textarea className="placeDescription" name="description" value={description} required={true} onChange={(e) => setDescription(e.target.value)} />
+                
+                <MediaSearch modalReturn={modalReturn} images={images} handleImages={setModalReturn} editImages={editImages} audio={audio} editAudio={editAudio} handleAudio={setModalReturn} />
+                <label className="checkBox" htmlFor="isRoot">Is Root?:</label>
+                <input 
                     name="isRoot"
                     type="checkbox" 
                     value={isRoot}
                     checked={isRoot}
                     onChange={(e) => toggleIsRoot(!isRoot)} />
-                </label>
-                <label>
-                Is Private?:
-                <input
+                <label className="checkBox" htmlFor="isPrivate">Is Private?:</label>
+                <input 
                     name="isPrivate"
                     type="checkbox" 
                     value={isPrivate}
                     checked={isPrivate}
                     onChange={(e) => setIsPrivate(!isPrivate)} />
-                </label>
                 </section>
                 {formatExits()}
                 <section>
                 <label>Add an Exit?</label>
-                <PlaceSelector userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setSpaceId={setSpaceId} places={places} editPlaces={editPlaces} name="addExit" value={exitSelect} setPlace={setExitSelect} skipPlaceId={inPlace.placeId}/>
+                <PlaceSelector useTitle={false} userId={userId} inSpaceId={spaceId} spaces={spaces} defaultSpaceId={inPlace.spaceId} setSpaceId={setSpaceId} places={places} editPlaces={typeof editPlaces === 'function' ? editPlaces : editPlaceList} name="addExit" value={exitSelect} setPlace={setExitSelect} skipPlaceId={inPlace.placeId}/>
                  <label>Direction for Exit?</label>
-                 <input name="direction" value={direction} type="text" onChange={(e) => setDirection(e.target.value)} />
+                 <input className="editorInput" name="direction" value={direction} type="text" onChange={(e) => setDirection(e.target.value)} />
                 </section>
                 <section>
                 <div>
@@ -249,8 +261,8 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
                 </div>
                 {showNewPoi && (
                     <div>
-                        <label>Keyword:</label>
-                        <input name="newKeyword" value={newKeyword} onChange={(e) => setNewKeyword(e.target.value)} />
+                        <label htmlFor="newKeyword">Keyword:</label>
+                        <input className="editorInput" name="newKeyword" value={newKeyword} onChange={(e) => setNewKeyword(e.target.value)} />
                         <button className="clickable" onClick={() => {
                             toggleNewPoi(false)
                             const tmpPoi = [...poi]
@@ -262,7 +274,8 @@ export const UpdatePlaceFormHook = ({ userId, inPlace, spaces, places, editPlace
                     {formatPoi()}
                 </section>
                 <section className="saveButton">
-                <button onClick={handleSubmit} disabled={disabled}>{disabled ? 'Updating' : 'Save'}</button>
+                <button onClick={handleSubmit} disabled={disabled}>{disabled ? 'Updating' : 'Update'}</button>
+                {typeof onSave === 'function' && <button onClick={onSave}>Cancel</button>}
                 </section>
                 </form>
                 </div>
