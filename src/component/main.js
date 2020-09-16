@@ -122,7 +122,7 @@ class Main extends React.Component {
             <div>{this.state.editMode && <UpdatePlaceFormHook userId={this.props.inUser.userId} inPlace={this.props.inPlace} onSave={() => {this.setState({editMode: false})}} placeHandler={newPlace => {
                     this.props.childUpdateHandler(newPlace, 'place')
                 }} />}</div>
-            <div className={`CliInput ${this.props.menuToggle}`}><Cli audioResetHandler={this.props.audioResetHandler} messageResetHander={this.props.messageResetHander} inMsg={this.props.inMsg} inSnd={this.props.inSnd} inUser={this.props.inUser} inPlace={this.props.inPlace} updateUserHandler={this.props.updateUserHandler} childUpdateHandler={this.props.childUpdateHandler} socket={this.props.socket} isAdmin={this.props.isAdmin}/></div>
+            <div className="CliInput"><Cli audioResetHandler={this.props.audioResetHandler} messageResetHander={this.props.messageResetHander} inMsg={this.props.inMsg} inSnd={this.props.inSnd} inUser={this.props.inUser} inPlace={this.props.inPlace} updateUserHandler={this.props.updateUserHandler} childUpdateHandler={this.props.childUpdateHandler} socket={this.props.socket} isAdmin={this.props.isAdmin}/></div>
             {this.state.showToolTip && (
               <Portal id="toolTip">
                 <TooltipPopover
