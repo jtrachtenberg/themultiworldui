@@ -10,7 +10,7 @@ function usePrevious(value) {
     return ref.current;
 }
 
-export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) => {
+export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
     const [spaces, loadSpaces] = useState([])
     const [places, editPlaces] = useState([])
     const [editSpace, setCurrentSpace] = useState({})
@@ -77,11 +77,6 @@ export const EditorHook = ({isEdit, inUser, inSpace, inPlace, updateHandler}) =>
                 <editorForms.CreatePlaceForm userId={inUser.userId} inPlace={inPlace} spaces={spaces} places={places} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }} />
-                { isEdit && 
-                <editorForms.UpdatePlaceForm userId={inUser.userId} spaces={spaces} inPlace={inPlace} places={places} editPlaces={editPlaces} placeHandler={newPlace => {
-                    updateHandler(newPlace, 'place')
-                }} />
-                }
             </div>
         )
     else

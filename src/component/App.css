@@ -322,17 +322,23 @@ input[type=email]:not(:placeholder-shown):invalid {
   color: #fff;
   font-family: 'Open Sans', sans-serif;
   display: inherit;
+  width: 235px;
 }
-@media screen and (max-width: 768px) {
-  .leftNav {display: inherit;width:10vw;}
+
+@media screen and (max-width: 767px) {
+  .leftNav {display: none;}
 }
 
 .leftNav .menuIcon {
-  float: right;
+  display: block;
+  position: relative;
+  left: 181px;
+  z-index: 20;
 }
 
 .leftNav .menuIcon:hover {
   cursor: pointer;
+  filter: drop-shadow(2px 4px 6px black);
 }
 
 
@@ -355,10 +361,16 @@ input[type=email]:not(:placeholder-shown):invalid {
   margin: 15px 6px 6px 14px;
 }
 
+.menuOut ul {
+  filter: brightness(0.1);
+}
+
 .leftNav ul {
-  align-items: left;
+  text-align: left;
   list-style: none;
   padding: 0px 12px;
+  position: relative;
+  left: -55px;
 }
 
 .leftNav ul .fillSpace {
@@ -454,7 +466,8 @@ form section span {
 .rightNav {
   display: block;
   position: fixed;
-  right: 6px;
+  right: 55px;
+  width: 21%;
 }
 
 @media screen and (max-width: 768px) {
@@ -506,17 +519,23 @@ div.imageList {
 form#Cli {
   width: stretch;
 }
+.main .viewPort p {
+  overflow-wrap: break-word;
+}
 
 .main .viewPort {
   display: flex;
-  width: 57vw;
-  left: 250px;
+  width: 54%;
   text-align: left;
   height: 67vh;
   padding-left: 10px;
-  line-height: 1.5em;
+  line-height: 1.8em;
+  font-size: 18px;
+  font-weight: 100;
   position: fixed;
   overflow: auto;
+  background-color: #DFDBC4;
+  color: #3B2322;
 }
 
 .main .viewPort .editButton {
@@ -531,7 +550,7 @@ form#Cli {
 }
 
 .main .viewPort.menuOut {
-  width: 69vw;
+  width: 65%;
   transform: none;
   left: 82px;
   animation-name: slideOutXMain;
