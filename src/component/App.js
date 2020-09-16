@@ -17,6 +17,8 @@ import {userStateData} from './utils/defaultObjects'
 import {Modal} from './utils/Modal'
 import Portal from './utils/Portal'
 import {fetchData} from './utils/fetchData'
+import {ReactComponent as MenuIcon} from './menu.svg';
+
 //import {audioContext} from './utils/audioContext'
 
 class App extends React.Component {
@@ -37,7 +39,7 @@ constructor(props) {
       inSnd: {},
       showModalLogin: false,
       modalReturn: {},
-      menuToggle: "",
+      menuToggle: "menuOut",
       isEdit: false,
       isAdmin: false,
       inCmd: {},
@@ -417,6 +419,9 @@ render() {
       </div>
       <div className="flex-grid">
       <div className={`leftNav edgeCol ${this.state.menuToggle}`}>
+        <span className="menuIcon"><MenuIcon onClick={() => {
+              this.menuToggle()
+          }} /></span>
         <ul>
         <li><userForms.LoginUserForm socket={this.state.socket} inUser={this.state.user} loginHandler={this.loginHandler} menuToggle={this.menuToggle} /></li>
         <li><userForms.CreateUserForm isAdmin={this.state.isAdmin} inUser={this.state.user} updateUserHandler={this.updateUserHandler}/></li>
