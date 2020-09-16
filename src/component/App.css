@@ -527,6 +527,7 @@ form#Cli {
 }
 .main .viewPort p {
   overflow-wrap: break-word;
+  min-height: 288px;
 }
 
 .main .viewPort {
@@ -567,6 +568,8 @@ form#Cli {
   text-align: center;
   margin: auto 4px;
   align-content: center;
+  float: left;
+  margin-right: 8px;
 }
 
 .main .viewPort span.imageContainer img {

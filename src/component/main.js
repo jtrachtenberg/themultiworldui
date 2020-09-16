@@ -11,6 +11,7 @@ class Main extends React.Component {
         this.state = {
           place: this.props.inPlace,
           images: [],
+          objectImages: [],
           showToolTip: false,
           coords: null,
           toolTipText: "",
@@ -29,12 +30,16 @@ class Main extends React.Component {
         this.loadPlace()
       }*/
       let images = []
+      let objectImages = []
       if (Array.isArray(this.props.inPlace.images)) images = Array.from(this.props.inPlace.images)
       if (Array.isArray(this.props.inPlace.objects))
-        this.props.inPlace.objects.forEach((object,i) => Array.isArray(object.images) ? images = [...images,...object.images] : 1)
+        this.props.inPlace.objects.forEach((object,i) => Array.isArray(object.images) ? objectImages = [...objectImages,...object.images] : 1)
       
       if (JSON.stringify(this.state.images) !== JSON.stringify(images))
         this.setState({images:images})
+
+      if (JSON.stringify(this.state.objectImages) !== JSON.stringify(objectImages))
+        this.setState({objectImages:objectImages})
     }
 
     handleOnMouseOut = (e) => {
@@ -56,9 +61,11 @@ class Main extends React.Component {
       })
     }
 
-    formatImage = () => {
-      if (Array.isArray(this.state.images) && this.state.images.length > 0) {
-        return this.state.images.map((image,i) => <span className="imageContainer" key={i}><img id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
+    formatImage = (inImages,imgClass) => {
+      inImages = inImages||this.state.images
+      imgClass = imgClass||"none"
+      if (Array.isArray(inImages) && inImages.length > 0) {
+        return inImages.map((image,i) => <span className="imageContainer" key={i}><img className={imgClass} id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
       }
      else {
         return <span></span>
@@ -113,7 +120,7 @@ class Main extends React.Component {
 
     formatPlace = () => {
         const place = typeof(this.props.inPlace) === 'undefined' ? Place : this.props.inPlace
-    return <div><h3>{this.props.isEdit && <span><button className="editButton" onClick={this.toggleEditMode}><img alt="edit" src="https://img.icons8.com/material-sharp/24/000000/edit.png"/></button>&nbsp;</span>}{place.title}</h3><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><span>{this.formatImage()}</span></div>
+    return <div><h3>{this.props.isEdit && <span><button className="editButton" onClick={this.toggleEditMode}><img alt="edit" src="https://img.icons8.com/material-sharp/24/000000/edit.png"/></button>&nbsp;</span>}{place.title}</h3><span>{this.formatImage()}</span><p>{this.formatDescription(place)}</p><div>{this.formatObjects()}</div><div>{this.formatImage(this.state.objectImages,'object')}</div></div>
     }
     render() {
         return (
