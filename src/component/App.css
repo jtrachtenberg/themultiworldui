@@ -527,6 +527,7 @@ form#Cli {
 }
 .main .viewPort p {
   overflow-wrap: break-word;
+  min-height: 288px;
 }
 
 .main .viewPort {
@@ -567,14 +568,22 @@ form#Cli {
   text-align: center;
   margin: auto 4px;
   align-content: center;
+  float: left;
+  margin-right: 8px;
 }
 
 .main .viewPort span.imageContainer img {
   height: fit-content;
-  width: 240px;
-  height: 240px;
+  width: 300px;
+  height: 300px;
   object-fit: contain;
   filter: drop-shadow(3px 6px 3px #444);
+  vertical-align: middle;
+}
+
+.main .viewPort span.imageContainer img.object {
+  width: 240px;
+  height: 240px;
 }
 
 .rightNav span.imageContainer {
@@ -586,8 +595,8 @@ form#Cli {
 .rightNav span.imageContainer img {
   height: fit-content;
   vertical-align: middle;
-  width: 75px;
-  height: 75px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   filter: drop-shadow(3px 6px 3px #444);
 }
