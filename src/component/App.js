@@ -418,7 +418,7 @@ render() {
       <Title inUser={this.state.user} />
       </div>
       <div className="flex-grid">
-      <div className={`leftNav edgeCol ${this.state.menuToggle}`}>
+      <div className={`leftNav ${this.state.menuToggle}`}>
         <span className="menuIcon"><MenuIcon onClick={() => {
               this.menuToggle()
           }} /></span>
@@ -429,10 +429,10 @@ render() {
         <li><EditorHook isAdmin={this.state.isAdmin} isEdit={this.state.isEdit} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} updateHandler={this.childHookUpdateHandler}/></li>
         </ul>
       </div>
-      <div className="main midCol">
+      <div className="main">
         <div className={`viewPort ${this.state.menuToggle}`}><Main isEdit={this.state.isEdit} audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} updateUserHandler={this.updateUserHandler} socket={this.state.socket} isAdmin={this.state.isAdmin}/></div>
       </div>
-      <div className="rightNav edgeCol">
+      <div className="rightNav">
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
         <div className="population"><Population forceUpdate={this.state.popUpdate} toggleUpdate={this.togglePopUpdate} userId={this.state.user.userId} placeId={this.state.place.placeId} /></div>
         <div className="inventory"><Inventory inUser={this.state.user} /></div>

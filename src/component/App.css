@@ -327,6 +327,12 @@ input[type=email]:not(:placeholder-shown):invalid {
 
 @media screen and (max-width: 767px) {
   .leftNav {display: none;}
+  .main .viewPort.menuOut {
+    left: 0px !important;
+  }
+  .rightNav {
+    right: 88px !important;
+  }
 }
 
 .leftNav .menuIcon {
@@ -607,7 +613,7 @@ form#Cli {
 }
 
 .resultsWindow {
-  width: 55vw;
+  width: 64vw;
   height: 7em;
   overflow: scroll;
   margin-left: -154px;
@@ -618,6 +624,9 @@ form#Cli {
   border: 1px solid #ccc;
 }
 
+.menuIn .resultsWindow {
+  width: 53vw;
+}
 .resultsWindow span {
   overflow-wrap: break-word;
 }
