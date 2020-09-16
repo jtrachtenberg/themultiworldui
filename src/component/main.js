@@ -1,4 +1,5 @@
 import React from 'react'
+import {KeyHandler} from './utils/keyHandler'
 import {UpdatePlaceFormHook} from './editor/UpdatePlaceFormHook'
 import {Place} from './utils/defaultObjects'
 import TooltipPopover from './utils/TooltipPopover'
@@ -13,11 +14,14 @@ class Main extends React.Component {
           images: [],
           objectImages: [],
           showToolTip: false,
+          showImage: false,
+          alt: "",
+          src: "",
           coords: null,
           toolTipText: "",
           toolTipId: "",
           playing: true,
-          editMode: false
+          editMode: false,
         }
         this.toolTip = React.createRef()
         this.toolTipText = ""
@@ -42,6 +46,15 @@ class Main extends React.Component {
         this.setState({objectImages:objectImages})
     }
 
+    handleImgClick = (e) => {
+      const {alt, src} = e.target
+      this.setState({
+        showImage: true,
+        alt: alt,
+        src: src
+      })
+    }
+    
     handleOnMouseOut = (e) => {
       this.setState({showToolTip: false})
     }
@@ -65,7 +78,7 @@ class Main extends React.Component {
       inImages = inImages||this.state.images
       imgClass = imgClass||"none"
       if (Array.isArray(inImages) && inImages.length > 0) {
-        return inImages.map((image,i) => <span className="imageContainer" key={i}><img className={imgClass} id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
+        return inImages.map((image,i) => <span className="imageContainer" key={i}><img onClick={this.handleImgClick} className={imgClass} id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
       }
      else {
         return <span></span>
@@ -125,6 +138,7 @@ class Main extends React.Component {
     render() {
         return (
             <div>
+              {this.state.showImage && <KeyHandler inKey={'Escape'} inKeyHandler={(keyPress)=>{this.setState({showImage: keyPress})}} />}
             <div>{!this.state.editMode && this.formatPlace()}</div>
             <div>{this.state.editMode && <UpdatePlaceFormHook userId={this.props.inUser.userId} inPlace={this.props.inPlace} onSave={() => {this.setState({editMode: false})}} placeHandler={newPlace => {
                     this.props.childUpdateHandler(newPlace, 'place')
@@ -139,6 +153,13 @@ class Main extends React.Component {
                     {this.state.toolTipText}
                   </div>
                 </TooltipPopover>
+              </Portal>
+            )}
+            {this.state.showImage && (
+              <Portal id="imgPopOver">
+                <div className="popOver" onClick={() => this.setState({showImage: false})}>
+                  <img alt={this.state.alt} width="500" src={this.state.src.replace('w=200','w=500')} onClick={() => this.setState({showImage: false})} onMouseOut={() => this.setState({showImage: false})} />
+                </div>
               </Portal>
             )}
             </div>
