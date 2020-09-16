@@ -158,7 +158,7 @@ class Main extends React.Component {
             {this.state.showImage && (
               <Portal id="imgPopOver">
                 <div className="popOver" onClick={() => this.setState({showImage: false})}>
-                  <img alt={this.state.alt} width="500" src={this.state.src.replace('w=200','w=500')} onClick={() => this.setState({showImage: false})} onMouseOut={() => this.setState({showImage: false})} />
+                  <img alt={this.state.alt} width="700" src={this.state.src.replace('w=200','w=700')} onClick={() => this.setState({showImage: false})} onMouseOut={() => this.setState({showImage: false})} />
                 </div>
               </Portal>
             )}
