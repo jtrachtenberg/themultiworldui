@@ -13,6 +13,7 @@ const look = async (inObj, inCmd) => {
         const exits = place.exits
         const poi = place.poi
         const objects = place.objects
+        const inventory = inObj.inUser.stateData.inventory
 
         if (inCmd === null || inCmd.length === 1) {
             retVal = await new Promise((resolve, reject) => setResponse(resolve, place.description))
@@ -27,6 +28,8 @@ const look = async (inObj, inCmd) => {
             retVal = await new Promise((resolve, reject) => checkExits(exits,target,resolve, reject))
         if (retVal === null)
             retVal = await new Promise((resolve, reject) => checkObjects(objects,target,resolve,reject))
+        if (retVal === null)
+            retVal = await new Promise((resolve, reject) => checkObjects(inventory,target,resolve,reject))
         if (retVal === null) {
             const article = target.slice(-1) === 's' ? 'are' : 'is'
             const retMsg = `There ${article} no ${target} here.`
@@ -44,15 +47,17 @@ const look = async (inObj, inCmd) => {
 function setResponse(resolve, msg) {
     return resolve(msg)
 }
-function checkObjects(objects,target,resolve,reject) {
-    if (Array.isArray(objects))
-        objects.forEach(object => {
-            const titleArray = object.title.split(" ")
+function checkObjects(inventory,target,resolve,reject) {
+    var regex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
+    if (Array.isArray(inventory))
+        inventory.forEach(item => {
+            const titleArray = item.title.replace(regex,'').split(" ")
             if (titleArray.find(word => word.toLowerCase() === target.toLowerCase()))
-                return resolve(object.description)
+                return resolve(item.description)
         })
     return resolve(null)
 }
+
 function checkPoi(poi,target,resolve,reject) {
     if (Array.isArray(poi))
     poi.forEach(poi => {
