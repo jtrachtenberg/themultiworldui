@@ -51,23 +51,6 @@ const look = async (inObj, inCmd) => {
                     console.log(typeof tmp)
                     retVal = tmp
                 }
-                /*
-                console.log(tmp)
-            //Check for valid look targets in the place
-            retVal = await new Promise((resolve, reject) => checkPoi(poi,target,resolve, reject))
-            if (retVal === null)
-                retVal = await new Promise((resolve, reject) => checkExits(exits,target,resolve, reject))
-            if (retVal === null)
-                retVal = await new Promise((resolve, reject) => checkObjects(objects,target,resolve,reject))
-            if (retVal === null)
-                retVal = await new Promise((resolve, reject) => checkObjects(inventory,target,resolve,reject))
-            if (retVal === null) {
-                const article = target.slice(-1) === 's' ? 'are' : 'is'
-                const retMsg = `There ${article} no ${target} here.`
-                retVal = await new Promise((resolve, reject) => resolve(retMsg))
-            }
-            //retVal = await checkExits(exits,target)  
-            */
             }catch(e) {
                 throw e;      // let caller know the promise was rejected with this reason
             }
@@ -79,35 +62,4 @@ const look = async (inObj, inCmd) => {
 function setResponse(resolve, msg) {
     return resolve(msg)
 }
-/*
-function checkObjects(inventory,target,resolve,reject) {
-    var regex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
-    if (Array.isArray(inventory))
-        inventory.forEach(item => {
-            const titleArray = item.title.replace(regex,'').split(" ")
-            if (titleArray.find(word => word.toLowerCase() === target.toLowerCase()))
-                return resolve(item.description)
-        })
-    return resolve(null)
-}
-
-function checkPoi(poi,target,resolve,reject) {
-    if (Array.isArray(poi))
-    poi.forEach(poi => {
-        if (poi.word.toLowerCase() === target.toLowerCase()) return resolve(poi.description)
-    })
-    return resolve(null)
-}
-function checkExits(exits,target,resolve, reject) {
-    if (Array.isArray(exits))
-    exits.forEach(exit => {
-        for (const [key,value] of Object.entries(exit)) {
-            if (key.toLowerCase() === target.toLowerCase()) {
-                return resolve(value.title)
-            }
-        }
-    })
-    return resolve(null)
-}
-*/
 export default look

@@ -348,7 +348,9 @@ class Cli extends React.Component {
                     src: 'disambigulation',
                     type: selectedItem.type,
                     obj: selectedItem.value,
-                    target: this.state.diTarget
+                    target: this.state.diTarget,
+                    inUser: this.props.inUser,
+                    inPlace: this.props.inPlace
                 }
                 action(actionItem, inputParts, this.state.modalReturn).then(result => {
                     
@@ -393,7 +395,6 @@ class Cli extends React.Component {
                     })
                     return cmdCheck === cmdString
             })
-            console.log(executeCommand)
             if (Array.isArray(executeCommand) && executeCommand.length === 1) {
             
                 const action = executeCommand[0][cmdString]
