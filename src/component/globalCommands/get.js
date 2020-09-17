@@ -91,22 +91,5 @@ function checkActions(inObj) {
 
     return retVal
 }
-/*function checkObjects(objects,target) {
-    let retVal = null
-    if (Array.isArray(objects))
-        for (const object of objects) {
-            const titleArray = object.title.split(" ")
-            if (titleArray.find(word => word.toLowerCase() === target.toLowerCase())) {
-                const retArray = objects.filter(obj => obj.objectId !== object.objectId)
-                retVal = {
-                    invObj:object,objects:retArray
-                }
-                
-                break;
-            }   
-        }
-
-    return retVal
-}*/
 
 export default get
