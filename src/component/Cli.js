@@ -234,7 +234,7 @@ class Cli extends React.Component {
                 let diCmd = result[0].cmd
                 let diTarget = result[0].target
                 let diArray = result[1]
-
+                console.log(diTarget)
                 const stateData = {currentInput: "", diCmd: diCmd, diArray: diArray,diTarget:diTarget}
                 this.formatResults(response, stateData, () => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
@@ -307,6 +307,7 @@ class Cli extends React.Component {
                 })
                 return
             } else if (Array.isArray(selectedItem[this.state.diCmd])) {
+                console.log(this.state.diTarget)
                 selectedItem[this.state.diCmd].forEach(cmd => cmd(this.props, inputParts,this.state.modalReturn).then(result => this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,selectedItem,() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 })))
@@ -314,6 +315,17 @@ class Cli extends React.Component {
                     console.log(failed)
                 }) 
             ) 
+            } else if (typeof selectedItem[this.state.diCmd] === 'function') {
+                console.log(this.state.diTarget)
+                const inputParts = [this.state.diCmd]
+                if (typeof this.state.diTarget === 'string' && this.state.diTarget.length > 0) inputParts.push(this.state.diTarget)
+                selectedItem[this.state.diCmd](this.props, inputParts, this.state.modalReturn).then(result => this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,selectedItem,() => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                })))
+                    .catch(failed => {
+                        console.log(failed)
+                    }) 
+            
             } else {
                 const availableCommands = this.state.availableCommands
                 let search = this.state.diCmd

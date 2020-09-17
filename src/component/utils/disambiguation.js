@@ -4,18 +4,21 @@ export const disambiguation = (objectsFound, cmd, target) => {
     objectsFound = objectsFound||[]
     let finalArray = [{retResult:<span></span>,cmd:cmd,target:target}]
     const retString = []
-    console.log(objectsFound)
+    console.log(cmd)
+    console.log(target)
     objectsFound.forEach( (item,i ) => {  
-        if (Array.isArray(item[cmd])) {//cmd disambiguation
-            retString.push(`${i+1}: ${item.objTitle}`)
-            console.log(retString)
-        } else {  
+        if (typeof item.type === 'string') {
             if (item.type === 'object') {
                 retString.push(`${i+1}: Object: ${item.value.title}`)
             } else if (item.type === 'exit') {
                 retString.push(`${i+1}: Exit: ${item.value.key}`)
             } else if (item.type === 'poi') {
                 retString.push(`${i+1}: Point of Interest: ${item.value.word}`)
+            }
+        } else {
+            if (Array.isArray(item[cmd]) || typeof (item[cmd] === 'function')) {//cmd disambiguation
+                const desc = typeof item.objTitle === 'string' ? item.objTitle : cmd
+                retString.push(`${i+1}: ${desc}`)
             }
         }
     })
