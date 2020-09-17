@@ -51,9 +51,7 @@ export const fetchData = async (cmd, postData) => {
     }
     delete postData.token
     if (token) {
-    headers["Authorization"] = `Token ${token}`;
-    //options["withCredentials"] = true
-    //options["credentials"] = "include"
+        headers["Authorization"] = `Token ${token}`;
     }
 
     let retVal = await new Promise((resolve, reject) => {

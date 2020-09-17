@@ -12,7 +12,6 @@ function usePrevious(value) {
 
 export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
     const [spaces, loadSpaces] = useState([])
-    const [places, editPlaces] = useState([])
     const [editSpace, setCurrentSpace] = useState({})
     const [updateTrigger, setUpdateTrigger] = useState(false)
     const prevUserId = usePrevious(inUser.userId)
@@ -39,7 +38,6 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
             return await fetchData('loadSpaces', postData)
         }
         if (inUser.userId > 0 && (inUser.userId !== prevUserId)) {
-       
             doFetch().then(response => {
                     if (response.length === 0)
                         response = []
@@ -74,7 +72,7 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
                 <editorForms.UpdateSpaceForm userId={inUser.userId} spaces={spaces} spaceHandler={newSpace => {
                     updateHandler(newSpace, 'space')
                 }} />
-                <editorForms.CreatePlaceForm userId={inUser.userId} inPlace={inPlace} spaces={spaces} places={places} placeHandler={newPlace => {
+                <editorForms.CreatePlaceForm userId={inUser.userId} inPlace={inPlace} spaces={spaces} placeHandler={newPlace => {
                     updateHandler(newPlace, 'place')
                 }} />
             </div>

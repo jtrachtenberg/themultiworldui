@@ -47,7 +47,7 @@ class CreateSpaceForm extends React.Component {
         if (this.props.inUser.userId > 0 && (this.props.inSpace.spaceId < 1 || Number(this.props.inSpace.spaceId) === Number(Constants.DEFAULT_SPACE) ) )
         return (
             <div>
-            <div>{setFormHeader("Create Space", this.handleHeaderClick)}</div>
+            <div>{setFormHeader("Create World", this.handleHeaderClick)}</div>
             <div>
             <form className={this.state.vis ? "n" : "invis"} onSubmit={this.handleSubmit}>
             <label>Title

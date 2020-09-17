@@ -527,7 +527,6 @@ form#Cli {
 }
 .main .viewPort p {
   overflow-wrap: break-word;
-  min-height: 288px;
 }
 
 .main .viewPort {
@@ -582,8 +581,8 @@ form#Cli {
 }
 
 .main .viewPort span.imageContainer img.object {
-  width: 240px;
-  height: 240px;
+  width: 180px;
+  height: 180px;
 }
 
 .rightNav span.imageContainer {
@@ -633,6 +632,9 @@ form#Cli {
   border: 1px solid #ccc;
 }
 
+.resultsWindow p {
+  line-height: 0.5em;
+}
 .menuIn .resultsWindow {
   width: 53vw;
 }
