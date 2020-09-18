@@ -498,6 +498,18 @@ div.searchImage {
   margin: 0px 2px 0px 2px;
 }
 
+#searchResult {
+  max-height: 100px;
+  overflow: scroll;
+  margin-top: 4px;
+  text-align: left;
+}
+
+#searchResult > div {
+  border-bottom: 1px dashed #543f3b;
+  color: #543f3b;
+}
+
 div.imageList {
   display: flex;
   overflow: scroll;
@@ -620,6 +632,9 @@ form#Cli {
   cursor: pointer;
 }
 
+.clickable svg {
+  vertical-align: middle;
+}
 .resultsWindow {
   width: 64vw;
   height: 7em;
