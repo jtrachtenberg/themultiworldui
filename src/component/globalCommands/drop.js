@@ -32,7 +32,6 @@ const drop = async (inObj, inCmd) => {
             const target = inCmd[1]
             try {
                 const newObjects = chooseObject({objectList:inventory,target:target,cmd:'drop',ambHandler:disambiguation})
-                //const newObjects = checkObjects(inventory,target)
             if (newObjects === null) {
                 const article = target.slice(-1) === 's' ? 'are' : 'is'
                 const retMsg = `There ${article} no ${target} in your inventory.`
