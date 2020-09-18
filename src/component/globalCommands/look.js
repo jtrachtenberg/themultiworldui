@@ -10,7 +10,6 @@ const look = async (inObj, inCmd) => {
     if (inObj === null)
         retVal = await new Promise((resolve, reject) => () => setResponse(resolve,"You see nothing."))
     else if (inObj.src === 'disambigulation') {
-        console.log(inObj)
         switch(inObj.type) {
             case 'poi': retVal = await new Promise((resolve, reject) => resolve(inObj.obj.description));break;
             case 'object': retVal = await new Promise((resolve, reject) => resolve(inObj.obj.description));break;

@@ -10,13 +10,13 @@ const get = async (inObj, inCmd) => {
     if (inObj === null)
         retVal = await new Promise((resolve, reject) => () => setResponse(resolve,"Nothing to do here."))
     else if (inObj.src === 'disambigulation') {
-        console.log(inObj)
+
         const target = inObj.target
         const inUser = Object.assign(inObj.inUser)
         const stateData = inUser.stateData
         const inventory = (Array.isArray(stateData.inventory) && stateData.inventory.length > 0) ? [...stateData.inventory] : []
         inventory.push(inObj.obj)
-        console.log(inventory)
+
         const modifiers = checkActions(inObj.obj)
         stateData.inventory = inventory
         inUser.stateData=stateData
@@ -34,9 +34,6 @@ const get = async (inObj, inCmd) => {
                 const target = inCmd[1]
                 try {
                     const newObjects = chooseObject({objectList:objects,target:target,cmd:'get',ambHandler:disambiguation})
-                    //const newObjects = checkObjects(objects,target)
-                    console.log(typeof newObjects)
-                    console.log(newObjects)
                     if (newObjects === null) {
                         const article = target.slice(-1) === 's' ? 'are' : 'is'
                         const retMsg = `There ${article} no ${target} here.`
@@ -47,7 +44,6 @@ const get = async (inObj, inCmd) => {
                             const stateData = inUser.stateData
                             const inventory = (Array.isArray(stateData.inventory) && stateData.inventory.length > 0) ? [...stateData.inventory] : []
                             inventory.push(newObjects[0].value)
-                            console.log(inventory)
                             const modifiers = checkActions(newObjects[0].value)
                             stateData.inventory = inventory
                             inUser.stateData=stateData
@@ -56,7 +52,7 @@ const get = async (inObj, inCmd) => {
                             retVal = await new Promise((resolve, reject) => resolve(retObj))
                         }
                     } else {
-                        console.log(typeof newObjects)
+                
                         retVal = newObjects
                     }
                 }catch(e) {
