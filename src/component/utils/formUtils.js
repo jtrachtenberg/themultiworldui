@@ -1,14 +1,16 @@
 import React from 'react';
 import {capitalizeFirstLetter} from './stringUtils';
 import {downArrowWhite} from './svgDefaults'
+import {downArrowBlack} from './svgDefaults'
 import {fetchData} from './fetchData'
 
-export const setFormHeader = (title, handler)  => {
+export const setFormHeader = (title, handler, isBlack)  => {
+    isBlack = isBlack||false
     handler = handler || null
     if (handler === null)
         return <div><h3>{title}</h3></div>
     else
-        return <div className="clickable" onClick={handler}><h3>{title}{downArrowWhite}</h3></div>
+        return <div className="clickable" onClick={handler}><h3>{title}{isBlack ? downArrowBlack : downArrowWhite}</h3></div>
 }
 
 export const loadObject = (inObj, outObj) => {

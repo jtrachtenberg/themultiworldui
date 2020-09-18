@@ -18,6 +18,7 @@ import {Modal} from './utils/Modal'
 import Portal from './utils/Portal'
 import {fetchData} from './utils/fetchData'
 import {ReactComponent as MenuIcon} from './menu.svg';
+import {WorldSearch} from './utils/WorldSearch'
 
 //import {audioContext} from './utils/audioContext'
 
@@ -433,6 +434,7 @@ render() {
         <div className={`viewPort ${this.state.menuToggle}`}><Main isEdit={this.state.isEdit} audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} updateUserHandler={this.updateUserHandler} socket={this.state.socket} isAdmin={this.state.isAdmin}/></div>
       </div>
       <div className="rightNav">
+        <div className="worldSearch"><WorldSearch updateUserHandler={this.updateUserHandler} inUser={this.state.user} socket={this.state.socket} /></div>
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
         <div className="population"><Population forceUpdate={this.state.popUpdate} toggleUpdate={this.togglePopUpdate} userId={this.state.user.userId} placeId={this.state.place.placeId} /></div>
         <div className="inventory"><Inventory inUser={this.state.user} /></div>
