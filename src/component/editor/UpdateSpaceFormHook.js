@@ -34,7 +34,7 @@ export const UpdateSpaceFormHook = ({userId, spaces, spaceHandler}) => {
     if (userId && currentSpace && currentSpace.spaceId && Array.isArray(spaces))
         return (
             <div>
-            <div>{setFormHeader("Update Space", () => toggleIsVis(!isVis))}</div>
+            <div>{setFormHeader("Update World", () => toggleIsVis(!isVis))}</div>
             <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
             <SpaceSelect userId={userId} inSpaceId={currentSpace.spaceId} spaces={spaces} defaultSpaceId={currentSpace.spaceId} setCurrentSpace={inSpaceId => setCurrentSpace(() => {
                     return spaces.find( ({ spaceId }) => spaceId === inSpaceId )

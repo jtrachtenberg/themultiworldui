@@ -23,7 +23,7 @@ export const LoadSpacesFormHook = ({userId, inSpaceId, spaces, setCurrentSpace})
                 <div>{setFormHeader("Select a space",() => toggleIsVis(!isVis))}</div>
                 <form className={isVis ? "n" : "invis"}>
                     <select onChange={(e) => setSpaceId(Number(e.target.value))}>
-                        <option value="" disabled>Select a Space</option>
+                        <option value="" disabled>Select a World</option>
                         {formatSpaces()}
                     </select>
                 </form>

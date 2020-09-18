@@ -46,7 +46,7 @@ class LoadSpacesForm extends React.Component {
         <div>
         <div>{setFormHeader("Select a space")}</div>
         <form><select onChange={this.handleChange}>
-            <option value="" disabled>Select a Space</option>
+            <option value="" disabled>Select a World</option>
             {this.formatSpaces()}
         </select></form>
         </div>

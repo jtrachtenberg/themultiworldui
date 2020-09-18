@@ -1,3 +1,5 @@
+import {chooseObject} from '../utils/chooseObject'
+import {disambiguation} from '../utils/disambiguation'
 // inObj = props, inCmd = array of input words
 // This will take the current place and react to poi and exits
 
@@ -7,7 +9,19 @@ const drop = async (inObj, inCmd) => {
     let retVal   
     if (inObj === null)
         retVal = await new Promise((resolve, reject) => () => setResponse(resolve,"Nothing."))
+    else if (inObj.src === 'disambigulation') {
+        const target = inObj.target
+        const inUser = Object.assign(inObj.inUser)
+        const stateData = inUser.stateData
+        stateData.inventory= stateData.inventory.filter(item => item.objectId !== inObj.obj.objectId)
+        inUser.stateData=stateData
 
+        
+        const objects = (Array.isArray(inObj.inPlace.objects) && inObj.inPlace.objects.length > 0) ? [...inObj.inPlace.objects] : []
+        objects.push(inObj.obj)
+        const retObj = {type:"objects",msg: `${inUser.userName} dropped the ${target}.`,value: objects, outUser: inUser,response: `You dropped the ${target}.`}
+        retVal = await new Promise((resolve, reject) => resolve(retObj))
+    } else {
         const inventory = Array.isArray(inObj.inUser.stateData.inventory) ? inObj.inUser.stateData.inventory : []
         if (inventory.length === 0) return await new Promise((resolve, reject) => resolve("You have nothing."))
 
@@ -17,51 +31,38 @@ const drop = async (inObj, inCmd) => {
         else {
             const target = inCmd[1]
             try {
-                const newObjects = checkObjects(inventory,target)
+                const newObjects = chooseObject({objectList:inventory,target:target,cmd:'drop',ambHandler:disambiguation})
+                //const newObjects = checkObjects(inventory,target)
             if (newObjects === null) {
                 const article = target.slice(-1) === 's' ? 'are' : 'is'
                 const retMsg = `There ${article} no ${target} in your inventory.`
                 retVal = await new Promise((resolve, reject) => resolve(retMsg))
-            } else {//drop the object
-                const inUser = Object.assign(inObj.inUser)
-                const stateData = inUser.stateData
-                stateData.inventory = newObjects.inventory
-                inUser.stateData=stateData
+            } else if (Array.isArray(newObjects)) {
+                if (newObjects.length === 1) {//drop the object
+                    const inUser = Object.assign(inObj.inUser)
+                    const stateData = inUser.stateData
+                    stateData.inventory = stateData.inventory.filter(item => item.objectId !== newObjects[0].value.objectId)
+                    inUser.stateData=stateData
 
-                
-                const objects = (Array.isArray(inObj.inPlace.objects) && inObj.inPlace.objects.length > 0) ? [...inObj.inPlace.objects] : []
-                objects.push(newObjects.dropObj)
-                const retObj = {type:"objects",msg: `${inUser.userName} dropped the ${target}.`,value: objects, outUser: inUser,response: `You dropped the ${target}.`}
-                retVal = await new Promise((resolve, reject) => resolve(retObj))
-
+                    
+                    const objects = (Array.isArray(inObj.inPlace.objects) && inObj.inPlace.objects.length > 0) ? [...inObj.inPlace.objects] : []
+                    objects.push(newObjects[0].value)
+                    const retObj = {type:"objects",msg: `${inUser.userName} dropped the ${target}.`,value: objects, outUser: inUser,response: `You dropped the ${target}.`}
+                    retVal = await new Promise((resolve, reject) => resolve(retObj))
+                }
+            } else {
+                retVal = newObjects
             }
             
             }catch(e) {
                 throw e;
             }
         }
-    
+    }
     return retVal
 }
 function setResponse(resolve, msg) {
     return resolve(msg)
-}
-function checkObjects(inventory,target) {
-    let retVal = null
-    if (Array.isArray(inventory))
-        for (const object of inventory) {
-            const titleArray = object.title.split(" ")
-            if (titleArray.find(word => word.toLowerCase() === target.toLowerCase())) {
-                const retArray = inventory.filter(obj => obj.objectId !== object.objectId)
-                retVal = {
-                    dropObj:object,inventory:retArray
-                }
-                
-                break;
-            }   
-        }
-
-    return retVal
 }
 
 export default drop

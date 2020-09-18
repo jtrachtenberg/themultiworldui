@@ -24,7 +24,7 @@ export const SpaceSelect = ({useTitle, userId, inSpaceId, spaces, setCurrentSpac
                         setSpaceId(Number(e.target.value))
                         if (typeof loadPlaces === 'function') loadPlaces(e.target.value)
                         }}>
-                        <option value="" disabled>Select a Space</option>
+                        <option value="" disabled>Select a World</option>
                         {formatSpaces()}
                     </select>
             </div>

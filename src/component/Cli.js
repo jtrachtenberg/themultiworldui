@@ -7,6 +7,7 @@ import * as Constants from './constants'
 import ReactPlayer from 'react-player'
 import {isMobile,isFirefox, isSafari} from 'react-device-detect'
 import {MediaSearch} from './utils/MediaSearch'
+import {disambiguation} from './utils/disambiguation'
 
 class Cli extends React.Component {
     constructor(props) {
@@ -215,6 +216,7 @@ class Cli extends React.Component {
 
     formatResults = (newLine, stateData, callback) => {
         let newResult
+        console.log('newLine',newLine)
         if (this.state.results === <span></span>)
             newResult = <span>{newLine}</span>
         else
@@ -227,7 +229,18 @@ class Cli extends React.Component {
     
     processCommandResult = (result,executeCommand) => {
         const origResult = result
-            if (typeof(result) === 'object') {
+            if (Array.isArray(result)) {//disambiguation
+                let response = result[0].retResult
+                let diCmd = result[0].cmd
+                let diTarget = result[0].target
+                let diArray = result[1]
+                console.log(diTarget)
+                const stateData = {currentInput: "", diCmd: diCmd, diArray: diArray,diTarget:diTarget}
+                this.formatResults(response, stateData, () => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                })
+            }
+            else if (typeof(result) === 'object') {
                 if (result.type === 'place') {
                     const newUser = this.props.inUser
                     newUser.stateData.newRoom = result.value.placeId
@@ -272,66 +285,157 @@ class Cli extends React.Component {
         }
     }
 
+
+
     handleCommand = async (e) => {
-
         e.preventDefault()
-        const availableCommands = this.state.availableCommands
-        const input = this.state.currentInput
-        const inputParts = input.split(" ")
-        let cmdString = inputParts[0]
-        if (cmdString === 'help' || cmdString === 'Help') {
-            const cmds = [];
-            availableCommands.forEach((cmd)=> {
-                Object.keys(cmd).forEach((key) => {
-                    if (key !== 'isBroadcast' && key !== 'objTitle')
-                        cmds.push(`${key}`)
+        if (typeof this.state.diCmd === 'string' && this.state.diCmd.length > 0) {//diambiguation
+            const input = this.state.currentInput
+            const inputParts = input.split(" ")
+            let selectedNum = Number(inputParts[0])
+            if (selectedNum < 0 || selectedNum > this.state.diArray.length) {
+                this.formatResults("Please select from the list above.",{currentInput: ""},() => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 })
-            })
-            const cmdString = cmds.join(", ")
-            const stateData = {currentInput: "", loadCommands: true}
-            this.formatResults(`Available commands: ${cmdString}`, stateData, () => {
-                this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
-            })
-            return 
-        }
-
-        const executeCommand = availableCommands.find((cmd) => {
-            let cmdCheck
-            Object.keys(cmd)
-                .forEach(function eachKey(key) { 
-                    if (key.toLowerCase() === cmdString.toLowerCase()) {
-                        //reset incase of case mismatch
-                        cmdCheck = key
-                        cmdString = key
-                    }
+                return
+            }
+            const selectedItem = this.state.diArray[selectedNum-1]
+            console.log(selectedItem)
+            if (typeof selectedItem === 'undefined') {
+                this.formatResults("Please select from the list above.",{currentInput: ""},() => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 })
-                return cmdCheck === cmdString
-        })
-        if (typeof(executeCommand) !== 'undefined') {
-        const action = executeCommand[cmdString]
-        if (Array.isArray(action)) {//object command
-            action.forEach(cmd => cmd(this.props, inputParts,this.state.modalReturn).then(result => this.processCommandResult(result,executeCommand))
+                return
+            } else if (Array.isArray(selectedItem[this.state.diCmd])) {
+                console.log(this.state.diTarget)
+                selectedItem[this.state.diCmd].forEach(cmd => cmd(this.props, inputParts,this.state.modalReturn).then(result => this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,selectedItem,() => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                })))
                 .catch(failed => {
                     console.log(failed)
                 }) 
-            )       
-        }
-        else if (typeof(action) === 'function') {//Global command
-            action(this.props, inputParts, this.state.modalReturn).then(result => this.processCommandResult(result,executeCommand))
-            .catch(failed => {
-                console.log(failed)
-            })        
-        } else if (typeof(action) === 'object') {//exit
-            const newPlaceId = action.placeId
-            const newUser = Object.assign(this.props.inUser)
-            newUser.stateData.newRoom = newPlaceId
-            this.setState({
-                currentInput: "",
-                loadCommands: true
-            },this.props.updateUserHandler(newUser))
-        }
-        } else {//invalid command
-            this.formatResults("Nothing to do here.",{},()=>{})
+            ) 
+            } else if (typeof selectedItem[this.state.diCmd] === 'function') {
+                console.log(this.state.diTarget)
+                const inputParts = [this.state.diCmd]
+                if (typeof this.state.diTarget === 'string' && this.state.diTarget.length > 0) inputParts.push(this.state.diTarget)
+                selectedItem[this.state.diCmd](this.props, inputParts, this.state.modalReturn).then(result => this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,selectedItem,() => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                })))
+                    .catch(failed => {
+                        console.log(failed)
+                    }) 
+            
+            } else {
+                const availableCommands = this.state.availableCommands
+                let search = this.state.diCmd
+                const executeCommand = availableCommands.find((cmd) => {
+                    let cmdCheck
+                    Object.keys(cmd)
+                        .forEach(function eachKey(key) { 
+                            console.log(key)
+                            console.log(search)
+                            if (key.toLowerCase() === search.toLowerCase()) {
+                                //reset incase of case mismatch
+                                cmdCheck = key
+                                search = key
+                            }
+                        })
+                        return cmdCheck === search
+                })
+                const action = executeCommand[search]
+                const actionItem = {
+                    src: 'disambigulation',
+                    type: selectedItem.type,
+                    obj: selectedItem.value,
+                    target: this.state.diTarget,
+                    inUser: this.props.inUser,
+                    inPlace: this.props.inPlace
+                }
+                action(actionItem, inputParts, this.state.modalReturn).then(result => {
+                    
+                    this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,executeCommand))         
+                })
+                .catch(failed => {
+                    console.log(failed)
+                }) 
+            }
+        } else {
+        
+            const availableCommands = this.state.availableCommands
+            const input = this.state.currentInput
+            const inputParts = input.split(" ")
+            let cmdString = inputParts[0]
+            console.log(cmdString)
+            if (cmdString === 'help' || cmdString === 'Help') {
+                const cmds = [];
+                availableCommands.forEach((cmd)=> {
+                    Object.keys(cmd).forEach((key) => {
+                        if (key !== 'isBroadcast' && key !== 'objTitle')
+                            cmds.push(`${key}`)
+                    })
+                })
+                const cmdString = cmds.join(", ")
+                const stateData = {currentInput: "", loadCommands: true}
+                this.formatResults(`Available commands: ${cmdString}`, stateData, () => {
+                    this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                })
+                return 
+            }
+
+            const executeCommand = availableCommands.filter((cmd) => {
+                let cmdCheck
+                Object.keys(cmd)
+                    .forEach(function eachKey(key) { 
+                        if (key.toLowerCase() === cmdString.toLowerCase()) {
+                            //reset incase of case mismatch
+                            cmdCheck = key
+                            cmdString = key
+                        }
+                    })
+                    return cmdCheck === cmdString
+            })
+            if (Array.isArray(executeCommand) && executeCommand.length === 1) {
+            
+                const action = executeCommand[0][cmdString]
+                if (Array.isArray(action)) {//object command
+                    action.forEach(cmd => cmd(this.props, inputParts,this.state.modalReturn).then(result => this.processCommandResult(result,executeCommand))
+                        .catch(failed => {
+                            console.log(failed)
+                        }) 
+                    )       
+                }
+                else if (typeof(action) === 'function') {//Global command
+                    action(this.props, inputParts, this.state.modalReturn).then(result => this.processCommandResult(result,executeCommand))
+                    .catch(failed => {
+                        console.log(failed)
+                    })        
+                } else if (typeof(action) === 'object') {//exit
+                    const newPlaceId = action.placeId
+                    const newUser = Object.assign(this.props.inUser)
+                    newUser.stateData.newRoom = newPlaceId
+                    this.setState({
+                        currentInput: "",
+                        loadCommands: true
+                    },this.props.updateUserHandler(newUser))
+                }
+            } else if (Array.isArray(executeCommand) && executeCommand.length > 1) {
+                disambiguation(executeCommand,cmdString,inputParts[1]||null).then(response => {
+                    console.log(response)
+                    const stateData={
+                        diCmd: response[0].cmd,
+                        diArray: response[1],
+                        diTarget: response[0].target,
+                        currentInput: ""
+                    }
+                    this.formatResults(response[0].retResult,stateData,() => {
+                        this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
+                    })
+                })
+                
+            }else {//invalid command
+                this.formatResults("Nothing to do here.",{},()=>{})
+            }
         }
     }
 

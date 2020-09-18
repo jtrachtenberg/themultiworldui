@@ -3,7 +3,7 @@ import { setFormHeader, createHandler } from '../utils/formUtils'
 import { Place } from '../utils/defaultObjects';
 import { SpaceSelect } from './SpaceSelect'
 
-export const CreatePlaceFormHook = ({userId, inPlace, spaces, places, placeHandler}) => {
+export const CreatePlaceFormHook = ({userId, inPlace, spaces, placeHandler}) => {
     const [isVis, toggleIsVis] = useState(true)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
@@ -12,11 +12,6 @@ export const CreatePlaceFormHook = ({userId, inPlace, spaces, places, placeHandl
     const [isExit, toggleIsExit] = useState(false)
     const [canEdit, toggleCanEdit] = useState(false)
     const [cmd, setCmd] = useState("")
-    
-    useEffect(() => {
-        if (places.length > 0) toggleIsRoot(false)
-        else toggleIsRoot(true)
-    }, [places])
 
     useEffect(() => {
         if (!Array.isArray(spaces) || spaces.length === 0 || (Object.keys(spaces[0]).length === 0 && spaces[0].constructor === Object)) {

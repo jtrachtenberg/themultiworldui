@@ -53,7 +53,7 @@ class UpdateSpaceForm extends React.Component {
         let form;
         if (this.state.user.userId > 0) {
             form = (<div>
-                <div>{setFormHeader("Edit Space")}</div>
+                <div>{setFormHeader("Edit World")}</div>
             <form onSubmit={this.handleSubmit}>
             <label>Title
                 <input name="title" type="text" value={this.state.title} onChange={this.handleChange} />

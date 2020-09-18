@@ -9,13 +9,6 @@ class Exits extends React.Component {
         this.state = {vis: true, exits: [], inExits: []}
     }
 
-    shouldComponentUpdate(props, state, something) {
-        console.log(props)
-        console.log(state)
-        console.log(something)
-
-        return true
-    }
     componentDidUpdate(prevUpdate) {
         if (this.props.inPlace.placeId === 0) return
   

@@ -36,7 +36,7 @@ export const CreateSpaceFormHook = ({userId, spaceHandler, spaces}) => {
     if (userId)
             return (
                 <div>
-                    <div>{setFormHeader("Create Space", () => toggleIsVis(!isVis))}</div>
+                    <div>{setFormHeader("Create World", () => toggleIsVis(!isVis))}</div>
                 <form className={isVis ? "n" : "invis"} onSubmit={handleSubmit}>
                 <label>Title
                     <input name="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
