@@ -1115,6 +1115,10 @@ form#Cli {
   right: 24px;
 }
 
+.viewPort.menuOut > div {
+  width: stretch;
+}
+
 .viewPort .imageContainer .iconInset {
   top: -30px;
 }
