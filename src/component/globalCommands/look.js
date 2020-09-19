@@ -19,10 +19,10 @@ const look = async (inObj, inCmd) => {
     } else {
         const place = inObj.inPlace
         if (typeof(place['placeId']) !== 'undefined') {
-            const exits = place.exits
-            const poi = place.poi
-            const objects = place.objects
-            const inventory = inObj.inUser.stateData.inventory
+            const exits = place.exits||[]
+            const poi = place.poi||[]
+            const objects = place.objects||[]
+            const inventory = inObj.inUser.stateData.inventory||[]
 
             if (inCmd === null || inCmd.length === 1) {
                 retVal = await new Promise((resolve, reject) => setResponse(resolve, place.description))
@@ -33,6 +33,7 @@ const look = async (inObj, inCmd) => {
             try {
                 const tmp = chooseObject({objectList:[...poi,...exits,...objects,...inventory],target:target,cmd:'look',ambHandler:disambiguation})
                 console.log(typeof tmp)
+                console.log(tmp)
                 if (tmp === null) {
                     const article = target.slice(-1) === 's' ? 'are' : 'is'
                     const retMsg = `There ${article} no ${target} here.`
@@ -43,6 +44,7 @@ const look = async (inObj, inCmd) => {
                         switch (tmp[0].type) {
                             case 'object': retVal = await new Promise((resolve, reject) => resolve(tmp[0].value.description));break;
                             case 'poi': retVal = await new Promise((resolve, reject) => resolve(tmp[0].value.description));break;
+                            case 'exit': retVal = await new Promise((resolve, reject) => resolve(tmp[0].value.value.title));break;
                             default: retVal = await new Promise((resolve, reject) => resolve(tmp[0].value.title));break;
                         }
                     }
