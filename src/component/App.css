@@ -632,6 +632,9 @@ form#Cli {
   cursor: pointer;
 }
 
+span.clickable:hover {
+  border-bottom: 1px dashed grey;
+}
 .clickable svg {
   vertical-align: middle;
 }
@@ -1360,6 +1363,13 @@ form#ObjectCreatorForm .columnContent svg {
 #npcForm.row {
   display: flex;
   max-width: 75%;
+  max-height: 65vh;
+  overflow: scroll;
+  margin: auto;
+}
+
+#npcForm .row {
+  display: flex;
   margin: auto;
 }
 
@@ -1376,4 +1386,38 @@ form#ObjectCreatorForm .columnContent svg {
 }
 #npcForm .checkBox label, .checkBox input[type='checkbox']{
   display: inline;
+}
+
+.columnThird {
+  flex: 33%;
+}
+
+.vitals .right {
+  display: inline;
+  text-align: left;
+}
+
+.vitals .left {
+  display: inline;
+  text-align: right;
+}
+
+.slideItem {
+  display:flex;
+  margin-bottom: 3px;
+}
+
+.column select {
+  margin-top: 3px;
+}
+
+img.imageSearch {
+  vertical-align: middle;
+}
+
+.inventoryListItem {
+  border-bottom: 1px dashed #543f3b;
+  color: #543f3b;
+  text-align: left;
+  margin-top: 4px;
 }

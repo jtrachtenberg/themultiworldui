@@ -60,37 +60,46 @@ export const updateHandler = async (type, obj, handler, isSilent) => {
     isSilent=isSilent||false
     
     let postUrl = `update`+capitalizeFirstLetter(type)
-    await fetchData(postUrl, obj)
+    let retVal = await fetchData(postUrl, obj)
     .then(response => {
         if (!isSilent) obj.failed = false
         else obj.update = true
         if (typeof handler === 'function') handler(obj)
+        return new Promise(resolve => resolve(obj))
     })
     .catch(err => {
         console.log('error',err);
         if (!isSilent) obj.failed = true
         else obj.update = true
         if (typeof handler === 'function') handler(obj)
+        return new Promise(resolve => resolve(obj))
     }); 
+
+    return retVal
   }
 
 export const createHandler = async (type, obj, handler) => {
   // creates entity
   let postUrl = `add`+capitalizeFirstLetter(type)
 
-  await fetchData(postUrl, obj)
+  let retVal = await fetchData(postUrl, obj)
   .then(response => {
     const idName = type+"Id"
     obj[idName] = response[0]
     obj.failed = false
     obj.create = true
-    handler(obj)
+    if (typeof handler === 'function') handler(obj)
+    console.log(obj)
+    return new Promise(resolve => resolve(obj))
   })
   .catch(err => {
     console.log(err);
     obj.failed = true
-    handler(obj)
-  }); 
+    if (typeof handler === 'function') handler(obj)
+  });
+
+  return retVal
+
 }
 
 export const toggleIsVis = state => {
