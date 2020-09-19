@@ -1348,3 +1348,32 @@ form#ObjectCreatorForm .columnContent svg {
 .popOver img {
   width: 700px;
 }
+
+.vitals {
+  text-align: left;
+}
+
+.vitals label {
+  display: block;
+}
+
+#npcForm.row {
+  display: flex;
+  max-width: 75%;
+  margin: auto;
+}
+
+#npcForm .column {
+  flex: 50%;
+}
+
+#npcForm input[type='checkbox'] {
+  display: inline !important;
+}
+
+#npcForm .checkBox {
+  display: block;
+}
+#npcForm .checkBox label, .checkBox input[type='checkbox']{
+  display: inline;
+}
