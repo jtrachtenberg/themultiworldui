@@ -9,11 +9,9 @@ export const WorldSearch = ({socket, inUser, updateUserHandler}) => {
     const resultRef = React.createRef()
     useEffect(() => {
         const channel = `search:${inUser.userId}`
-        console.log('channel',channel)
         socket.on(channel, data => processSearchResponse(data))
 
         return () => {
-            console.log('off')
             socket.off(channel)
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps   

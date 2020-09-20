@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
-import { setFormHeader, createHandler, updateHandler } from '../utils/formUtils';
-import {ReactComponent as AddIcon} from '../create.svg'
+import { createHandler, updateHandler } from '../utils/formUtils';
+import { AddActionHandler } from './AddActionHandler'
 import {MediaSearch} from '../utils/MediaSearch'
 import * as Actions from './objectActions'
 import * as Elements from './objectElements'
@@ -11,9 +11,6 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
     const [images, editImages] = useState([])
     const [modalReturn, setModalReturn] = useState({})
     const [actionStack, editActionStack] = useState([])
-    const [currentAction, setCurrentAction] = useState(0)
-    const [selectedAction, setSelectedAction] = useState(0)
-    const [selectedElementRow, setSelectedElementRow] = useState(0)
 
     useEffect(() => {
         if (typeof object !== 'undefined') {
@@ -42,36 +39,6 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
             editActionStack(object.actionStack)
         }
     },[object])
-    
-    const formatElements = () => {
-        return Object.keys(Elements).map((item,i) => {
-            return <span key={i}><button value={i} onClick = {(e) => {
-                e.preventDefault()
-                const currentActionStack = [...actionStack]
-                const newAction = Object.assign(currentActionStack[selectedAction])//{...currentActionStack[selectedAction]}
-                const currentElementList = [...newAction.elementList]
-                currentElementList[selectedElementRow].selectedElement=[...Object.entries(Elements)[i]]
-                currentElementList[selectedElementRow].commandResult=`<${item.toLowerCase()}>`
-                currentActionStack[selectedAction] = newAction
-                editActionStack(currentActionStack)
-            }}>{item}</button></span>
-        })
-    }
-
-    const formatActions = () => {
-        if (actionStack.length === 0)
-            return <span></span>
-        return actionStack.map((command,i) => {
-            const NewAction = command.value
-            return <div key={i}><NewAction setSelectedElementRow={setSelectedElementRow} userId={userId} actionStack={actionStack} editActionStack={editActionStack} actionStackIndex={i} setSelectedAction={setSelectedAction} /></div>
-        })
-    }
-
-    const formatActionsSelect = () => {
-        return Object.keys(Actions).map((item,i) => {
-            return <option key={i} value={i}>{item}</option>
-        })
-    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -96,10 +63,9 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
         editActionStack([])
         setTitle("")
         setDescription("")
-        setCurrentAction(0)
+        
         editImages([])
         setModalReturn({})
-        setSelectedElementRow(0)
         hideModal()
     }
 
@@ -124,34 +90,7 @@ export const CustomObjectModal = ({ object, userId, objectHandler, buttonText, h
                         </div>
                     </div>
                 </section>
-                <section>
-                    <div>{setFormHeader("Actions")}</div>
-                    <div className="row">
-                        <label>Add Action <AddIcon onClick = {() => {
-                                const currentActionStack = [...actionStack]
-                                const Action = Object.entries(Actions)[currentAction]
-                                const newAction = {key:Action[0],value:Action[1],elementList:[{commandResult:""}],commandAction:""}
-                                currentActionStack.push(newAction)
-                                editActionStack(currentActionStack)
-                                //setSelectedAction(currentActionStack.length-1)
-                            }
-                        }/>
-                        </label>
-                        <select name="addAction" value={currentAction} onChange={(e) => setCurrentAction(e.nativeEvent.target.value)} >
-                            <option value="-1" disabled>Select an Action</option>
-                            {formatActionsSelect()}
-                        </select>
-                    </div>
-                </section>
-                <section>
-                    <div className="row">
-                        {formatActions()}
-                    </div>
-                    <div className="row">
-                        <label>Available Elements</label>
-                            {formatElements()}
-                    </div>
-                </section>
+                <AddActionHandler userId={userId} actionStack={actionStack} editActionStack={editActionStack} />
                 <div className="row">
                     <button name="submit" onClick={handleSubmit}>{buttonText}</button>
                 </div>

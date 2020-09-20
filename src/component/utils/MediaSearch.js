@@ -1,5 +1,4 @@
 import React,{useState, useEffect} from 'react';
-import {ReactComponent as ImageSearchIcon} from '../imagesearch.svg';
 import {ReactComponent as DeleteIcon} from '../delete.svg';
 import {Modal} from '../utils/Modal'
 import Portal from '../utils/Portal'
@@ -62,7 +61,7 @@ export const MediaSearch = ({ forceOpen, audioOnly, images, handleImages, editIm
             <div className="display-block">
             {formatAudio()}
             </div>
-            <span>Add Media <ImageSearchIcon onClick={() => toggleShowModal(true)}/></span>
+            <span>Add Media <img alt="addMedia" className="imageSearch clickable" src="https://img.icons8.com/wired/32/000000/add-image.png" onClick={() => toggleShowModal(true)}/></span>
             {modalReturn && modalReturn.apilink && <div><img alt={modalReturn.alt} src={modalReturn.src} width="75"/></div>}
             {modalReturn && modalReturn.externalUrl && <div><ReactPlayer width="240px" height="30px" controls={true} url={modalReturn.src} /></div>}
         </section>

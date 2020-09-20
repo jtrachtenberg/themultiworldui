@@ -632,6 +632,9 @@ form#Cli {
   cursor: pointer;
 }
 
+span.clickable:hover {
+  border-bottom: 1px dashed grey;
+}
 .clickable svg {
   vertical-align: middle;
 }
@@ -1256,7 +1259,7 @@ li.searchAudioEmpty {
 
 
 
-form#ObjectCreatorForm {
+form#ObjectCreatorForm, .formBottom {
   background: #ccc;
   display: flex;
   flex-wrap: wrap;
@@ -1270,7 +1273,7 @@ form#ObjectCreatorForm textarea {
   height: 10vh;
 }
 
-form#ObjectCreatorForm .column {
+form#ObjectCreatorForm .column, .formBottom .column {
   flex-grow: 1;
   width: 32%;
   min-height: 50px;
@@ -1278,7 +1281,7 @@ form#ObjectCreatorForm .column {
   vertical-align: middle;
 }
 
-form#ObjectCreatorForm .doubleColumn {
+form#ObjectCreatorForm .doubleColumn, .formBottom .doubleColumn {
   flex-grow: 2;
   width: 65%;
   min-height: 50px;
@@ -1286,28 +1289,30 @@ form#ObjectCreatorForm .doubleColumn {
   vertical-align: middle;
 }
 
-form#ObjectCreatorForm .addInput {
+form#ObjectCreatorForm .addInput, .formBottom .addInput {
   width: 24px;
   height: 24px;
 }
 
-form#ObjectCreatorForm .row {
+form#ObjectCreatorForm .row, .formBottom .row{
   display: block;
   width: 80vw;
   border-bottom: 1px dashed grey;
   padding: 2px;
 }
 
-form#ObjectCreatorForm .inputLabel {
+form#ObjectCreatorForm .inputLabel, .formBottom .inputLabel {
   display: block;
 }
 
-form#ObjectCreatorForm .columnContent {
+form#ObjectCreatorForm .columnContent, .formBottom .columnContent {
   display: block;
 }
 
 form#ObjectCreatorForm .columnContent img,
-form#ObjectCreatorForm .columnContent svg {
+form#ObjectCreatorForm .columnContent svg,
+.formBottom .columnContent img,
+.formBottom .columnContent svg {
   vertical-align: middle;
 }
 
@@ -1357,10 +1362,21 @@ form#ObjectCreatorForm .columnContent svg {
   display: block;
 }
 
-#npcForm.row {
-  display: flex;
-  max-width: 75%;
+form#npcForm {
+  max-width: 95%;
+  max-height: 50vh;
+  overflow: scroll;
   margin: auto;
+}
+
+#npcForm .row {
+  display: flex;
+  margin: auto;
+}
+
+.formBottom .row {
+  flex-grow: 1 !important;
+  display: block !important;
 }
 
 #npcForm .column {
@@ -1376,4 +1392,54 @@ form#ObjectCreatorForm .columnContent svg {
 }
 #npcForm .checkBox label, .checkBox input[type='checkbox']{
   display: inline;
+}
+
+.columnThird {
+  flex: 33%;
+}
+
+.vitals .right {
+  display: inline;
+  text-align: left;
+}
+
+.vitals .left {
+  display: inline;
+  text-align: right;
+}
+
+.slideItem {
+  display:flex;
+  margin-bottom: 3px;
+}
+
+.column select {
+  margin-top: 3px;
+}
+
+img.imageSearch {
+  vertical-align: middle;
+}
+
+.inventoryListItem {
+  border-bottom: 1px dashed #543f3b;
+  color: #543f3b;
+  text-align: left;
+  margin-top: 4px;
+}
+
+.inventoryListItem img {
+  vertical-align: middle;
+}
+
+label.heading {
+  border-bottom: 1px dotted black;
+}
+
+label img {
+  vertical-align: middle;
+}
+
+button.chatModeOn {
+  background-color: lightseagreen;
 }
