@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {ReactComponent as AddLockIcon} from '../../addConstraint.svg'
 import {ReactComponent as AddActionIcon} from '../../addAction.svg'
 
-export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, setSelectedElementRow, setSelectedAction}) => {
+export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, setSelectedElementRow, setSelectedAction, actionName}) => {
     const [elementRow, setElementRow] = useState(0)
 
     useEffect(() => {
@@ -68,7 +68,7 @@ export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, s
         <section>
         <div className="column">
             <div className="columnContent">
-            <label className="inputLabel">Command to Activate:</label>
+            <label className="inputLabel">{actionName||'Command'} to Activate:</label>
                 <div>
                     <AddLockIcon />
                     <input name="commandAction" value={actionStack[actionStackIndex].commandAction||""} type="text" onClick={(e) => {setSelectedAction(actionStackIndex)}} onFocus={(e) => {setSelectedAction(actionStackIndex)}} onChange={handleInputChange} />

@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react'
 import { setFormHeader, createHandler } from '../utils/formUtils';
 import { fetchData } from '../utils/fetchData'
-//import {ReactComponent as AddIcon} from '../create.svg'
 import {MediaSearch} from '../utils/MediaSearch'
+import { AddActionHandler } from './AddActionHandler'
+import { AddReactionHandler } from './AddReactionHandler'
 //import * as Actions from './objectActions'
 //import * as Presets from './presetObjects'
 //import * as Elements from './objectElements'
-//import * as Scripts from './npcScripts'
 
 
 
@@ -14,6 +14,7 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
 
     const [modalReturn, setModalReturn] = useState({})
     const [actionStack, editActionStack] = useState([])
+    const [reactionStack, editReactionStack] = useState([])
     const [images, editImages] = useState([])
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
@@ -31,7 +32,15 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
     const [selectedFaction, setSelectedFaction] = useState(-1)
     const [addingFaction, toggleAddingFaction] = useState(false)
     const [newFaction, setNewFaction] = useState("")
+    const [scripts, editScripts] = useState([])
+    const [selectedScript, setSelectedScript] = useState(-1)
+
     useEffect(() => {
+        async function loadScripts() {
+            const postData = {userId: userId}
+
+            return await fetchData('getScripts', postData)
+        }
         async function loadFactions() {
             const postData = {userId: userId}
 
@@ -56,6 +65,9 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
         })
         loadFactions()
         .then(response => editFactions(response))
+
+        loadScripts()
+        .then(response => editScripts(response))
     },[userId])
 
     const addFaction = (e) => {
@@ -66,15 +78,17 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
 
     }
 
+    const formatScriptsSelect = () => {
+        return scripts.map(script => <option key={script.scriptId} value={script.scriptId}>{script.name}</option>)
+    }
+
     const formatFactionSelect = () => {
-        console.log('formatfactions',factions)
         return factions.map(faction => <option key={faction.factionId} value={faction.factionId}>{faction.name}</option>)
     }
 
     const formatInventory = () => {
-        console.log(inventory)
         if (!Array.isArray(inventory) || inventory.length === 0) return <span></span>
-        else return inventory.map(object => <div key={object.objectId} className="inventoryListItem">{object.title}</div>)
+        else return inventory.map(object => <div key={object.objectId} className="inventoryListItem"><img src="https://img.icons8.com/material-outlined/24/000000/delete-forever.png" alt="delete" className="clickable" onClick={e => editInventory(currentInventory => currentInventory.filter(item => item.objectId !== object.objectId))} />{object.title}</div>)
     }
 
     const formatObjectSelect = () => {
@@ -87,13 +101,31 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
         let finalImages = Array.isArray(images) ? [...images] : []
         if (modalReturn !== {}) finalImages.push(modalReturn)
 
+        const finalActionStack = {
+            type:"NPC",
+            actionStack: actionStack,
+            reactionStack: reactionStack,
+            isHostile: isHostile,
+            useAIBehaviors: useAIBehaviors,
+            behaviors: useAIBehaviors ? {
+                hap: hap,
+                friend: friend,
+                intel: intel,
+                advent: advent,
+                strength: strength
+             } : {},
+             inventory: inventory,
+             faction: selectedFaction,
+             scripts: scripts
+        }
+
         const postData = {
             userId: userId,
             isRoot: true,
             title: name,
             description: description,
             images: finalImages,
-            actionStack: actionStack
+            actionStack: finalActionStack
         }
 
         createHandler('object',postData, objectHandler)
@@ -108,7 +140,8 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
 
     return (
         <div>{setFormHeader('NPC Editor')}
-        <form id="npcForm" className="row">
+        <form id="npcForm">
+            <div className="row">
             <section className="vitals column">
                 <label htmlFor="name">Name</label>
                 <input id="name" form="" name="name" value={name} onChange={(e) => setName(e.target.value)} type="text" />
@@ -165,13 +198,19 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
                     </span>
                     <span className="column">
                         <label>Scipts</label><span className="clickable"> +Add Script</span>
-                        <select>
-                            <option>Move to Royal Stable at 8:00am</option>
-                            <option>Move to Red's House at 5:00pm</option>
+                        <select name="scriptSelect" id="scriptSelect" vale={selectedScript} onChange={e => setSelectedScript(e.target.value)} >
+                            <option disabled={true} value={-1}>Select an available script</option>
+                            {formatScriptsSelect()}
                         </select>
                     </span>
                 </div>
             </section>
+            </div>
+            <div className="formBottom">
+            <AddActionHandler userId={userId} actionStack={actionStack} editActionStack={editActionStack} />
+            <AddReactionHandler userId={userId} reactionStack={reactionStack} editReactionStack={editReactionStack} />
+
+            </div>
         </form>
         <button name="submit" onClick={handleSubmit}>{buttonText}</button>
         </div>
