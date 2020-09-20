@@ -6,13 +6,12 @@ import * as AdminCommands from './adminCommands/adminCommands'
 import * as Constants from './constants'
 import ReactPlayer from 'react-player'
 import {isMobile,isFirefox, isSafari} from 'react-device-detect'
-import {MediaSearch} from './utils/MediaSearch'
 import {disambiguation} from './utils/disambiguation'
 
 class Cli extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { forceOpen: false, modalReturn: {}, currentPlaying: 0, playingPlace: true, disabled: false, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
+        this.state = { chatMode: false, forceOpen: false, modalReturn: {}, currentPlaying: 0, playingPlace: true, disabled: false, loadCommands: true, user: props.inUser, currentInput: "", availableCommands: null, results: <span></span>, placeId: Constants.DEFAULT_PLACE, place: this.props.inPlace}
         this.resultRef = React.createRef()
     }  
 
@@ -268,6 +267,7 @@ class Cli extends React.Component {
                         this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                         if (typeof result.msg !== 'undefined') {
                             this.props.socket.emit('incoming data', {msg: result.msg, msgPlaceId: this.props.inPlace.placeId, userName: ""})
+                            this.cliInput.focus()
                         }
                     })
                 }
@@ -360,6 +360,28 @@ class Cli extends React.Component {
                     console.log(failed)
                 }) 
             }
+        } else if (this.state.chatMode) {
+            let cmdString = 'say'
+            const executeCommand = this.state.availableCommands.filter((cmd) => {
+                let cmdCheck
+                Object.keys(cmd)
+                    .forEach(function eachKey(key) { 
+                        if (key.toLowerCase() === cmdString.toLowerCase()) {
+                            //reset incase of case mismatch
+                            cmdCheck = key
+                            cmdString = key
+                        }
+                    })
+                    return cmdCheck === cmdString
+            })
+            const action = executeCommand[0]['say']
+            const input = this.state.currentInput
+            const inputParts = input.split(" ")
+            const msg = ['say',...inputParts]
+            action(this.props, msg, this.state.modalReturn).then(result => this.processCommandResult(result,executeCommand))
+                    .catch(failed => {
+                        console.log(failed)
+                    })      
         } else {
         
             const availableCommands = this.state.availableCommands
@@ -476,7 +498,8 @@ class Cli extends React.Component {
                     <SendIcon />
                     </button>
                     <span className="cliPlayButton">{this.formatAudio()}{(Array.isArray(this.props.inPlace.audio) && this.props.inPlace.audio.length > 0) && <button onClick={this.handlePlayPause}>{ this.state.playingPlace ? <img alt="pause" src="https://img.icons8.com/android/24/000000/pause.png"/> : <img alt="play" src="https://img.icons8.com/android/24/000000/play.png"/>}</button> }</span>
-                    <span className="cliAudioSearch"><MediaSearch audioOnly={true} modalReturn={this.setModalReturn} handleAudio={this.setModalReturn} forceOpen={this.state.forceOpen} /></span>
+                    <span className="cliAudioSearch"><button className={this.state.chatMode ? 'chatModeOn' : 'chatModeOff'} onClick={(e) => {
+                        this.setState({chatMode: !this.state.chatMode});e.preventDefault()}}><img alt="chat" src="https://img.icons8.com/fluent-systems-regular/24/000000/filled-chat.png"/></button></span>
                     </span>
                     </section>
                 </form>

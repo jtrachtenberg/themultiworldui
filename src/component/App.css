@@ -1439,3 +1439,7 @@ label.heading {
 label img {
   vertical-align: middle;
 }
+
+button.chatModeOn {
+  background-color: lightseagreen;
+}
