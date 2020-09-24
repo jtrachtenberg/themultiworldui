@@ -327,7 +327,7 @@ input[type=email]:not(:placeholder-shown):invalid {
 
 @media screen and (max-width: 767px) {
   .leftNav {display: none;}
-  .main .viewPort.menuOut {
+  .main .viewPort.menuOut, .main .viewPort.menuStart {
     left: 0px !important;
   }
   .rightNav {
@@ -347,7 +347,10 @@ input[type=email]:not(:placeholder-shown):invalid {
   filter: drop-shadow(2px 4px 6px black);
 }
 
-
+.menuStart {
+  position: relative;
+  left: -166px;
+}
 
 .menuIn {
   animation-name: slideInX;
@@ -367,7 +370,7 @@ input[type=email]:not(:placeholder-shown):invalid {
   margin: 15px 6px 6px 14px;
 }
 
-.menuOut ul {
+.menuOut ul, .menuStart ul {
   filter: brightness(0.1);
 }
 
@@ -474,6 +477,8 @@ form section span {
   position: fixed;
   right: 55px;
   width: 21%;
+  height: 80vh;
+  overflow: scroll;
 }
 
 @media screen and (max-width: 768px) {
@@ -575,6 +580,12 @@ form#Cli {
   animation-duration: 0.5s;
 }
 
+.main .viewPort.menuStart {
+  width: 65%;
+  left: 82px;
+  transform: none;
+}
+
 .main .viewPort span.imageContainer {
   text-align: center;
   margin: auto 4px;
@@ -621,7 +632,7 @@ form#Cli {
   animation-name: slideInXMain;
   animation-duration: 0.5s;
 }
-.main .CliInput.menuOut {
+.main .CliInput.menuOut, .main .CliInput.menuStart {
   transform: none;
   left: 88px;
   width: 75vw;
@@ -1133,7 +1144,7 @@ span.clickable:hover {
   right: 24px;
 }
 
-.viewPort.menuOut > div {
+.viewPort.menuOut > div, .viewPort.menuStart > div {
   width: stretch;
 }
 

@@ -37,7 +37,7 @@ export const Population = ({placeId, userId, forceUpdate, toggleUpdate}) => {
         if (allButUser.length === 0) return <div>You are alone.</div>
         if (allButUser[0].userName === null && allButUser.length === 1) return <div>You are alone.</div>
 
-        return allButUser.map((item,i) => <li key={item.userId}>{item.userName}</li>)
+        return allButUser.map((item,i) => <li key={item.userId}>{(typeof item.src !== 'undefined' && item.src !== null) ? <span className="imageContainer"><img alt={item.alt} src={item.src} /></span> : <span></span>}{item.userName}</li>)
     }
 
     return (
