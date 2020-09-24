@@ -44,47 +44,57 @@ class Cli extends React.Component {
 
         if (Array.isArray(this.props.inPlace.objects) && this.props.inPlace.objects.length > 0)
             this.props.inPlace.objects.forEach(object => {
-                const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack
-                actionStack.forEach(action => {
-                    const funcArray = []
-                    if (action.key === "Command") {
-                        action.elementList.forEach(element => {
-                            if (!Array.isArray(element.selectedElement)) {//Simple string response
-                                const retFunction = (props, inputParts) => {
-                                    const retVal = new Promise((resolve) => resolve(element.commandResult))
-                                    return retVal
-                                }
-                                funcArray.push(retFunction)
-                            }
-                            else {
-                                const retFunction = (props, inputParts) => {
-                                    const retVal = new Promise((resolve) => {
-                                        let result = element.commandResult
-                                        
-                                        if (element.elementType === 'replace') {
-                                        // eslint-disable-next-line
-                                            const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
-                                            const replace = replaceFunc(element.elementFormat)
-                       
-                                            result = result.replace(element.elementSymbol.toLowerCase(), replace.toLowerCase())
-                                        } else if (element.elementType === 'action') {
-                                            // eslint-disable-next-line
-                                            const actionFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
-
-                                            result = actionFunc(element.elementFormat, props, inputParts, this, React, ReactPlayer, isSafari)
+                if (typeof object.type !== 'undefined' && object.type === 'NPC') {
+                    console.log('object',object)
+                }
+                else {
+                    const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack||[]
+                    console.log('actionStack',actionStack)
+                    if (Array.isArray(actionStack)) {
+                        actionStack.forEach(action => {
+                            const funcArray = []
+                            if (action.key === "Command") {
+                                action.elementList.forEach(element => {
+                                    if (!Array.isArray(element.selectedElement)) {//Simple string response
+                                        const retFunction = (props, inputParts) => {
+                                            const retVal = new Promise((resolve) => resolve(element.commandResult))
+                                            return retVal
                                         }
-                                        
-                                        resolve(result)
-                                    })
-                                    return retVal
-                                }
-                                funcArray.push(retFunction)
-                            }
-                        })
-                    }
+                                        funcArray.push(retFunction)
+                                    }
+                                    else {
+                                        const retFunction = (props, inputParts) => {
+                                            const retVal = new Promise((resolve) => {
+                                                let result = element.commandResult
+                                                
+                                                if (element.elementType === 'replace') {
+                                                // eslint-disable-next-line
+                                                    const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
+                                                    const replace = replaceFunc(element.elementFormat)
+                            
+                                                    result = result.replace(element.elementSymbol.toLowerCase(), replace.toLowerCase())
+                                                } else if (element.elementType === 'action') {
+                                                    // eslint-disable-next-line
+                                                    const actionFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
 
-                    commands.push({[action.commandAction]:funcArray,isBroadcast:true,objTitle:object.title})
-                })
+                                                    result = actionFunc(element.elementFormat, props, inputParts, this, React, ReactPlayer, isSafari)
+                                                }
+                                                
+                                                resolve(result)
+                                            })
+                                            return retVal
+                                        }
+                                        funcArray.push(retFunction)
+                                    }
+                                })
+                            }
+
+                            commands.push({[action.commandAction]:funcArray,isBroadcast:true,objTitle:object.title})
+                        })
+                    } else {//NPC
+
+                    }
+                }
             })
 
             if (this.props.inUser.userId > 0 && this.props.inUser.state !== null & typeof(this.props.inUser.stateData) !== 'undefined' && typeof(this.props.inUser.stateData.inventory) !== 'undefined' && Array.isArray(this.props.inUser.stateData.inventory) && this.props.inUser.stateData.inventory.length > 0)

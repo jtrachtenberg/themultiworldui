@@ -3,6 +3,7 @@ import {KeyHandler} from './utils/keyHandler'
 import {UpdatePlaceFormHook} from './editor/UpdatePlaceFormHook'
 import {Place} from './utils/defaultObjects'
 import TooltipPopover from './utils/TooltipPopover'
+import {fetchData} from './utils/fetchData'
 import Portal from './utils/Portal'
 import Cli from './Cli'
 
@@ -13,6 +14,7 @@ class Main extends React.Component {
           place: this.props.inPlace,
           images: [],
           objectImages: [],
+          npcImages: [],
           showToolTip: false,
           showImage: false,
           alt: "",
@@ -27,12 +29,7 @@ class Main extends React.Component {
         this.toolTipText = ""
     }  
 
-    componentDidUpdate() {
-      /*let currentRoom = (this.props.inUser.userId > 0 ? this.props.inUser.stateData.currentRoom : Constants.DEFAULT_PLACE)
-      const oldRoom = typeof(this.props.inPlace) === 'undefined' ? Constants.DEFAULT_PLACE : this.props.inPlace.placeId
-      if ((Number(oldRoom) !== Number(currentRoom))) {
-        this.loadPlace()
-      }*/
+    componentDidUpdate() {      
       let images = []
       let objectImages = []
       if (Array.isArray(this.props.inPlace.images)) images = Array.from(this.props.inPlace.images)
@@ -89,15 +86,26 @@ class Main extends React.Component {
       const place = this.props.inPlace
       const vowelRegex = '^[aieouAIEOU].*'
       let retString = ""
-      if (Array.isArray(place.objects) && place.objects.length > 0) {
+      let objectsOnly = place.objects
+
+      if (Array.isArray(objectsOnly) && objectsOnly.length > 0)
+          objectsOnly = objectsOnly.filter(object => {
+          if (typeof object === 'undefined' || object === null) return false
+          if (typeof object.type === 'undefined') return true
+          else if (object.type !== 'NPC') return true
+          return false
+        })
+
+      if (Array.isArray(objectsOnly) && objectsOnly.length > 0) {
+
         retString = "You see "
-        if (place.objects.length === 1) {
-          retString += place.objects[0].title.split(" ")[0] === "A" ? "" : place.objects[0].title.split(" ")[0] === "An" ? "" : place.objects[0].title.match(vowelRegex) ? 'an' : 'a'
-          retString += ` ${place.objects[0].title}`
+        if (objectsOnly.length === 1) {
+          retString += objectsOnly[0].title.split(" ")[0] === "A" ? "" : objectsOnly[0].title.split(" ")[0] === "An" ? "" : objectsOnly[0].title.match(vowelRegex) ? 'an' : 'a'
+          retString += ` ${objectsOnly[0].title}`
         }
-        else place.objects.forEach((object,i) => {
-          let tmpString = (i > 0 && place.objects.length > 2) ? ", " : ""
-          tmpString += (i === place.objects.length-1) ? " and " : ""
+        else objectsOnly.forEach((object,i) => {
+          let tmpString = (i > 0 && objectsOnly.length > 2) ? ", " : ""
+          tmpString += (i === objectsOnly.length-1) ? " and " : ""
 
           tmpString += object.title.split(" ")[0] === "A" ? "" : object.title.split(" ")[0] === "An" ? "" : object.title.match(vowelRegex) ? 'an' : 'a'
           tmpString += ` ${object.title}`
@@ -106,7 +114,6 @@ class Main extends React.Component {
         })
         return <div>{retString}</div>
       }
-        //return place.objects.map((object,i) => <div key={i}><p>You see {object.title.split(" ")[0] === "A" ? "" : object.title.split(" ")[0] === "An" ? "" : object.title.match(vowelRegex) ? 'an' : 'a'} {object.title} here.</p></div>)
       else
         return <div></div>
     }

@@ -40,7 +40,7 @@ constructor(props) {
       inSnd: {},
       showModalLogin: false,
       modalReturn: {},
-      menuToggle: "menuOut",
+      menuToggle: "menuStart",
       isEdit: false,
       isAdmin: false,
       inCmd: {},
@@ -86,9 +86,9 @@ connected = () => {
 }
 
 menuToggle = () => {
-  let newState = "menuOut"
+  let newState = "menuIn"
 
-  if (this.state.menuToggle === "menuOut") newState="menuIn"
+  if (this.state.menuToggle === "menuIn") newState="menuOut"
   this.setState({ menuToggle: newState})
 }
 
@@ -139,10 +139,27 @@ processResponse = (data) => {
     
   }
   else if (data.place) {
-    if (data.place.placeId === this.state.place.placeId)
-      this.setState({
-        place: data.place
-      })
+    if (data.place.placeId === this.state.place.placeId) {
+      const place = this.state.place
+      if (typeof data.update === 'string') {
+        if (data.update === 'reload') {
+          this.loadPlace(data.place.placeId)
+        }
+        else {
+          place[data.update] = data.place[data.update]
+
+          this.setState({
+            place: place
+          })
+        }
+      } else {
+        place = data.place
+      
+        this.setState({
+          place: place
+        })
+      }
+    }
   } else if (data.msg) {
     const msg = data.msg.msg
     const name = data.msg.userName
