@@ -140,7 +140,7 @@ processResponse = (data) => {
   }
   else if (data.place) {
     if (data.place.placeId === this.state.place.placeId) {
-      const place = this.state.place
+      let place = this.state.place
       if (typeof data.update === 'string') {
         if (data.update === 'reload') {
           this.loadPlace(data.place.placeId)
