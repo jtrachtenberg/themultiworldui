@@ -45,6 +45,7 @@ constructor(props) {
       isAdmin: false,
       inCmd: {},
       popUpdate: false,
+      bgImage: {},
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -243,7 +244,14 @@ childHookUpdateHandler  = (inObj, type) => {
   if (type === 'place') {
 
     const images = Array.isArray(inObj.images) ? inObj.images : []
-    
+    if (images.length > 0) {
+      document.body.style.backgroundAttachment = 'fixed'
+      document.body.style.backgroundImage = `url("${images[0].src.replace('w=200','w=1400')}")`
+      document.body.style.backgroundRepeat = 'no-repeat'
+      document.body.style.backgroundSize = 'cover'
+    } else {
+      document.body.style.backgroundImage = ''
+    }
     inObj.images = images
     inObj.updated = true
 

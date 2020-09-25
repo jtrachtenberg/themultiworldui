@@ -57,7 +57,7 @@ class Exits extends React.Component {
     formatExits = () => {
         if (typeof(this.props.inPlace) === 'undefined' || this.props.inPlace.exits === null || !Array.isArray(this.state.exits)) return <div></div>
         
-        return this.state.exits.map((exit,i) => <li className="clickable" key={exit.placeId} onClick={() => {exit.clicked = true;const tmpExits = this.state.exits;tmpExits[i]=exit;this.setState({exits: tmpExits});let timer = setTimeout(() => {this.doExit(exit.placeId);clearTimeout(timer);},150);}}><span className="imageContainer"><img className={exit.clicked ? "clicked" : "done"} alt={exit.alt} src={exit.src} /> </span>{exit.name} - {exit.title}</li>)
+        return this.state.exits.map((exit,i) => <li className="clickable" key={exit.placeId} onClick={() => {exit.clicked = true;const tmpExits = this.state.exits;tmpExits[i]=exit;this.setState({exits: tmpExits});let timer = setTimeout(() => {this.doExit(exit.placeId);clearTimeout(timer);},150);}}><span className="imageContainer"><img className={exit.clicked ? "clicked" : "done"} alt={exit.alt} src={exit.src} /> </span>{exit.name}</li>)
     }
 
     doExit = (inPlaceId) => {
@@ -69,7 +69,7 @@ class Exits extends React.Component {
         return (
             <div>
             <div>{setFormHeader("Exits", this.handleHeaderClick)}</div>
-            <div><ul>{this.formatExits()}</ul></div>
+            <div><ul>{this.state.vis && this.formatExits()}</ul></div>
             </div>
         )
     }
