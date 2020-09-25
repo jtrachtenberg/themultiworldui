@@ -501,7 +501,7 @@ class Cli extends React.Component {
                     <section>
                         <div ref={this.resultRef} name="resultsWindow" className="resultsWindow">{this.state.results}</div>
                     </section>
-                    <section>
+                    <section className="inputText">
                     <span>
                         <input type="search" spellCheck="false" autoComplete="off" autoCorrect="off" autoCapitalize="off" ref={(input) => { this.cliInput = input; }} name="currentInput" className="cli" value={this.state.currentInput} onChange={this.handleChange} />
                     <button name="send" onClick={this.handleCommand} disabled={this.state.disabled}> 

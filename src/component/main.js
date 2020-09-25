@@ -3,7 +3,6 @@ import {KeyHandler} from './utils/keyHandler'
 import {UpdatePlaceFormHook} from './editor/UpdatePlaceFormHook'
 import {Place} from './utils/defaultObjects'
 import TooltipPopover from './utils/TooltipPopover'
-import {fetchData} from './utils/fetchData'
 import Portal from './utils/Portal'
 import Cli from './Cli'
 
