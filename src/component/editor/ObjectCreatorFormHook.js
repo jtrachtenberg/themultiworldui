@@ -99,9 +99,7 @@ export const ObjectCreatorFormHook = ({userId, objectHandler, spaces}) => {
         if (Array.isArray(actionStack) && actionStack.length === 0)
             return <div></div>
         if (!Array.isArray(actions) || actions.length === 0) return <span></span>
-        console.log(actionStack)
         return actionStack.map((command,i) => {
-            console.log(actions)
             const NewAction = actions.find((value) => value.command === command.command).value
             
             return <div key={i}><NewAction currentElementNumber={currentElementNumber} setCurrentElementNumber={setCurrentElementNumber} userId={userId} handleActionChange={handleActionChange} actionNumber={i} setCurrentActionNumber={setCurrentActionNumber} actionStack={actionStack} elementStack={elementStack} editActionStack={editActionStack} editElementStack={editElementStack} handleElementChange={handleElementChange} /></div>

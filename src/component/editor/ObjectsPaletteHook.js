@@ -46,13 +46,11 @@ export const ObjectsPaletteHook = ({updateTrigger, userId, inPlace, placeHandler
                     const postData = {...object}
                     postData.placeId = inPlace.placeId
                     fetchData('addObject',postData).then(response => {
-                        console.log(response)
                         object.objectId=response[0]
                         object.type='NPC'
                         tmpObjects.push(object)
                         const tmpPlace= Object.assign(inPlace)
                         tmpPlace.objects=tmpObjects
-                        console.log('tmpPlace',tmpPlace)
                         updateHandler('place',tmpPlace,placeHandler)
                     })
 

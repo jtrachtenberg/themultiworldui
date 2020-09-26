@@ -17,7 +17,6 @@ export const S3Uploader = ({modalClose}) => {
             const returnData = response.data;
             const signedRequest = returnData.signedRequest;
             const inUrl = returnData.url;
-            console.log("Recieved a signed request " + signedRequest);
 
             fetch(signedRequest, {
                 headers: {

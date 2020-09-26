@@ -16,7 +16,6 @@ class Cli extends React.Component {
     }  
 
     loadCommands = () => {
-
         let commands = []
         for (const [key, value] of Object.entries(GlobalCommands)) {
             commands.push({[key]: value})
@@ -45,11 +44,9 @@ class Cli extends React.Component {
         if (Array.isArray(this.props.inPlace.objects) && this.props.inPlace.objects.length > 0)
             this.props.inPlace.objects.forEach(object => {
                 if (typeof object.type !== 'undefined' && object.type === 'NPC') {
-                    console.log('object',object)
                 }
                 else {
                     const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack||[]
-                    console.log('actionStack',actionStack)
                     if (Array.isArray(actionStack)) {
                         actionStack.forEach(action => {
                             const funcArray = []
@@ -100,37 +97,48 @@ class Cli extends React.Component {
             if (this.props.inUser.userId > 0 && this.props.inUser.state !== null & typeof(this.props.inUser.stateData) !== 'undefined' && typeof(this.props.inUser.stateData.inventory) !== 'undefined' && Array.isArray(this.props.inUser.stateData.inventory) && this.props.inUser.stateData.inventory.length > 0)
             this.props.inUser.stateData.inventory.forEach(object => {
                 const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack
+                console.log('actionStack: ',actionStack)
                 actionStack.forEach(action => {
-                    if (action.command === "Command")
-                        if (!Array.isArray(action.elementList)) {//Simple string response
-                            const retFunction = (props, inputParts) => {
-                                const retVal = new Promise((resolve) => resolve(action.commandResult))
-                                return retVal
+                    const funcArray = []
+                    if (action.key === "Command") {
+                        action.elementList.forEach(element => {
+                            if (!Array.isArray(element.selectedElement)) {//Simple string response
+                                const retFunction = (props, inputParts) => {
+                                    const retVal = new Promise((resolve) => resolve(element.commandResult))
+                                    return retVal
+                                }
+                                funcArray.push(retFunction)
                             }
-                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
-                        } else { //elements
-                            const retFunction = (props, inputParts) => {
-                                const retVal = new Promise((resolve) => {
-                                    let result = action.commandResult
-                                    action.elementList.forEach((element,i) =>{
+                            else {
+                                const retFunction = (props, inputParts) => {
+                                    const retVal = new Promise((resolve) => {
+                                        let result = element.commandResult
+                                        
                                         if (element.elementType === 'replace') {
                                         // eslint-disable-next-line
-                                        const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
-                                        const replace = replaceFunc(element.elementFormat)
-    
-                                        result = result.replace(element.elementSymbol, replace)
-                                        }
-                                    })
-                                    resolve(result)
-                                })
-                                return retVal
-                            }
-                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
-                        }
+                                            const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
+                                            const replace = replaceFunc(element.elementFormat)
+                    
+                                            result = result.replace(element.elementSymbol.toLowerCase(), replace.toLowerCase())
+                                        } else if (element.elementType === 'action') {
+                                            // eslint-disable-next-line
+                                            const actionFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
 
+                                            result = actionFunc(element.elementFormat, props, inputParts, this, React, ReactPlayer, isSafari)
+                                        }
+                                        
+                                        resolve(result)
+                                    })
+                                    return retVal
+                                }
+                                funcArray.push(retFunction)
+                            }
+                        })
+                    }
+
+                    commands.push({[action.commandAction]:funcArray,isBroadcast:true,objTitle:object.title})
                 })
             })
-
         this.setState({
             availableCommands: commands,
             loadCommands: false
@@ -159,7 +167,7 @@ class Cli extends React.Component {
                 let formatMsg
                 if (typeof this.props.inMsg === 'object') formatMsg = this.props.inMsg
                 else formatMsg = <span>{this.props.inMsg}</span>
-                this.formatResults(formatMsg,{},() => {
+                this.formatResults(formatMsg,{loadCommands:true},() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                     this.props.messageResetHander()
                     this.props.audioResetHandler()
@@ -225,7 +233,7 @@ class Cli extends React.Component {
 
     formatResults = (newLine, stateData, callback) => {
         let newResult
-        console.log('newLine',newLine)
+        if (stateData.loadCommands) this.loadCommands()
         if (this.state.results === <span></span>)
             newResult = <span>{newLine}</span>
         else
@@ -243,7 +251,6 @@ class Cli extends React.Component {
                 let diCmd = result[0].cmd
                 let diTarget = result[0].target
                 let diArray = result[1]
-                console.log(diTarget)
                 const stateData = {currentInput: "", diCmd: diCmd, diArray: diArray,diTarget:diTarget}
                 this.formatResults(response, stateData, () => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
@@ -310,14 +317,12 @@ class Cli extends React.Component {
                 return
             }
             const selectedItem = this.state.diArray[selectedNum-1]
-            console.log(selectedItem)
             if (typeof selectedItem === 'undefined') {
                 this.formatResults("Please select from the list above.",{currentInput: ""},() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 })
                 return
             } else if (Array.isArray(selectedItem[this.state.diCmd])) {
-                console.log(this.state.diTarget)
                 selectedItem[this.state.diCmd].forEach(cmd => cmd(this.props, inputParts,this.state.modalReturn).then(result => this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,selectedItem,() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 })))
@@ -326,7 +331,6 @@ class Cli extends React.Component {
                 }) 
             ) 
             } else if (typeof selectedItem[this.state.diCmd] === 'function') {
-                console.log(this.state.diTarget)
                 const inputParts = [this.state.diCmd]
                 if (typeof this.state.diTarget === 'string' && this.state.diTarget.length > 0) inputParts.push(this.state.diTarget)
                 selectedItem[this.state.diCmd](this.props, inputParts, this.state.modalReturn).then(result => this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,selectedItem,() => {
@@ -343,8 +347,6 @@ class Cli extends React.Component {
                     let cmdCheck
                     Object.keys(cmd)
                         .forEach(function eachKey(key) { 
-                            console.log(key)
-                            console.log(search)
                             if (key.toLowerCase() === search.toLowerCase()) {
                                 //reset incase of case mismatch
                                 cmdCheck = key
@@ -398,7 +400,6 @@ class Cli extends React.Component {
             const input = this.state.currentInput
             const inputParts = input.split(" ")
             let cmdString = inputParts[0]
-            console.log(cmdString)
             if (cmdString === 'help' || cmdString === 'Help') {
                 const cmds = [];
                 availableCommands.forEach((cmd)=> {
@@ -453,7 +454,6 @@ class Cli extends React.Component {
                 }
             } else if (Array.isArray(executeCommand) && executeCommand.length > 1) {
                 disambiguation(executeCommand,cmdString,inputParts[1]||null).then(response => {
-                    console.log(response)
                     const stateData={
                         diCmd: response[0].cmd,
                         diArray: response[1],
