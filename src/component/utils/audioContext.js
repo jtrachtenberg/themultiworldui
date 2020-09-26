@@ -22,7 +22,6 @@ export const audioContext = (URL) => {
       });
         
     function play(audioBuffer) {
-        console.log('playing')
       const source = context.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(context.destination);

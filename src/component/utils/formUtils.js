@@ -89,7 +89,7 @@ export const createHandler = async (type, obj, handler) => {
     obj.failed = false
     obj.create = true
     if (typeof handler === 'function') handler(obj)
-    console.log(obj)
+
     return new Promise(resolve => resolve(obj))
   })
   .catch(err => {

@@ -45,11 +45,9 @@ class Cli extends React.Component {
         if (Array.isArray(this.props.inPlace.objects) && this.props.inPlace.objects.length > 0)
             this.props.inPlace.objects.forEach(object => {
                 if (typeof object.type !== 'undefined' && object.type === 'NPC') {
-                    console.log('object',object)
                 }
                 else {
                     const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack||[]
-                    console.log('actionStack',actionStack)
                     if (Array.isArray(actionStack)) {
                         actionStack.forEach(action => {
                             const funcArray = []
@@ -225,7 +223,6 @@ class Cli extends React.Component {
 
     formatResults = (newLine, stateData, callback) => {
         let newResult
-        console.log('newLine',newLine)
         if (this.state.results === <span></span>)
             newResult = <span>{newLine}</span>
         else
@@ -243,7 +240,6 @@ class Cli extends React.Component {
                 let diCmd = result[0].cmd
                 let diTarget = result[0].target
                 let diArray = result[1]
-                console.log(diTarget)
                 const stateData = {currentInput: "", diCmd: diCmd, diArray: diArray,diTarget:diTarget}
                 this.formatResults(response, stateData, () => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
@@ -310,14 +306,12 @@ class Cli extends React.Component {
                 return
             }
             const selectedItem = this.state.diArray[selectedNum-1]
-            console.log(selectedItem)
             if (typeof selectedItem === 'undefined') {
                 this.formatResults("Please select from the list above.",{currentInput: ""},() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 })
                 return
             } else if (Array.isArray(selectedItem[this.state.diCmd])) {
-                console.log(this.state.diTarget)
                 selectedItem[this.state.diCmd].forEach(cmd => cmd(this.props, inputParts,this.state.modalReturn).then(result => this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,selectedItem,() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                 })))
@@ -326,7 +320,6 @@ class Cli extends React.Component {
                 }) 
             ) 
             } else if (typeof selectedItem[this.state.diCmd] === 'function') {
-                console.log(this.state.diTarget)
                 const inputParts = [this.state.diCmd]
                 if (typeof this.state.diTarget === 'string' && this.state.diTarget.length > 0) inputParts.push(this.state.diTarget)
                 selectedItem[this.state.diCmd](this.props, inputParts, this.state.modalReturn).then(result => this.setState({diCmd:"",diArray:[],diTarget:""},() => this.processCommandResult(result,selectedItem,() => {
@@ -343,8 +336,6 @@ class Cli extends React.Component {
                     let cmdCheck
                     Object.keys(cmd)
                         .forEach(function eachKey(key) { 
-                            console.log(key)
-                            console.log(search)
                             if (key.toLowerCase() === search.toLowerCase()) {
                                 //reset incase of case mismatch
                                 cmdCheck = key
@@ -398,7 +389,6 @@ class Cli extends React.Component {
             const input = this.state.currentInput
             const inputParts = input.split(" ")
             let cmdString = inputParts[0]
-            console.log(cmdString)
             if (cmdString === 'help' || cmdString === 'Help') {
                 const cmds = [];
                 availableCommands.forEach((cmd)=> {
@@ -453,7 +443,6 @@ class Cli extends React.Component {
                 }
             } else if (Array.isArray(executeCommand) && executeCommand.length > 1) {
                 disambiguation(executeCommand,cmdString,inputParts[1]||null).then(response => {
-                    console.log(response)
                     const stateData={
                         diCmd: response[0].cmd,
                         diArray: response[1],

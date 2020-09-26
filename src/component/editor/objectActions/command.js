@@ -36,7 +36,6 @@ export const Command = ({ userId,actionStack,editActionStack,actionStackIndex, s
     }
 
     const formatSelectedElement = () => {
-        console.log(actionStack[actionStackIndex].elementList)
         const retItem = [<span key={'a'}></span>]
         actionStack[actionStackIndex].elementList.forEach( (ele, i) => {
             if (Array.isArray(actionStack[actionStackIndex].elementList[i].selectedElement)) {

@@ -32,8 +32,7 @@ const look = async (inObj, inCmd) => {
             if (target === 'at' && inCmd.length > 2) target = inCmd[2]
             try {
                 const tmp = chooseObject({objectList:[...poi,...exits,...objects,...inventory],target:target,cmd:'look',ambHandler:disambiguation})
-                console.log(typeof tmp)
-                console.log(tmp)
+
                 if (tmp === null) {
                     const article = target.slice(-1) === 's' ? 'are' : 'is'
                     const retMsg = `There ${article} no ${target} here.`

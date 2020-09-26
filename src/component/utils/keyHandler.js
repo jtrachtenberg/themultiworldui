@@ -23,7 +23,6 @@ export const KeyHandler = ({ inKey, inKeyHandler }) => {
         window.addEventListener('keydown', keyDownHandler)
         window.addEventListener('keyup', keyUpHandler)
         return () => {
-            console.log('there')
             window.removeEventListener('keydown', keyDownHandler)
             window.addEventListener('keyup', keyUpHandler)
         }

@@ -15,7 +15,6 @@ export const Population = ({placeId, userId, forceUpdate, toggleUpdate}) => {
             toggleUpdate()
             let timer = setTimeout(() => {
                 getPeople()
-                console.log('gotpeople')
                 clearTimeout(timer);
               },2500)
         }

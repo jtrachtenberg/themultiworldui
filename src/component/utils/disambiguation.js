@@ -4,8 +4,7 @@ export const disambiguation = (objectsFound, cmd, target) => {
     objectsFound = objectsFound||[]
     let finalArray = [{retResult:<span></span>,cmd:cmd,target:target}]
     const retString = []
-    console.log(cmd)
-    console.log(target)
+
     objectsFound.forEach( (item,i ) => {  
         if (typeof item.type === 'string') {
             if (item.type === 'object') {

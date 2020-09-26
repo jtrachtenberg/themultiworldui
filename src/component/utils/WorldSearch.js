@@ -23,7 +23,6 @@ export const WorldSearch = ({socket, inUser, updateUserHandler}) => {
     },[search])
     
     const processSearchResponse = (data) => {
-        console.log(data)
         const processedResult = data.response.map( (item,i) => <div key={i} className="clickable searchResult" onClick={ (e) => {
             inUser.stateData.newRoom = item.placeId
             toggleIsVis(false)

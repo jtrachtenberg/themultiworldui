@@ -39,7 +39,6 @@ export const Time = ({actionStack, editActionStack, actionStackIndex, elementInd
 
             currentAction.elementList[elementIndex] = currentElement
             currentActionStack[actionStackIndex] = currentAction
-            console.log(currentActionStack)
             editActionStack(currentActionStack)
         }
     })

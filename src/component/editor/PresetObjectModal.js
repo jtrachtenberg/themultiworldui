@@ -15,14 +15,12 @@ export const PresetObjectModal = ({ userId, objectHandler, buttonText, hideModal
         if (actionStack.length === 0)
             return <span></span>
         return actionStack.map((command,i) => {
-            console.log(command)
             const NewAction = command.value
             return <div key={i}><NewAction userId={userId} actionStack={actionStack} editActionStack={editActionStack} actionStackIndex={i} /></div>
         })
     }
 
     const formatPresetsSelect = () => {
-        console.log(Presets)
         return Object.keys(Presets).map((item,i) => {   
             return <option key={i} value={i}>{item}</option>
         })
@@ -61,7 +59,6 @@ export const PresetObjectModal = ({ userId, objectHandler, buttonText, hideModal
                                 const newActionNum = e.nativeEvent.target.value
                                 setCurrentAction(newActionNum)
                                 const Action = Object.entries(Presets)[newActionNum]
-                                console.log(Action)
                                 const newAction = {key:Action[0],value:Action[1],elementList:[{commandResult:""}],commandAction:""}
                 
                                 editActionStack([newAction])

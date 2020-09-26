@@ -90,7 +90,6 @@ export const CreateObjectModal = ({ tabReset, currentElementNumber, setCurrentEl
 
                 const tmpElements = Array.isArray(elementStack) ? Array.from(elementStack) : []
                 tmpElements[currentActionNumber]=Object.assign(element)
-                console.log(tmpElements)
                 editElementStack(tmpElements)
             }}>{elsymbol}</button><NewElement show={false} currentElementNumber={currentElementNumber} setCurrentElementNumber={setCurrentElementNumber} currentActionNumber={currentActionNumber} actionStack={actionStack} editActionStack={editActionStack} elementList={elementList} editElementList={editElementList} handleElementChange={handleElementChange} elementNumber={i}/>
             </span>
