@@ -387,6 +387,7 @@ input[type=email]:not(:placeholder-shown):invalid {
 
 .menuOut ul, .menuStart ul {
   filter: brightness(0.1);
+  display: none !important;
 }
 
 .leftNav ul {
@@ -401,6 +402,7 @@ input[type=email]:not(:placeholder-shown):invalid {
 
 .leftNav.menuStart ul {
   left: -166px;
+  display: none;
 }
 
 .leftNav ul .fillSpace {

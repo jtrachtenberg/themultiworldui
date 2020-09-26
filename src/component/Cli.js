@@ -16,7 +16,6 @@ class Cli extends React.Component {
     }  
 
     loadCommands = () => {
-
         let commands = []
         for (const [key, value] of Object.entries(GlobalCommands)) {
             commands.push({[key]: value})
@@ -98,37 +97,48 @@ class Cli extends React.Component {
             if (this.props.inUser.userId > 0 && this.props.inUser.state !== null & typeof(this.props.inUser.stateData) !== 'undefined' && typeof(this.props.inUser.stateData.inventory) !== 'undefined' && Array.isArray(this.props.inUser.stateData.inventory) && this.props.inUser.stateData.inventory.length > 0)
             this.props.inUser.stateData.inventory.forEach(object => {
                 const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack
+                console.log('actionStack: ',actionStack)
                 actionStack.forEach(action => {
-                    if (action.command === "Command")
-                        if (!Array.isArray(action.elementList)) {//Simple string response
-                            const retFunction = (props, inputParts) => {
-                                const retVal = new Promise((resolve) => resolve(action.commandResult))
-                                return retVal
+                    const funcArray = []
+                    if (action.key === "Command") {
+                        action.elementList.forEach(element => {
+                            if (!Array.isArray(element.selectedElement)) {//Simple string response
+                                const retFunction = (props, inputParts) => {
+                                    const retVal = new Promise((resolve) => resolve(element.commandResult))
+                                    return retVal
+                                }
+                                funcArray.push(retFunction)
                             }
-                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
-                        } else { //elements
-                            const retFunction = (props, inputParts) => {
-                                const retVal = new Promise((resolve) => {
-                                    let result = action.commandResult
-                                    action.elementList.forEach((element,i) =>{
+                            else {
+                                const retFunction = (props, inputParts) => {
+                                    const retVal = new Promise((resolve) => {
+                                        let result = element.commandResult
+                                        
                                         if (element.elementType === 'replace') {
                                         // eslint-disable-next-line
-                                        const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
-                                        const replace = replaceFunc(element.elementFormat)
-    
-                                        result = result.replace(element.elementSymbol, replace)
-                                        }
-                                    })
-                                    resolve(result)
-                                })
-                                return retVal
-                            }
-                            commands.push({[action.commandAction]:retFunction,isBroadcast:true,objTitle:object.title})
-                        }
+                                            const replaceFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
+                                            const replace = replaceFunc(element.elementFormat)
+                    
+                                            result = result.replace(element.elementSymbol.toLowerCase(), replace.toLowerCase())
+                                        } else if (element.elementType === 'action') {
+                                            // eslint-disable-next-line
+                                            const actionFunc = new Function(element.elementResult.function.arguments, element.elementResult.function.body)
 
+                                            result = actionFunc(element.elementFormat, props, inputParts, this, React, ReactPlayer, isSafari)
+                                        }
+                                        
+                                        resolve(result)
+                                    })
+                                    return retVal
+                                }
+                                funcArray.push(retFunction)
+                            }
+                        })
+                    }
+
+                    commands.push({[action.commandAction]:funcArray,isBroadcast:true,objTitle:object.title})
                 })
             })
-
         this.setState({
             availableCommands: commands,
             loadCommands: false
@@ -157,7 +167,7 @@ class Cli extends React.Component {
                 let formatMsg
                 if (typeof this.props.inMsg === 'object') formatMsg = this.props.inMsg
                 else formatMsg = <span>{this.props.inMsg}</span>
-                this.formatResults(formatMsg,{},() => {
+                this.formatResults(formatMsg,{loadCommands:true},() => {
                     this.resultRef.current.scrollTop = this.resultRef.current.scrollHeight
                     this.props.messageResetHander()
                     this.props.audioResetHandler()
@@ -223,6 +233,7 @@ class Cli extends React.Component {
 
     formatResults = (newLine, stateData, callback) => {
         let newResult
+        if (stateData.loadCommands) this.loadCommands()
         if (this.state.results === <span></span>)
             newResult = <span>{newLine}</span>
         else
