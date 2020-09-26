@@ -610,6 +610,65 @@ form#Cli {
   transform: none;
 }
 
+.resultsWindow {
+  width: 832px;
+  height: 8em;
+  overflow: scroll;
+  margin-left: -174px;
+  position: relative;
+  top: 2px;
+  left: 164px;
+  text-align: left;
+  border: 1px solid #ccc;
+  background-color: rgba(223,219,192,0.8)
+}
+
+@media screen and (max-width: 1236px) {
+  .main .viewPort.menuOut, .main .viewPort.menuStart {
+    width: 774px;
+  }
+
+  .resultsWindow {
+    width: 782px;
+  }
+}
+
+@media screen and (max-width: 1172px) {
+  .main .viewPort.menuOut, .main .viewPort.menuStart {
+    width: 724px;
+  }
+
+  .resultsWindow {
+    width: 732px;
+  }
+}
+
+@media screen and (max-width: 1106px) {
+  .main .viewPort.menuOut, .main .viewPort.menuStart {
+    width: 674px;
+  }
+
+  .resultsWindow {
+    width: 682px;
+  }
+}
+
+@media screen and (max-width: 1040px) {
+  .main .viewPort.menuOut, .main .viewPort.menuStart {
+    width: 624px;
+  }
+
+  .resultsWindow {
+    width: 632px;
+  }
+}
+
+@media screen and (max-width: 974px) {
+  .rightNav {
+    display: none;
+  }
+}
+
 .main .viewPort span.imageContainer {
   text-align: center;
   margin: auto 4px;
@@ -673,18 +732,7 @@ span.clickable:hover {
 .clickable svg {
   vertical-align: middle;
 }
-.resultsWindow {
-  width: 832px;
-  height: 8em;
-  overflow: scroll;
-  margin-left: -174px;
-  position: relative;
-  top: 2px;
-  left: 164px;
-  text-align: left;
-  border: 1px solid #ccc;
-  background-color: rgba(223,219,192,0.8)
-}
+
 section.inputText {
   position: relative;
   left: -16px;
