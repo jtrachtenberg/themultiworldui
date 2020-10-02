@@ -150,7 +150,7 @@ class Cli extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-
+        this.cliInput.focus()
         if (this.props.inPlace && (prevProps.inPlace !== this.props.inPlace)) {
             this.setState({
                 placeId: this.props.inPlace.placeId,
@@ -181,7 +181,6 @@ class Cli extends React.Component {
                         this.props.audioResetHandler()
                     })
             }
-
         }
     }
 

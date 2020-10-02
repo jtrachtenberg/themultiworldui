@@ -2,6 +2,8 @@ import React from 'react'
 import {KeyHandler} from './utils/keyHandler'
 import {UpdatePlaceFormHook} from './editor/UpdatePlaceFormHook'
 import {Place} from './utils/defaultObjects'
+import {ReactComponent as GetIcon} from './GetObject.svg';
+import {updateHandler} from './utils/formUtils'
 import TooltipPopover from './utils/TooltipPopover'
 import Portal from './utils/Portal'
 import Cli from './Cli'
@@ -23,6 +25,7 @@ class Main extends React.Component {
           toolTipId: "",
           playing: true,
           editMode: false,
+          overClass: "none"
         }
         this.toolTip = React.createRef()
         this.toolTipText = ""
@@ -33,7 +36,13 @@ class Main extends React.Component {
       let objectImages = []
       if (Array.isArray(this.props.inPlace.images)) images = Array.from(this.props.inPlace.images)
       if (Array.isArray(this.props.inPlace.objects))
-        this.props.inPlace.objects.forEach((object,i) => Array.isArray(object.images) ? objectImages = [...objectImages,...object.images] : 1)
+        this.props.inPlace.objects.forEach((object,i) => {
+          if (Array.isArray(object.images)) {
+            object.images[0].objectId = object.objectId
+            object.images[0].description = object.description
+            objectImages = [...objectImages,...object.images]
+          }
+        })
       
       if (JSON.stringify(this.state.images) !== JSON.stringify(images))
         this.setState({images:images})
@@ -70,11 +79,30 @@ class Main extends React.Component {
       })
     }
 
+    getObjectClick = (e) => {
+      const objectId = e.currentTarget.id
+      console.log('objectId: ',objectId)
+      const place = this.props.inPlace
+      const objects = place.objects
+      console.log('objects: ',objects)
+      const object = objects.find(obj => Number(obj.objectId) === Number(objectId))
+      console.log('object: ',object)
+      const newObjects = objects.filter(obj => Number(obj.objectId) !== Number(objectId))
+      place.objects = newObjects
+      const user = this.props.inUser
+      const inventory = user.stateData.inventory||[]
+      inventory.push(object)
+      user.stateData.inventory = inventory
+      updateHandler('place',place,this.props.childUpdateHandler, true)
+      this.props.updateUserHandler(user)
+    }
+
     formatImage = (inImages,imgClass) => {
       inImages = inImages||this.state.images
       imgClass = imgClass||"none"
+      const isObject = imgClass === 'object' ? true :false
       if (Array.isArray(inImages) && inImages.length > 0) {
-        return inImages.map((image,i) => <span className="imageContainer" key={i}><img onClick={this.handleImgClick} className={imgClass} id={`tooltip${i}`} onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} alt={image.alt} description={image.alt} src={image.src} /></span>)
+        return inImages.map((image,i) => <div key={i} className={isObject ? "horizontalContainer" : "none"}><span className="imageContainer" key={i}><span><img onClick={this.handleImgClick} className={imgClass} id={`tooltip${i}`} onMouseEnter={isObject ? this.handleOnMouseOver : () => {}} onMouseLeave={isObject ? this.handleOnMouseOut : () => {}} alt={image.alt} description={isObject ? image.description : image.alt} src={image.src} /></span></span><span>{isObject && <span id={image.objectId} className="getObject" onClick={this.getObjectClick}><GetIcon onMouseEnter={this.handleOnMouseOver} onMouseLeave={this.handleOnMouseOut} description="Get Object" className="hoverMe"/></span>}</span></div>)
       }
      else {
         return <span></span>
@@ -145,7 +173,7 @@ class Main extends React.Component {
         return (
             <div>
               {this.state.showImage && <KeyHandler inKey={'Escape'} inKeyHandler={(keyPress)=>{this.setState({showImage: keyPress})}} />}
-            <div>{!this.state.editMode && this.formatPlace()}</div>
+            <div className="place">{!this.state.editMode && this.formatPlace()}</div>
             <div>{this.state.editMode && <UpdatePlaceFormHook userId={this.props.inUser.userId} inPlace={this.props.inPlace} onSave={() => {this.setState({editMode: false})}} placeHandler={newPlace => {
                     this.props.childUpdateHandler(newPlace, 'place')
                 }} />}</div>

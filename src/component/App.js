@@ -79,6 +79,10 @@ componentDidMount() {
 
 }
 
+componentDidUpdate() {
+  console.log('update')
+}
+
 connected = () => {
   const update = {}
   update.stateData = this.state.user.stateData
@@ -463,7 +467,7 @@ render() {
         <div className="worldSearch"><WorldSearch updateUserHandler={this.updateUserHandler} inUser={this.state.user} socket={this.state.socket} /></div>
         <div className="exits"><Exits updateUserHandler={this.updateUserHandler} inUser={this.state.user} inPlace={this.state.place}/></div>
         <div className="population"><Population forceUpdate={this.state.popUpdate} toggleUpdate={this.togglePopUpdate} userId={this.state.user.userId} placeId={this.state.place.placeId} /></div>
-        <div className="inventory"><Inventory inUser={this.state.user} /></div>
+        <div className="inventory"><Inventory inUser={this.state.user} updateUserHandler={this.updateUserHandler} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler}/></div>
       </div>
       </div>
       <div id="portal-root"></div>
