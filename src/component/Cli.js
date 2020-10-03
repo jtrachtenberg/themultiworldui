@@ -97,7 +97,6 @@ class Cli extends React.Component {
             if (this.props.inUser.userId > 0 && this.props.inUser.state !== null & typeof(this.props.inUser.stateData) !== 'undefined' && typeof(this.props.inUser.stateData.inventory) !== 'undefined' && Array.isArray(this.props.inUser.stateData.inventory) && this.props.inUser.stateData.inventory.length > 0)
             this.props.inUser.stateData.inventory.forEach(object => {
                 const actionStack = typeof object.actionStack === 'string' ? JSON.parse(object.actionStack.replace(/\\/g, "")) : object.actionStack
-                console.log('actionStack: ',actionStack)
                 actionStack.forEach(action => {
                     const funcArray = []
                     if (action.key === "Command") {
@@ -361,7 +360,8 @@ class Cli extends React.Component {
                     obj: selectedItem.value,
                     target: this.state.diTarget,
                     inUser: this.props.inUser,
-                    inPlace: this.props.inPlace
+                    inPlace: this.props.inPlace,
+                    socket: this.props.socket
                 }
                 action(actionItem, inputParts, this.state.modalReturn).then(result => {
                     

@@ -81,12 +81,9 @@ class Main extends React.Component {
 
     getObjectClick = (e) => {
       const objectId = e.currentTarget.id
-      console.log('objectId: ',objectId)
       const place = this.props.inPlace
       const objects = place.objects
-      console.log('objects: ',objects)
       const object = objects.find(obj => Number(obj.objectId) === Number(objectId))
-      console.log('object: ',object)
       const newObjects = objects.filter(obj => Number(obj.objectId) !== Number(objectId))
       place.objects = newObjects
       const user = this.props.inUser

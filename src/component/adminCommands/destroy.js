@@ -8,6 +8,17 @@ const destroy = async (inObj, inCmd, modalReturn) => {
     if (inObj === null)
         retVal = await new Promise((resolve, reject) => () => setResponse(resolve,"Nothing to do here."))
     else if (inObj.src === 'disambigulation') {
+        if (inObj.obj.type === 'NPC') {
+            const socket = inObj.socket
+            const data = {
+                type: 'admin',
+                cmd: 'deleteNPC',
+                admincmd: 'destroy',
+                needResponse: false,
+                elements: {userId: inObj.inUser.userId, objectId: inObj.obj.objectId, placeId: inObj.inPlace.placeId}
+            }
+            socket.emit('incoming data', data)
+        }
         const retObj = {type:"objects",msg: `The ${inObj.target} has been destroyed.`, value: inObj.inPlace.objects.filter(object => object.objectId !== inObj.obj.objectId), modifiers: [],response: `You destroyed the ${inObj.target}!`}
         retVal = await new Promise((resolve, reject) => resolve(retObj))
     } else {
@@ -27,6 +38,18 @@ const destroy = async (inObj, inCmd, modalReturn) => {
                         retVal = await new Promise((resolve, reject) => resolve(retMsg))
                     } else if (Array.isArray(newObjects)) {
                         if (newObjects.length === 1) {
+                            if (newObjects[0].value.type === 'NPC') {
+                                const socket = inObj.socket
+                                const data = {
+                                    type: 'admin',
+                                    cmd: 'deleteNPC',
+                                    admincmd: 'destroy',
+                                    needResponse: false,
+                                    needReload: true,
+                                    elements: {userId: inObj.inUser.userId, objectId: newObjects[0].value.objectId, placeId: inObj.inPlace.placeId}
+                                }
+                                socket.emit('incoming data', data)
+                            }
                             const retObj = {type:"objects",msg: `The ${target} has been destroyed.`, value: objects.filter(object => object.objectId !== newObjects[0].value.objectId), modifiers: [],response: `You destroyed the ${target}!`}
                             retVal = await new Promise((resolve, reject) => resolve(retObj))
                         }

@@ -24,7 +24,8 @@ const population = async (inObj, inCmd, modalReturn) => {
         type: 'admin',
         cmd: 'getAdminPopulation',
         admincmd: 'population',
-        userId: inObj.inUser.userId
+        elements: {userId: inObj.inUser.userId},
+        needResponse: true
     }
     socket.emit('incoming data', data)
 

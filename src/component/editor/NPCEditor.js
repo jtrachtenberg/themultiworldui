@@ -1,17 +1,43 @@
 import React, {useState, useEffect} from 'react'
-import { setFormHeader, createHandler } from '../utils/formUtils';
+import { setFormHeader, createHandler, updateHandler } from '../utils/formUtils';
 import { fetchData } from '../utils/fetchData'
 import {MediaSearch} from '../utils/MediaSearch'
 import { AddActionHandler } from './AddActionHandler'
 import { AddReactionHandler } from './AddReactionHandler'
+import * as Actions from './objectActions'
+import * as Elements from './objectElements'
+
 //import * as Actions from './objectActions'
 //import * as Presets from './presetObjects'
 //import * as Elements from './objectElements'
 
+function rehydrateActionStack (inActionStack) {
+    const hydrate = inActionStack.map( (action,i) => {
+        const key = action.key
+        const value = Actions[key]
+        action.value=value
 
+        const elementList = action.elementList
+        
+        elementList.forEach( (element, j) => {
+            
+            if (Array.isArray(element.selectedElement)) {
+                const key = element.selectedElement[0]
+                const eleFunc = Elements[key]
+                elementList[j].selectedElement[1]=eleFunc
+            }
+        })
+        action.elementList=elementList
+        inActionStack[i]=action
+        return new Promise(resolve => resolve(inActionStack[i]))
+    })
 
-export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
+    return Promise.all(hydrate).then(response => {
+        return new Promise(resolve => resolve(inActionStack))
+    })
+}
 
+export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal, object}) => {
     const [modalReturn, setModalReturn] = useState({})
     const [actionStack, editActionStack] = useState([])
     const [reactionStack, editReactionStack] = useState([])
@@ -34,6 +60,24 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
     const [newFaction, setNewFaction] = useState("")
     const [scripts, editScripts] = useState([])
     const [selectedScript, setSelectedScript] = useState(-1)
+
+    useEffect(() => {       
+        rehydrateActionStack(object.actionStack.actionStack).then(response => editActionStack(response))
+        rehydrateActionStack(object.actionStack.reactionStack).then(response => editReactionStack(response))
+        editImages(object.images)
+        setName(object.title)
+        setDescription(object.description)
+        toggleIsHostile(object.actionStack.isHostile)
+        toggleUAIBehaviors(object.actionStack.useAIBehaviors)
+        setHap(object.actionStack.behaviors.hap)
+        setFriend(object.actionStack.behaviors.friend)
+        setIntel(object.actionStack.behaviors.intel)
+        setAdvent(object.actionStack.behaviors.advent)
+        setStrength(object.actionStack.behaviors.strength)
+        editInventory(object.actionStack.inventory)
+        setSelectedFaction(object.actionStack.faction)
+        setSelectedScript(object.actionStack.scripts)
+    },[object])
 
     useEffect(() => {
         async function loadScripts() {
@@ -128,7 +172,13 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal}) => {
             actionStack: finalActionStack
         }
 
-        createHandler('object',postData, objectHandler)
+        if (typeof object === 'undefined')
+            createHandler("object", postData, objectHandler)
+        else {
+            postData.objectId = object.objectId
+            updateHandler("object", postData, objectHandler)
+        }
+
         editActionStack([])
         setName("")
         setDescription("")

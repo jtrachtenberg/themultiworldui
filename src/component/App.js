@@ -79,10 +79,6 @@ componentDidMount() {
 
 }
 
-componentDidUpdate() {
-  console.log('update')
-}
-
 connected = () => {
   const update = {}
   update.stateData = this.state.user.stateData
@@ -247,7 +243,7 @@ childHookUpdateHandler  = (inObj, type) => {
   if (Object.keys(inObj).length === 0 && inObj.constructor === Object) return
   if (type === 'place') {
 
-    if (inObj.doPop) stateData.popUpdate = true
+    stateData.popUpdate = true
     const images = Array.isArray(inObj.images) ? inObj.images : []
     if (images.length > 0) {
       document.body.style.backgroundAttachment = 'fixed'

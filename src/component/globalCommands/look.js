@@ -48,7 +48,6 @@ const look = async (inObj, inCmd) => {
                         }
                     }
                 } else {
-                    console.log(typeof tmp)
                     retVal = tmp
                 }
             }catch(e) {

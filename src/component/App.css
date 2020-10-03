@@ -841,6 +841,10 @@ section.inputText {
   margin-top: 25px;
 }
 
+.inventory {
+  padding-top: 20px;
+}
+
 .exits ul, .inventory ul, .population ul {
   list-style: none;
   text-align: left;
