@@ -93,6 +93,9 @@ class Main extends React.Component {
       user.stateData.inventory = inventory
       updateHandler('place',place,this.props.childUpdateHandler, true)
       this.props.updateUserHandler(user)
+      this.setState({
+        showToolTip: false
+      })
     }
 
     formatImage = (inImages,imgClass) => {
