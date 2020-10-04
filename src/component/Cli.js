@@ -361,6 +361,7 @@ class Cli extends React.Component {
                     target: this.state.diTarget,
                     inUser: this.props.inUser,
                     inPlace: this.props.inPlace,
+                    isAdmin: this.props.isAdmin,
                     socket: this.props.socket
                 }
                 action(actionItem, inputParts, this.state.modalReturn).then(result => {

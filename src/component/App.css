@@ -1670,3 +1670,15 @@ span.dropObject {
 .horizontalContainer {
   display: inline-block;
 }
+
+.objectPalette button {
+  width: min-content;
+  display: inline-block;
+  background: rgba(250,250,250,0.5);
+  padding: 1px;
+  margin: 1px;
+}
+
+.objectPalette button:hover {
+  background: rgba(250,250,250,0.8);
+}
