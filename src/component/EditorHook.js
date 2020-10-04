@@ -39,8 +39,7 @@ export const EditorHook = ({inUser, inSpace, inPlace, updateHandler}) => {
         }
         if (inUser.userId > 0 && (inUser.userId !== prevUserId)) {
             doFetch().then(response => {
-                    if (response.length === 0)
-                        response = []
+                    if (!Array.isArray(response)) response = []
                     loadSpaces(response)
                 })
                 .catch(e=>console.log(e))

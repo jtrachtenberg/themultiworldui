@@ -1453,7 +1453,7 @@ form#ObjectCreatorForm, .formBottom {
   flex-wrap: wrap;
   width: 100%;
   height: 60vh;
-  overflow: hidden;
+  overflow: auto;
 }
 
 form:ObjectCreatorForm:hover, .formBottom:hover {
