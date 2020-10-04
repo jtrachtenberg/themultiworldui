@@ -8,6 +8,7 @@ import {UpdateObjectForm} from './UpdateObjectForm'
 
 export const ObjectsPaletteHook = ({updateTrigger, userId, inPlace, placeHandler, objectHandler}) => {
     const [userObjects, editUserObjects] = useState([])
+    const [addDisabled, toggleAddDisabled] = useState(false)
 
     useEffect(() => {
         async function doFetch() {
@@ -30,9 +31,14 @@ export const ObjectsPaletteHook = ({updateTrigger, userId, inPlace, placeHandler
     },[userId, updateTrigger])
 
     const formatObjects = () => {
-        return userObjects.map((object,i) => <div key={i}><h4><DelIcon onClick={() => {
+        return userObjects.map((object,i) => <div className="objectPalette" key={i}><h4><button><DelIcon onClick={() => {
             fetchData("deleteObject",{objectId: object.objectId}).then(response => objectHandler(response))
-        }}/><UpdateObjectForm object={object} userId={userId} objectHandler={objectHandler} /><AddIcon onClick={()=> {
+        }}/></button><button><UpdateObjectForm object={object} userId={userId} objectHandler={objectHandler} /></button><button disabled={addDisabled}><AddIcon onClick={()=> {
+            toggleAddDisabled(true)
+            const disabledTimer = setTimeout(() => {
+                clearTimeout(disabledTimer)
+                toggleAddDisabled(false)
+            },2500)
             const tmpObjects = (Array.isArray(inPlace.objects) && inPlace.objects.length > 0) ? [...inPlace.objects] : []
             if (Array.isArray(object.actionStack)) {
                 tmpObjects.push(userObjects[i])
@@ -59,7 +65,7 @@ export const ObjectsPaletteHook = ({updateTrigger, userId, inPlace, placeHandler
 
                 }
             }
-        }} />{object.title}</h4></div>)
+        }} /></button>{object.title}</h4></div>)
     }
     return (
         <div>

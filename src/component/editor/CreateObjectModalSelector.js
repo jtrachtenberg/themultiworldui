@@ -4,7 +4,7 @@ import {PresetObjectModal} from './PresetObjectModal'
 import {NPCEditor} from './NPCEditor'
 
 export const CreateObjectModalSelector = ({ object, userId, objectHandler, hideModal }) => {
-    const [tab, setTab] = useState(0)
+    const [tab, setTab] = useState(object.actionStack.type === 'NPC' ? 2 : 0)
     const [editMode, toggleEditMode] = useState(false)
     
     useEffect(() => {
@@ -26,7 +26,7 @@ export const CreateObjectModalSelector = ({ object, userId, objectHandler, hideM
         }
         { (tab === 1) && <div><PresetObjectModal hideModal={hideModal} buttonText={editMode ? 'Update' : 'Create'} userId={userId} objectHandler={objectHandler} /></div>
         }
-        { (tab === 2) && <div><NPCEditor userId={userId} objectHandler={objectHandler} hideModal={hideModal} buttonText={editMode ? 'Update' : 'Create'} /></div>
+        { (tab === 2) && <div><NPCEditor object={object} userId={userId} objectHandler={objectHandler} hideModal={hideModal} buttonText={editMode ? 'Update' : 'Create'} /></div>
         }
          </div>
     )

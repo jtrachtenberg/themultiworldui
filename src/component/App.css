@@ -89,6 +89,7 @@
     opacity: 0;
   }
 }
+
 .invis {
   display:  none;
 }
@@ -396,8 +397,12 @@ input[type=email]:not(:placeholder-shown):invalid {
   padding: 0px 12px;
   position: fixed;
   left: 0px;
-  overflow: scroll;
+  overflow: hidden;
   height: 100%;
+}
+
+.leftNav ul:hover {
+  overflow-y: overlay;
 }
 
 .leftNav.menuStart ul {
@@ -501,10 +506,34 @@ form section span {
   right: 24px;
   width: 24%;
   height: 80vh;
-  overflow: scroll;
-  background-color: rgba(223,219,192,0.5)
+  overflow: hidden;
+  /* // eslint-disable-next-line */
+  background: linear-gradient(rgba(223,219,192,0.5) 30%, rgba(255,255,255,0)),linear-gradient(rgba(255,255,255,0), rgba(223,219,192,0.5) 70%) 0 100%,
+  
+  /* Shadows */
+  radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.2), rgba(0,0,0,0)),
+  radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
+background:
+  /* Shadow covers */
+  linear-gradient(rgba(223,219,192,0.5) 30%, rgba(255,255,255,0)),
+  linear-gradient(rgba(255,255,255,0), rgba(223,219,192,0.5) 70%) 0 100%,
+  
+  /* Shadows */
+  radial-gradient(farthest-side at 50% 0, rgba(223,219,192,.8), rgba(110,110,110,0)),
+  radial-gradient(farthest-side at 50% 100%, rgba(223,219,192,.8), rgba(110,110,110,0)) 0 100%;
+background-repeat: no-repeat;
+background-color: rgba(223,219,192,0.6);
+background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+
+/* Opera doesn't support this in the shorthand */
+background-attachment: local, local, scroll, scroll;
+
+
 }
 
+.rightNav:hover {
+  overflow-y: overlay;
+}
 @media screen and (max-width: 768px) {
   .flex-grid {
     display: block;
@@ -529,9 +558,13 @@ div.searchImage {
 
 #searchResult {
   max-height: 100px;
-  overflow: scroll;
+  overflow: hidden;
   margin-top: 4px;
   text-align: left;
+}
+
+#searchResult:hover {
+  overflow-y: overlay;
 }
 
 #searchResult > div {
@@ -541,7 +574,11 @@ div.searchImage {
 
 div.imageList {
   display: flex;
-  overflow: scroll;
+  overflow: hidden;
+}
+
+div.imageList:hover {
+  overflow-y: overlay;
 }
 
 .main {
@@ -580,10 +617,18 @@ form#Cli {
   font-size: 18px;
   font-weight: 100;
   position: fixed;
-  overflow: auto;
+  overflow: hidden;
   background-color: rgba(223,219,192,0.9);
   color: #3B2322;
 }
+
+.main .viewPort:hover {
+  overflow-y: overlay;
+}
+
+/*.main .viewPort .place {
+  /*mask-image: linear-gradient(to bottom, rgb(223,219,192) 80%, transparent 100%);
+}*/
 
 .main .viewPort .editButton {
   vertical-align: middle;
@@ -613,16 +658,43 @@ form#Cli {
 .resultsWindow {
   width: 832px;
   height: 8em;
-  overflow: scroll;
+  overflow: hidden;
   margin-left: -174px;
   position: relative;
   top: 2px;
   left: 164px;
   text-align: left;
   border: 1px solid #ccc;
-  background-color: rgba(223,219,192,0.8)
+  background-color: rgba(223,219,192,0.8);
+  /*mask-image: linear-gradient(to top, rgb(223,219,192) 80%, transparent 100%);*/
+  /*background:   linear-gradient(rgba(223,219,192,0.5) 30%, rgba(255,255,255,0)),
+  linear-gradient(rgba(255,255,255,0), rgba(223,219,192,0.0) 70%) 0 10%,*/
 }
 
+.resultsWindow:hover {
+  overflow-y: overlay;
+}
+
+@media screen and (max-height: 600px) {
+  .resultsWindow {
+    height: 5em;
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .resultsWindow {
+    height: 4em;
+  }
+}
+@media screen and (min-width: 1237px) {
+  .main .viewPort.menuOut, .main .viewPort.menuStart {
+    width: 67vw;
+  }
+
+  .resultsWindow {
+    width: 67.5vw;
+  }
+}
 @media screen and (max-width: 1236px) {
   .main .viewPort.menuOut, .main .viewPort.menuStart {
     width: 774px;
@@ -677,6 +749,12 @@ form#Cli {
   margin-right: 8px;
 }
 
+@media screen and (max-width: 635px) {
+  .imageContainer {
+    display: none;
+  }
+}
+
 .main .viewPort span.imageContainer img {
   height: fit-content;
   width: 300px;
@@ -689,12 +767,16 @@ form#Cli {
 .main .viewPort span.imageContainer img.object {
   width: 180px;
   height: 180px;
+  object-fit: cover;
 }
 
 .rightNav span.imageContainer {
   text-align: center;
   margin: auto 4px;
   align-content: center;
+  display: block;
+  font-weight: 500;
+  margin-top: 2px;
 }
 
 .rightNav span.imageContainer img {
@@ -702,7 +784,7 @@ form#Cli {
   vertical-align: middle;
   width: 100px;
   height: 100px;
-  object-fit: contain;
+  object-fit: cover;
   filter: drop-shadow(3px 6px 3px #444);
 }
 
@@ -750,15 +832,29 @@ section.inputText {
   position: relative;
 }
 
+.population {
+  height: 128px;
+}
+
+.population .alone {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.inventory {
+  padding-top: 20px;
+}
+
 .exits ul, .inventory ul, .population ul {
   list-style: none;
   text-align: left;
-  width: max-content;
+  width: auto;
   padding-left: 0px;
 }
 
 .exits ul li, .inventory ul li , .population ul li {
   margin-bottom: 6px;
+  display: inline-block;
 }
 
 #tooltip
@@ -1070,7 +1166,7 @@ section.inputText {
   }
 }
 .ant-popover-title {
-  min-width: 177px;
+  min-width: min-content;
   min-height: 32px;
   margin: 0;
   padding: 5px 16px 4px;
@@ -1313,8 +1409,12 @@ ul.audioList {
   position: relative;
   top: -70px;
   left: -16px;
-  overflow: scroll;
+  overflow: hidden;
   height: 50vh;
+}
+
+ul.audioList:hover {
+  overflow-y: overlay;
 }
 
 li.searchAudio {
@@ -1353,7 +1453,11 @@ form#ObjectCreatorForm, .formBottom {
   flex-wrap: wrap;
   width: 100%;
   height: 60vh;
-  overflow: scroll;
+  overflow: hidden;
+}
+
+form:ObjectCreatorForm:hover, .formBottom:hover {
+  overflow-y: overlay;
 }
 
 form#ObjectCreatorForm textarea {
@@ -1453,7 +1557,7 @@ form#ObjectCreatorForm .columnContent svg,
 form#npcForm {
   max-width: 95%;
   max-height: 50vh;
-  overflow: scroll;
+  overflow: auto;
   margin: auto;
 }
 
@@ -1530,4 +1634,51 @@ label img {
 
 button.chatModeOn {
   background-color: lightseagreen;
+}
+
+span.getObject {
+  width: 24px;
+  filter: drop-shadow(2px 6px 2px black);
+  position: relative;
+  left: -186px;
+  top: 2px;
+  z-index: 50;
+}
+
+span.dropObject {
+  width: 24px;
+  filter: drop-shadow(2px 6px 2px black);
+  position: relative;
+  left: 4px;
+  top: -100px;
+  z-index: 50;
+}
+.hoverMe:hover {
+  filter: brightness(1.2);
+  cursor: pointer;
+}
+
+.getObject img, .dropObject img, .dropObject svg {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.brightFilter {
+  filter: brightness(1.2)
+}
+
+.horizontalContainer {
+  display: inline-block;
+}
+
+.objectPalette button {
+  width: min-content;
+  display: inline-block;
+  background: rgba(250,250,250,0.5);
+  padding: 1px;
+  margin: 1px;
+}
+
+.objectPalette button:hover {
+  background: rgba(250,250,250,0.8);
 }
