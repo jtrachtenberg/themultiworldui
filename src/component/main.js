@@ -37,7 +37,7 @@ class Main extends React.Component {
       if (Array.isArray(this.props.inPlace.images)) images = Array.from(this.props.inPlace.images)
       if (Array.isArray(this.props.inPlace.objects))
         this.props.inPlace.objects.forEach((object,i) => {
-          if (Array.isArray(object.images) && objects.images.length > 0) {
+          if (Array.isArray(object.images) && object.images.length > 0) {
             object.images = object.images.filter(o => o !== null && typeof o !== 'undefined')
             object.images[0].objectId = object.objectId
             object.images[0].description = object.description
