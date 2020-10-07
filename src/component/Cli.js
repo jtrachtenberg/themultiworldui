@@ -496,10 +496,10 @@ class Cli extends React.Component {
 
     render() {
         return (
-                <div>
+                <div className={this.props.menuToggle}>
                 <form id="Cli">
                     <section>
-                        <div ref={this.resultRef} name="resultsWindow" className="resultsWindow">{this.state.results}</div>
+                        <div ref={this.resultRef} name="resultsWindow" onMouseEnter={(e) => this.setState({rws:'doScroll'})} onMouseLeave={(e) => this.setState({rws:''})} className={`resultsWindow ${this.state.rws}`}>{this.state.results}</div>
                     </section>
                     <section className="inputText">
                     <span>

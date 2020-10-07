@@ -25,6 +25,7 @@ class Main extends React.Component {
           toolTipId: "",
           playing: true,
           editMode: false,
+          ps: "",
           overClass: "none"
         }
         this.toolTip = React.createRef()
@@ -173,30 +174,33 @@ class Main extends React.Component {
     render() {
         return (
             <div>
-              {this.state.showImage && <KeyHandler inKey={'Escape'} inKeyHandler={(keyPress)=>{this.setState({showImage: keyPress})}} />}
-            <div className="place">{!this.state.editMode && this.formatPlace()}</div>
-            <div>{this.state.editMode && <UpdatePlaceFormHook userId={this.props.inUser.userId} inPlace={this.props.inPlace} onSave={() => {this.setState({editMode: false})}} placeHandler={newPlace => {
+              <div onMouseEnter={(e) => this.setState({ps:'doScroll'})} onMouseLeave={(e) => this.setState({ps:''})} className={`viewPort ${this.state.ps} ${this.props.menuToggle}`}>
+                {this.state.showImage && <KeyHandler inKey={'Escape'} inKeyHandler={(keyPress)=>{this.setState({showImage: keyPress})}} />}
+                {!this.state.editMode && this.formatPlace()}
+                <div>{this.state.editMode && <UpdatePlaceFormHook userId={this.props.inUser.userId} inPlace={this.props.inPlace} onSave={() => {this.setState({editMode: false})}} placeHandler={newPlace => {
                     this.props.childUpdateHandler(newPlace, 'place')
-                }} />}</div>
-            <div className="CliInput"><Cli audioResetHandler={this.props.audioResetHandler} messageResetHander={this.props.messageResetHander} inMsg={this.props.inMsg} inSnd={this.props.inSnd} inUser={this.props.inUser} inPlace={this.props.inPlace} updateUserHandler={this.props.updateUserHandler} childUpdateHandler={this.props.childUpdateHandler} socket={this.props.socket} isAdmin={this.props.isAdmin}/></div>
-            {this.state.showToolTip && (
-              <Portal id="toolTip">
-                <TooltipPopover
-                  coords={this.state.coords} 
-                >
-                  <div>
-                    {this.state.toolTipText}
-                  </div>
-                </TooltipPopover>
-              </Portal>
-            )}
-            {this.state.showImage && (
-              <Portal id="imgPopOver">
-                <div className="popOver" onClick={() => this.setState({showImage: false})}>
-                  <img alt={this.state.alt} width="700" src={this.state.src.replace('w=200','w=700')} onClick={() => this.setState({showImage: false})} onMouseOut={() => this.setState({showImage: false})} />
+                }} />}
                 </div>
-              </Portal>
-            )}
+              </div>
+              <div className="CliInput"><Cli audioResetHandler={this.props.audioResetHandler} messageResetHander={this.props.messageResetHander} menuToggle={this.props.menuToggle} inMsg={this.props.inMsg} inSnd={this.props.inSnd} inUser={this.props.inUser} inPlace={this.props.inPlace} updateUserHandler={this.props.updateUserHandler} childUpdateHandler={this.props.childUpdateHandler} socket={this.props.socket} isAdmin={this.props.isAdmin}/></div>
+              {this.state.showToolTip && (
+                <Portal id="toolTip">
+                  <TooltipPopover
+                    coords={this.state.coords} 
+                  >
+                    <div className="tooltip">
+                      {this.state.toolTipText}
+                    </div>
+                  </TooltipPopover>
+                </Portal>
+              )}
+              {this.state.showImage && (
+                <Portal id="imgPopOver">
+                  <div className="popOver" onClick={() => this.setState({showImage: false})}>
+                    <img alt={this.state.alt} width="700" src={this.state.src.replace('w=200','w=700')} onClick={() => this.setState({showImage: false})} onMouseOut={() => this.setState({showImage: false})} />
+                  </div>
+                </Portal>
+              )}
             </div>
         )
     }
