@@ -38,11 +38,13 @@ export const PresetObjectModal = ({ object, userId, objectHandler, buttonText, h
     const [currentAction, setCurrentAction] = useState(-1)
     const [images, editImages] = useState([])
 
-    useEffect(() => {       
-        rehydrateActionStack(object.actionStack).then(response => editActionStack(response))
-        editImages(object.images)
-        setTitle(object.title)
-        setDescription(object.description)
+    useEffect(() => {    
+        if (typeof object !== 'undefined') {   
+            rehydrateActionStack(object.actionStack).then(response => editActionStack(response))
+            editImages(object.images)
+            setTitle(object.title)
+            setDescription(object.description)
+        }
     },[object])
 
     const formatPresets = () => {
