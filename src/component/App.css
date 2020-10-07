@@ -638,6 +638,10 @@ form#Cli {
   color: #3B2322;
 }
 
+.main .viewPort h3 {
+  width: inherit;
+}
+
 /*.main .viewPort .place {
   /*mask-image: linear-gradient(to bottom, rgb(223,219,192) 80%, transparent 100%);
 }*/
@@ -691,7 +695,7 @@ form#Cli {
   margin-left: -174px;
   position: relative;
   top: 2px;
-  left: 164px;
+  left: 188px;
   text-align: left;
   border: 1px solid #ccc;
   background-color: rgba(223,219,192,0.8);
@@ -857,7 +861,7 @@ span.clickable:hover {
 
 section.inputText {
   position: relative;
-  left: -16px;
+  left: 7px;
 }
 .resultsWindow p {
   line-height: 0.5em;
@@ -1357,7 +1361,7 @@ section.inputText {
 }
 
 .viewPort.menuOut > div, .viewPort.menuStart > div {
-  width: stretch;
+  width: inherit;
 }
 
 .viewPort .imageContainer .iconInset {

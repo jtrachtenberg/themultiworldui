@@ -47,7 +47,6 @@ constructor(props) {
       popUpdate: false,
       bgImage: {},
       rns: "",
-      ps: "",
       socket: socketIOClient(`${Constants.HOST_URL}:${Constants.EXPRESS_PORT}`)
     }
 }
@@ -459,7 +458,7 @@ render() {
         </ul>
       </div>
       <div className="main">
-        <div onMouseEnter={(e) => this.setState({ps:'doScroll'})} onMouseLeave={(e) => this.setState({ps:''})} className={`viewPort ${this.state.ps} ${this.state.menuToggle}`}><Main isEdit={this.state.isEdit} audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} updateUserHandler={this.updateUserHandler} socket={this.state.socket} isAdmin={this.state.isAdmin}/></div>
+        <Main isEdit={this.state.isEdit} audioResetHandler={this.audioResetHandler} messageResetHander={this.messageResetHander} inMsg={this.state.inMsg} inSnd={this.state.inSnd} inUser={this.state.user} inSpace={this.state.space} inPlace={this.state.place} childUpdateHandler={this.childHookUpdateHandler} updateUserHandler={this.updateUserHandler} socket={this.state.socket} menuToggle={this.state.menuToggle} isAdmin={this.state.isAdmin}/>
       </div>
       <div onMouseEnter={(e) => this.setState({rns:'doScroll'})} onMouseLeave={(e) => this.setState({rns:''})} className={`rightNav ${this.state.rns}`}>
         <div className="worldSearch"><WorldSearch updateUserHandler={this.updateUserHandler} inUser={this.state.user} socket={this.state.socket} /></div>
