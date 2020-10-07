@@ -61,22 +61,24 @@ export const NPCEditor = ({ userId, objectHandler, buttonText, hideModal, object
     const [scripts, editScripts] = useState([])
     const [selectedScript, setSelectedScript] = useState(-1)
 
-    useEffect(() => {       
-        rehydrateActionStack(object.actionStack.actionStack).then(response => editActionStack(response))
-        rehydrateActionStack(object.actionStack.reactionStack).then(response => editReactionStack(response))
-        editImages(object.images)
-        setName(object.title)
-        setDescription(object.description)
-        toggleIsHostile(object.actionStack.isHostile)
-        toggleUAIBehaviors(object.actionStack.useAIBehaviors)
-        setHap(object.actionStack.behaviors.hap)
-        setFriend(object.actionStack.behaviors.friend)
-        setIntel(object.actionStack.behaviors.intel)
-        setAdvent(object.actionStack.behaviors.advent)
-        setStrength(object.actionStack.behaviors.strength)
-        editInventory(object.actionStack.inventory)
-        setSelectedFaction(object.actionStack.faction)
-        setSelectedScript(object.actionStack.scripts)
+    useEffect(() => {      
+        if (typeof object !== 'undefined') { 
+            rehydrateActionStack(object.actionStack.actionStack).then(response => editActionStack(response))
+            rehydrateActionStack(object.actionStack.reactionStack).then(response => editReactionStack(response))
+            editImages(object.images)
+            setName(object.title)
+            setDescription(object.description)
+            toggleIsHostile(object.actionStack.isHostile)
+            toggleUAIBehaviors(object.actionStack.useAIBehaviors)
+            setHap(object.actionStack.behaviors.hap)
+            setFriend(object.actionStack.behaviors.friend)
+            setIntel(object.actionStack.behaviors.intel)
+            setAdvent(object.actionStack.behaviors.advent)
+            setStrength(object.actionStack.behaviors.strength)
+            editInventory(object.actionStack.inventory)
+            setSelectedFaction(object.actionStack.faction)
+            setSelectedScript(object.actionStack.scripts)
+        }
     },[object])
 
     useEffect(() => {
