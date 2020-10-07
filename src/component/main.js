@@ -174,7 +174,7 @@ class Main extends React.Component {
         return (
             <div>
               {this.state.showImage && <KeyHandler inKey={'Escape'} inKeyHandler={(keyPress)=>{this.setState({showImage: keyPress})}} />}
-            <div className="place">{!this.state.editMode && this.formatPlace()}</div>
+            <div className='place'>{!this.state.editMode && this.formatPlace()}</div>
             <div>{this.state.editMode && <UpdatePlaceFormHook userId={this.props.inUser.userId} inPlace={this.props.inPlace} onSave={() => {this.setState({editMode: false})}} placeHandler={newPlace => {
                     this.props.childUpdateHandler(newPlace, 'place')
                 }} />}</div>
