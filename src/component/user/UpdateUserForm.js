@@ -1,7 +1,11 @@
 import React from 'react';
 import {setFormHeader, handleInputChange, updateHandler, toggleIsVis} from '../utils/formUtils'
 import {MediaSearch} from '../utils/MediaSearch'
-
+/***
+ * 
+ * 
+ * DEPRECATED-- Use UpdateUserHookForm
+ */
 class UpdateUserForm extends React.Component {
     constructor(props) {
         super(props)
