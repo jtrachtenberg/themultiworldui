@@ -1,5 +1,6 @@
 import React from 'react';
 import {setFormHeader, handleInputChange, updateHandler, toggleIsVis} from '../utils/formUtils'
+import {MediaSearch} from '../utils/MediaSearch'
 
 class UpdateUserForm extends React.Component {
     constructor(props) {
@@ -49,6 +50,17 @@ class UpdateUserForm extends React.Component {
 
     }
 
+    handleImages = (inImages) => {
+        this.setState({
+            images: inImages
+        })
+    }
+
+    modalReturn = (inModal) => {
+        this.setState({
+            inModal: inModal
+        })
+    }
     render() {
         let form;
         if (this.state.user.userId > 0 && this.state.vis) {
@@ -64,7 +76,7 @@ class UpdateUserForm extends React.Component {
             <label>Description:
                 <textarea name="description" value={this.state.description||""} onChange={this.handleChange} />
             </label>              
-            
+            <MediaSearch forceOpen={false} audioOnly={false} images={this.state.images} handleImages={this.handleImages} editImages={this.handleImages} modalReturn={this.modalReturn} />
                 { this.props.isAdmin && 
                 <div>    
                     <label>Is Root?:
